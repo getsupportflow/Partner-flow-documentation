@@ -1,0 +1,1844 @@
+openapi: 3.0.0
+info:
+  title: WarrantyFlow V3 API
+  version: 3.0.0
+  description: Versioned API for warranty and service management. Use API key or session auth.
+servers:
+  - url: https://api.warrantyflow.com/api/v3
+    description: Production
+  - url: http://localhost:3000/api/v3
+    description: Development
+tags:
+  - name: Customers
+    description: Customer management
+  - name: Suppliers
+    description: Supplier management
+components:
+  schemas:
+    CreateCustomerInput:
+      type: object
+      properties:
+        firstName:
+          type: string
+          minLength: 1
+          maxLength: 50
+        lastName:
+          type: string
+          minLength: 1
+          maxLength: 50
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+          minLength: 7
+          maxLength: 20
+        shippingAddress:
+          type: object
+          properties:
+            street:
+              type: string
+              minLength: 1
+            street2:
+              type: string
+            city:
+              type: string
+              minLength: 1
+            postcode:
+              type: string
+              minLength: 1
+            state:
+              type: string
+            country:
+              type: string
+              minLength: 1
+          required:
+            - street
+            - city
+            - postcode
+            - country
+        billingAddress:
+          type: object
+          properties:
+            street:
+              type: string
+              minLength: 1
+            street2:
+              type: string
+            city:
+              type: string
+              minLength: 1
+            postcode:
+              type: string
+              minLength: 1
+            state:
+              type: string
+            country:
+              type: string
+              minLength: 1
+          required:
+            - street
+            - city
+            - postcode
+            - country
+        notes:
+          type: string
+          maxLength: 1000
+      required:
+        - firstName
+        - lastName
+    UpdateCustomerInput:
+      anyOf:
+        - type: object
+          properties:
+            user:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  minLength: 1
+                  maxLength: 50
+                lastName:
+                  type: string
+                  minLength: 1
+                  maxLength: 50
+                email:
+                  type: string
+                  format: email
+                phone:
+                  type: string
+                  minLength: 7
+                  maxLength: 20
+              additionalProperties: false
+            shippingAddress:
+              type: object
+              properties:
+                street:
+                  type: string
+                  minLength: 1
+                street2:
+                  type: string
+                  nullable: true
+                city:
+                  type: string
+                  minLength: 1
+                state:
+                  type: string
+                  nullable: true
+                postcode:
+                  type: string
+                  minLength: 1
+                country:
+                  type: string
+                  minLength: 1
+              additionalProperties: false
+            billingAddress:
+              type: object
+              properties:
+                street:
+                  type: string
+                  minLength: 1
+                street2:
+                  type: string
+                  nullable: true
+                city:
+                  type: string
+                  minLength: 1
+                state:
+                  type: string
+                  nullable: true
+                postcode:
+                  type: string
+                  minLength: 1
+                country:
+                  type: string
+                  minLength: 1
+              additionalProperties: false
+            isActive:
+              type: boolean
+            notes:
+              type: string
+              maxLength: 1000
+          additionalProperties: false
+        - type: object
+          properties:
+            firstName:
+              type: string
+              minLength: 1
+              maxLength: 50
+            lastName:
+              type: string
+              minLength: 1
+              maxLength: 50
+            email:
+              type: string
+              format: email
+            phone:
+              type: string
+              minLength: 7
+              maxLength: 20
+            isActive:
+              type: boolean
+            notes:
+              type: string
+              maxLength: 1000
+          additionalProperties: false
+    ListCustomersQuery:
+      type: object
+      properties:
+        page:
+          type: number
+          minimum: 1
+          default: 1
+        limit:
+          type: number
+          minimum: 1
+          maximum: 100
+          default: 10
+        sortBy:
+          type: string
+          default: createdAt
+        sortOrder:
+          type: string
+          enum: &a2
+            - asc
+            - desc
+          default: desc
+        search:
+          type: string
+    CustomerDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        companyId:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          nullable: true
+          format: uuid
+        billingAddressId:
+          type: string
+          nullable: true
+          format: uuid
+        shippingAddressId:
+          type: string
+          nullable: true
+          format: uuid
+        createdAt:
+          type: string
+          nullable: true
+        updatedAt:
+          type: string
+          nullable: true
+        user:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: string
+              format: uuid
+            firstName:
+              type: string
+              nullable: true
+            lastName:
+              type: string
+              nullable: true
+            email:
+              type: string
+              nullable: true
+              format: email
+            phone:
+              type: string
+              nullable: true
+            role:
+              type: string
+            recordImage:
+              type: string
+              nullable: true
+            status:
+              type: string
+            createdAt:
+              type: string
+              nullable: true
+            updatedAt:
+              type: string
+              nullable: true
+          required:
+            - id
+            - firstName
+            - lastName
+            - email
+            - phone
+            - role
+            - status
+        billingAddress:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: string
+              format: uuid
+            street:
+              type: string
+            street2:
+              type: string
+              nullable: true
+            city:
+              type: string
+            postcode:
+              type: string
+            state:
+              type: string
+              nullable: true
+            country:
+              type: string
+            type:
+              type: string
+              enum: &a1
+                - BILLING
+                - SHIPPING
+          required:
+            - street
+            - city
+            - postcode
+            - country
+        shippingAddress:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: string
+              format: uuid
+            street:
+              type: string
+            street2:
+              type: string
+              nullable: true
+            city:
+              type: string
+            postcode:
+              type: string
+            state:
+              type: string
+              nullable: true
+            country:
+              type: string
+            type:
+              type: string
+              enum: *a1
+          required:
+            - street
+            - city
+            - postcode
+            - country
+        company:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: string
+              format: uuid
+            apiName:
+              type: string
+          required:
+            - id
+      required:
+        - id
+        - companyId
+    CustomerListResponse:
+      type: object
+      properties:
+        customers:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              companyId:
+                type: string
+                format: uuid
+              userId:
+                type: string
+                nullable: true
+                format: uuid
+              billingAddressId:
+                type: string
+                nullable: true
+                format: uuid
+              shippingAddressId:
+                type: string
+                nullable: true
+                format: uuid
+              createdAt:
+                type: string
+                nullable: true
+              updatedAt:
+                type: string
+                nullable: true
+              user:
+                type: object
+                nullable: true
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  firstName:
+                    type: string
+                    nullable: true
+                  lastName:
+                    type: string
+                    nullable: true
+                  email:
+                    type: string
+                    nullable: true
+                    format: email
+                  phone:
+                    type: string
+                    nullable: true
+                  role:
+                    type: string
+                  recordImage:
+                    type: string
+                    nullable: true
+                  status:
+                    type: string
+                  createdAt:
+                    type: string
+                    nullable: true
+                  updatedAt:
+                    type: string
+                    nullable: true
+                required:
+                  - id
+                  - firstName
+                  - lastName
+                  - email
+                  - phone
+                  - role
+                  - status
+              billingAddress:
+                type: object
+                nullable: true
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  street:
+                    type: string
+                  street2:
+                    type: string
+                    nullable: true
+                  city:
+                    type: string
+                  postcode:
+                    type: string
+                  state:
+                    type: string
+                    nullable: true
+                  country:
+                    type: string
+                  type:
+                    type: string
+                    enum: *a1
+                required:
+                  - street
+                  - city
+                  - postcode
+                  - country
+              shippingAddress:
+                type: object
+                nullable: true
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  street:
+                    type: string
+                  street2:
+                    type: string
+                    nullable: true
+                  city:
+                    type: string
+                  postcode:
+                    type: string
+                  state:
+                    type: string
+                    nullable: true
+                  country:
+                    type: string
+                  type:
+                    type: string
+                    enum: *a1
+                required:
+                  - street
+                  - city
+                  - postcode
+                  - country
+              company:
+                type: object
+                nullable: true
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  apiName:
+                    type: string
+                required:
+                  - id
+            required:
+              - id
+              - companyId
+        pagination:
+          type: object
+          properties:
+            page:
+              type: number
+            limit:
+              type: number
+            total:
+              type: number
+            totalPages:
+              type: number
+          required:
+            - page
+            - limit
+            - total
+            - totalPages
+      required:
+        - customers
+        - pagination
+    CreateSupplierInput:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+          minLength: 7
+          maxLength: 20
+        category:
+          type: string
+          enum: &a3
+            - ELECTRONICS
+            - MECHANICAL
+            - SOFTWARE
+            - SERVICES
+            - OTHER
+          default: OTHER
+        address:
+          type: object
+          properties:
+            street:
+              type: string
+              minLength: 1
+            city:
+              type: string
+              minLength: 1
+            state:
+              type: string
+            zipCode:
+              type: string
+              minLength: 1
+            country:
+              type: string
+              minLength: 1
+          required:
+            - street
+            - city
+            - zipCode
+            - country
+        notes:
+          type: string
+          maxLength: 1000
+      required:
+        - name
+        - email
+    UpdateSupplierInput:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+          minLength: 7
+          maxLength: 20
+        category:
+          type: string
+          enum: &a4
+            - ELECTRONICS
+            - MECHANICAL
+            - SOFTWARE
+            - SERVICES
+            - OTHER
+        status:
+          type: string
+          enum: &a5
+            - ACTIVE
+            - INACTIVE
+            - SUSPENDED
+        notes:
+          type: string
+          maxLength: 1000
+    SupplierDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        companyId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        email:
+          type: string
+          nullable: true
+        phone:
+          type: string
+          nullable: true
+        category:
+          type: string
+        status:
+          type: string
+        notes:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          nullable: true
+        updatedAt:
+          type: string
+          nullable: true
+      required:
+        - id
+        - companyId
+        - name
+    SupplierListResponse:
+      type: object
+      properties:
+        suppliers:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              companyId:
+                type: string
+                format: uuid
+              name:
+                type: string
+              email:
+                type: string
+                nullable: true
+              phone:
+                type: string
+                nullable: true
+              category:
+                type: string
+              status:
+                type: string
+              notes:
+                type: string
+                nullable: true
+              createdAt:
+                type: string
+                nullable: true
+              updatedAt:
+                type: string
+                nullable: true
+            required:
+              - id
+              - companyId
+              - name
+        pagination:
+          type: object
+          properties:
+            page:
+              type: number
+            limit:
+              type: number
+            total:
+              type: number
+            totalPages:
+              type: number
+          required:
+            - page
+            - limit
+            - total
+            - totalPages
+      required:
+        - suppliers
+        - pagination
+  parameters: {}
+paths:
+  /business/customers:
+    get:
+      summary: List customers
+      description: Paginated list of customers for the authenticated company
+      tags:
+        - Customers
+      parameters:
+        - schema:
+            type: number
+            minimum: 1
+            default: 1
+          required: false
+          name: page
+          in: query
+        - schema:
+            type: number
+            minimum: 1
+            maximum: 100
+            default: 10
+          required: false
+          name: limit
+          in: query
+        - schema:
+            type: string
+            default: createdAt
+          required: false
+          name: sortBy
+          in: query
+        - schema:
+            type: string
+            enum: *a2
+            default: desc
+          required: false
+          name: sortOrder
+          in: query
+        - schema:
+            type: string
+          required: false
+          name: search
+          in: query
+      responses:
+        "200":
+          description: Paginated customer list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  customers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        companyId:
+                          type: string
+                          format: uuid
+                        userId:
+                          type: string
+                          nullable: true
+                          format: uuid
+                        billingAddressId:
+                          type: string
+                          nullable: true
+                          format: uuid
+                        shippingAddressId:
+                          type: string
+                          nullable: true
+                          format: uuid
+                        createdAt:
+                          type: string
+                          nullable: true
+                        updatedAt:
+                          type: string
+                          nullable: true
+                        user:
+                          type: object
+                          nullable: true
+                          properties:
+                            id:
+                              type: string
+                              format: uuid
+                            firstName:
+                              type: string
+                              nullable: true
+                            lastName:
+                              type: string
+                              nullable: true
+                            email:
+                              type: string
+                              nullable: true
+                              format: email
+                            phone:
+                              type: string
+                              nullable: true
+                            role:
+                              type: string
+                            recordImage:
+                              type: string
+                              nullable: true
+                            status:
+                              type: string
+                            createdAt:
+                              type: string
+                              nullable: true
+                            updatedAt:
+                              type: string
+                              nullable: true
+                          required:
+                            - id
+                            - firstName
+                            - lastName
+                            - email
+                            - phone
+                            - role
+                            - status
+                        billingAddress:
+                          type: object
+                          nullable: true
+                          properties:
+                            id:
+                              type: string
+                              format: uuid
+                            street:
+                              type: string
+                            street2:
+                              type: string
+                              nullable: true
+                            city:
+                              type: string
+                            postcode:
+                              type: string
+                            state:
+                              type: string
+                              nullable: true
+                            country:
+                              type: string
+                            type:
+                              type: string
+                              enum: *a1
+                          required:
+                            - street
+                            - city
+                            - postcode
+                            - country
+                        shippingAddress:
+                          type: object
+                          nullable: true
+                          properties:
+                            id:
+                              type: string
+                              format: uuid
+                            street:
+                              type: string
+                            street2:
+                              type: string
+                              nullable: true
+                            city:
+                              type: string
+                            postcode:
+                              type: string
+                            state:
+                              type: string
+                              nullable: true
+                            country:
+                              type: string
+                            type:
+                              type: string
+                              enum: *a1
+                          required:
+                            - street
+                            - city
+                            - postcode
+                            - country
+                        company:
+                          type: object
+                          nullable: true
+                          properties:
+                            id:
+                              type: string
+                              format: uuid
+                            apiName:
+                              type: string
+                          required:
+                            - id
+                      required:
+                        - id
+                        - companyId
+                  pagination:
+                    type: object
+                    properties:
+                      page:
+                        type: number
+                      limit:
+                        type: number
+                      total:
+                        type: number
+                      totalPages:
+                        type: number
+                    required:
+                      - page
+                      - limit
+                      - total
+                      - totalPages
+                required:
+                  - customers
+                  - pagination
+    post:
+      summary: Create customer
+      description: Create a new customer for the authenticated company
+      tags:
+        - Customers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  minLength: 1
+                  maxLength: 50
+                lastName:
+                  type: string
+                  minLength: 1
+                  maxLength: 50
+                email:
+                  type: string
+                  format: email
+                phone:
+                  type: string
+                  minLength: 7
+                  maxLength: 20
+                shippingAddress:
+                  type: object
+                  properties:
+                    street:
+                      type: string
+                      minLength: 1
+                    street2:
+                      type: string
+                    city:
+                      type: string
+                      minLength: 1
+                    postcode:
+                      type: string
+                      minLength: 1
+                    state:
+                      type: string
+                    country:
+                      type: string
+                      minLength: 1
+                  required:
+                    - street
+                    - city
+                    - postcode
+                    - country
+                billingAddress:
+                  type: object
+                  properties:
+                    street:
+                      type: string
+                      minLength: 1
+                    street2:
+                      type: string
+                    city:
+                      type: string
+                      minLength: 1
+                    postcode:
+                      type: string
+                      minLength: 1
+                    state:
+                      type: string
+                    country:
+                      type: string
+                      minLength: 1
+                  required:
+                    - street
+                    - city
+                    - postcode
+                    - country
+                notes:
+                  type: string
+                  maxLength: 1000
+              required:
+                - firstName
+                - lastName
+      responses:
+        "201":
+          description: Customer created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  companyId:
+                    type: string
+                    format: uuid
+                  userId:
+                    type: string
+                    nullable: true
+                    format: uuid
+                  billingAddressId:
+                    type: string
+                    nullable: true
+                    format: uuid
+                  shippingAddressId:
+                    type: string
+                    nullable: true
+                    format: uuid
+                  createdAt:
+                    type: string
+                    nullable: true
+                  updatedAt:
+                    type: string
+                    nullable: true
+                  user:
+                    type: object
+                    nullable: true
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      firstName:
+                        type: string
+                        nullable: true
+                      lastName:
+                        type: string
+                        nullable: true
+                      email:
+                        type: string
+                        nullable: true
+                        format: email
+                      phone:
+                        type: string
+                        nullable: true
+                      role:
+                        type: string
+                      recordImage:
+                        type: string
+                        nullable: true
+                      status:
+                        type: string
+                      createdAt:
+                        type: string
+                        nullable: true
+                      updatedAt:
+                        type: string
+                        nullable: true
+                    required:
+                      - id
+                      - firstName
+                      - lastName
+                      - email
+                      - phone
+                      - role
+                      - status
+                  billingAddress:
+                    type: object
+                    nullable: true
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      street:
+                        type: string
+                      street2:
+                        type: string
+                        nullable: true
+                      city:
+                        type: string
+                      postcode:
+                        type: string
+                      state:
+                        type: string
+                        nullable: true
+                      country:
+                        type: string
+                      type:
+                        type: string
+                        enum: *a1
+                    required:
+                      - street
+                      - city
+                      - postcode
+                      - country
+                  shippingAddress:
+                    type: object
+                    nullable: true
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      street:
+                        type: string
+                      street2:
+                        type: string
+                        nullable: true
+                      city:
+                        type: string
+                      postcode:
+                        type: string
+                      state:
+                        type: string
+                        nullable: true
+                      country:
+                        type: string
+                      type:
+                        type: string
+                        enum: *a1
+                    required:
+                      - street
+                      - city
+                      - postcode
+                      - country
+                  company:
+                    type: object
+                    nullable: true
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      apiName:
+                        type: string
+                    required:
+                      - id
+                required:
+                  - id
+                  - companyId
+  /business/customers/{id}:
+    get:
+      summary: Get customer by ID
+      description: Returns a single customer by ID
+      tags:
+        - Customers
+      parameters:
+        - schema:
+            type: string
+            format: uuid
+          required: true
+          name: id
+          in: path
+      responses:
+        "200":
+          description: Customer details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  companyId:
+                    type: string
+                    format: uuid
+                  userId:
+                    type: string
+                    nullable: true
+                    format: uuid
+                  billingAddressId:
+                    type: string
+                    nullable: true
+                    format: uuid
+                  shippingAddressId:
+                    type: string
+                    nullable: true
+                    format: uuid
+                  createdAt:
+                    type: string
+                    nullable: true
+                  updatedAt:
+                    type: string
+                    nullable: true
+                  user:
+                    type: object
+                    nullable: true
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      firstName:
+                        type: string
+                        nullable: true
+                      lastName:
+                        type: string
+                        nullable: true
+                      email:
+                        type: string
+                        nullable: true
+                        format: email
+                      phone:
+                        type: string
+                        nullable: true
+                      role:
+                        type: string
+                      recordImage:
+                        type: string
+                        nullable: true
+                      status:
+                        type: string
+                      createdAt:
+                        type: string
+                        nullable: true
+                      updatedAt:
+                        type: string
+                        nullable: true
+                    required:
+                      - id
+                      - firstName
+                      - lastName
+                      - email
+                      - phone
+                      - role
+                      - status
+                  billingAddress:
+                    type: object
+                    nullable: true
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      street:
+                        type: string
+                      street2:
+                        type: string
+                        nullable: true
+                      city:
+                        type: string
+                      postcode:
+                        type: string
+                      state:
+                        type: string
+                        nullable: true
+                      country:
+                        type: string
+                      type:
+                        type: string
+                        enum: *a1
+                    required:
+                      - street
+                      - city
+                      - postcode
+                      - country
+                  shippingAddress:
+                    type: object
+                    nullable: true
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      street:
+                        type: string
+                      street2:
+                        type: string
+                        nullable: true
+                      city:
+                        type: string
+                      postcode:
+                        type: string
+                      state:
+                        type: string
+                        nullable: true
+                      country:
+                        type: string
+                      type:
+                        type: string
+                        enum: *a1
+                    required:
+                      - street
+                      - city
+                      - postcode
+                      - country
+                  company:
+                    type: object
+                    nullable: true
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      apiName:
+                        type: string
+                    required:
+                      - id
+                required:
+                  - id
+                  - companyId
+    put:
+      summary: Update customer
+      description: Update an existing customer
+      tags:
+        - Customers
+      parameters:
+        - schema:
+            type: string
+            format: uuid
+          required: true
+          name: id
+          in: path
+      requestBody:
+        content:
+          application/json:
+            schema:
+              anyOf:
+                - type: object
+                  properties:
+                    user:
+                      type: object
+                      properties:
+                        firstName:
+                          type: string
+                          minLength: 1
+                          maxLength: 50
+                        lastName:
+                          type: string
+                          minLength: 1
+                          maxLength: 50
+                        email:
+                          type: string
+                          format: email
+                        phone:
+                          type: string
+                          minLength: 7
+                          maxLength: 20
+                      additionalProperties: false
+                    shippingAddress:
+                      type: object
+                      properties:
+                        street:
+                          type: string
+                          minLength: 1
+                        street2:
+                          type: string
+                          nullable: true
+                        city:
+                          type: string
+                          minLength: 1
+                        state:
+                          type: string
+                          nullable: true
+                        postcode:
+                          type: string
+                          minLength: 1
+                        country:
+                          type: string
+                          minLength: 1
+                      additionalProperties: false
+                    billingAddress:
+                      type: object
+                      properties:
+                        street:
+                          type: string
+                          minLength: 1
+                        street2:
+                          type: string
+                          nullable: true
+                        city:
+                          type: string
+                          minLength: 1
+                        state:
+                          type: string
+                          nullable: true
+                        postcode:
+                          type: string
+                          minLength: 1
+                        country:
+                          type: string
+                          minLength: 1
+                      additionalProperties: false
+                    isActive:
+                      type: boolean
+                    notes:
+                      type: string
+                      maxLength: 1000
+                  additionalProperties: false
+                - type: object
+                  properties:
+                    firstName:
+                      type: string
+                      minLength: 1
+                      maxLength: 50
+                    lastName:
+                      type: string
+                      minLength: 1
+                      maxLength: 50
+                    email:
+                      type: string
+                      format: email
+                    phone:
+                      type: string
+                      minLength: 7
+                      maxLength: 20
+                    isActive:
+                      type: boolean
+                    notes:
+                      type: string
+                      maxLength: 1000
+                  additionalProperties: false
+      responses:
+        "200":
+          description: Customer updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  companyId:
+                    type: string
+                    format: uuid
+                  userId:
+                    type: string
+                    nullable: true
+                    format: uuid
+                  billingAddressId:
+                    type: string
+                    nullable: true
+                    format: uuid
+                  shippingAddressId:
+                    type: string
+                    nullable: true
+                    format: uuid
+                  createdAt:
+                    type: string
+                    nullable: true
+                  updatedAt:
+                    type: string
+                    nullable: true
+                  user:
+                    type: object
+                    nullable: true
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      firstName:
+                        type: string
+                        nullable: true
+                      lastName:
+                        type: string
+                        nullable: true
+                      email:
+                        type: string
+                        nullable: true
+                        format: email
+                      phone:
+                        type: string
+                        nullable: true
+                      role:
+                        type: string
+                      recordImage:
+                        type: string
+                        nullable: true
+                      status:
+                        type: string
+                      createdAt:
+                        type: string
+                        nullable: true
+                      updatedAt:
+                        type: string
+                        nullable: true
+                    required:
+                      - id
+                      - firstName
+                      - lastName
+                      - email
+                      - phone
+                      - role
+                      - status
+                  billingAddress:
+                    type: object
+                    nullable: true
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      street:
+                        type: string
+                      street2:
+                        type: string
+                        nullable: true
+                      city:
+                        type: string
+                      postcode:
+                        type: string
+                      state:
+                        type: string
+                        nullable: true
+                      country:
+                        type: string
+                      type:
+                        type: string
+                        enum: *a1
+                    required:
+                      - street
+                      - city
+                      - postcode
+                      - country
+                  shippingAddress:
+                    type: object
+                    nullable: true
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      street:
+                        type: string
+                      street2:
+                        type: string
+                        nullable: true
+                      city:
+                        type: string
+                      postcode:
+                        type: string
+                      state:
+                        type: string
+                        nullable: true
+                      country:
+                        type: string
+                      type:
+                        type: string
+                        enum: *a1
+                    required:
+                      - street
+                      - city
+                      - postcode
+                      - country
+                  company:
+                    type: object
+                    nullable: true
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      apiName:
+                        type: string
+                    required:
+                      - id
+                required:
+                  - id
+                  - companyId
+    delete:
+      summary: Delete customer
+      description: Delete a customer
+      tags:
+        - Customers
+      parameters:
+        - schema:
+            type: string
+            format: uuid
+          required: true
+          name: id
+          in: path
+      responses:
+        "200":
+          description: Customer deleted
+  /business/suppliers:
+    get:
+      summary: List suppliers
+      description: Paginated list of suppliers for the authenticated company
+      tags:
+        - Suppliers
+      responses:
+        "200":
+          description: Paginated supplier list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  suppliers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        companyId:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                        email:
+                          type: string
+                          nullable: true
+                        phone:
+                          type: string
+                          nullable: true
+                        category:
+                          type: string
+                        status:
+                          type: string
+                        notes:
+                          type: string
+                          nullable: true
+                        createdAt:
+                          type: string
+                          nullable: true
+                        updatedAt:
+                          type: string
+                          nullable: true
+                      required:
+                        - id
+                        - companyId
+                        - name
+                  pagination:
+                    type: object
+                    properties:
+                      page:
+                        type: number
+                      limit:
+                        type: number
+                      total:
+                        type: number
+                      totalPages:
+                        type: number
+                    required:
+                      - page
+                      - limit
+                      - total
+                      - totalPages
+                required:
+                  - suppliers
+                  - pagination
+    post:
+      summary: Create supplier
+      description: Create a new supplier for the authenticated company
+      tags:
+        - Suppliers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                  maxLength: 100
+                email:
+                  type: string
+                  format: email
+                phone:
+                  type: string
+                  minLength: 7
+                  maxLength: 20
+                category:
+                  type: string
+                  enum: *a3
+                  default: OTHER
+                address:
+                  type: object
+                  properties:
+                    street:
+                      type: string
+                      minLength: 1
+                    city:
+                      type: string
+                      minLength: 1
+                    state:
+                      type: string
+                    zipCode:
+                      type: string
+                      minLength: 1
+                    country:
+                      type: string
+                      minLength: 1
+                  required:
+                    - street
+                    - city
+                    - zipCode
+                    - country
+                notes:
+                  type: string
+                  maxLength: 1000
+              required:
+                - name
+                - email
+      responses:
+        "201":
+          description: Supplier created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  companyId:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  email:
+                    type: string
+                    nullable: true
+                  phone:
+                    type: string
+                    nullable: true
+                  category:
+                    type: string
+                  status:
+                    type: string
+                  notes:
+                    type: string
+                    nullable: true
+                  createdAt:
+                    type: string
+                    nullable: true
+                  updatedAt:
+                    type: string
+                    nullable: true
+                required:
+                  - id
+                  - companyId
+                  - name
+  /business/suppliers/{id}:
+    get:
+      summary: Get supplier by ID
+      description: Returns a single supplier by ID
+      tags:
+        - Suppliers
+      parameters:
+        - schema:
+            type: string
+            format: uuid
+          required: true
+          name: id
+          in: path
+      responses:
+        "200":
+          description: Supplier details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  companyId:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  email:
+                    type: string
+                    nullable: true
+                  phone:
+                    type: string
+                    nullable: true
+                  category:
+                    type: string
+                  status:
+                    type: string
+                  notes:
+                    type: string
+                    nullable: true
+                  createdAt:
+                    type: string
+                    nullable: true
+                  updatedAt:
+                    type: string
+                    nullable: true
+                required:
+                  - id
+                  - companyId
+                  - name
+    put:
+      summary: Update supplier
+      description: Update an existing supplier
+      tags:
+        - Suppliers
+      parameters:
+        - schema:
+            type: string
+            format: uuid
+          required: true
+          name: id
+          in: path
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                  maxLength: 100
+                email:
+                  type: string
+                  format: email
+                phone:
+                  type: string
+                  minLength: 7
+                  maxLength: 20
+                category:
+                  type: string
+                  enum: *a4
+                status:
+                  type: string
+                  enum: *a5
+                notes:
+                  type: string
+                  maxLength: 1000
+      responses:
+        "200":
+          description: Supplier updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  companyId:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  email:
+                    type: string
+                    nullable: true
+                  phone:
+                    type: string
+                    nullable: true
+                  category:
+                    type: string
+                  status:
+                    type: string
+                  notes:
+                    type: string
+                    nullable: true
+                  createdAt:
+                    type: string
+                    nullable: true
+                  updatedAt:
+                    type: string
+                    nullable: true
+                required:
+                  - id
+                  - companyId
+                  - name
