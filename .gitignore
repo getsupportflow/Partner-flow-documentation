@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+
+# Docusaurus build output
+build/
+.docusaurus/
+
+# Generated API reference — regenerated at deploy time from openapi.yaml
+docs/api/
+
+# Misc
+.DS_Store
+.env
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

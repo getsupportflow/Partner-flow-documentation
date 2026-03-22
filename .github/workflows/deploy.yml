@@ -1,0 +1,65 @@
+# Build the Docusaurus site and deploy to GitHub Pages.
+# Triggered automatically when openapi-sdk.yml in the main app repo pushes
+# an updated openapi.yaml (and regenerated docs/api/ MDX), or when any
+# documentation file is edited directly in this repo.
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  # Allow manual re-deploy from the Actions tab
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only one deployment runs at a time; a new push cancels any in-progress build.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install dependencies
+        # --ignore-scripts prevents the broken postman-code-generators
+        # deepinstall script from failing the job.
+        run: npm ci --ignore-scripts
+
+      - name: Generate API reference MDX
+        # Reads openapi.yaml and writes docs/api/ — this folder is gitignored
+        # and regenerated fresh on every deploy.
+        run: npm run gen-api-docs
+
+      - name: Build Docusaurus site
+        run: npm run build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

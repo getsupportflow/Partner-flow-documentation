@@ -1,0 +1,87 @@
+---
+title: Service Records
+description: Create, manage, assign, and track service records through the PartnerFlow workflow.
+sidebar_position: 1
+---
+
+# Service Records
+
+Service records are the backbone of PartnerFlow. Each record represents a single case — a specific customer's product or item moving through a service flow. All stages, documentation, communications, assigned parts, and accounting for that case are tracked in one place.
+
+## How Service Records Are Created
+
+Service records can be generated in two ways:
+
+### Manual Creation
+
+A service creator or provider manually inputs the relevant details:
+
+1. Navigate to the relevant service in your dashboard
+2. Click **New Record**
+3. Fill in the required fields (customer details, service item, initial data)
+4. Save — the record is created at the first stage
+
+### Automated Creation via Integration
+
+Records can be triggered automatically from external systems:
+
+- **CRM integration** — a new case in your CRM creates a corresponding service record in PartnerFlow
+- **Customer portal form** — a customer submits a form and the system creates the record automatically
+- **API call** — your system sends a request to the PartnerFlow API to create the record programmatically
+
+Automated creation removes manual data entry and ensures records are opened the moment a customer need is identified.
+
+## Progressing a Service Record
+
+Once a record is open:
+
+1. The current stage is displayed prominently
+2. Available transitions appear based on Before conditions being met
+3. Click a transition to advance — you may be prompted to fill in During requirements first
+4. The record moves to the next stage and After automations fire automatically
+
+All stage movements are logged with a timestamp and the user who triggered them.
+
+## Sharing Service Records with Providers
+
+Service records can be assigned to service provider partners:
+
+### Manual Assignment
+
+The service creator selects the provider from the record view:
+
+1. Open the service record
+2. Click **Assign Provider**
+3. Select from your connected partner organisations
+4. Save — the provider receives a notification
+
+### Automated Assignment via Service Builder
+
+The system can automatically select the most suitable provider based on criteria configured in the service flow:
+
+- Specialisation or expertise
+- Current capacity and workload
+- Geographic proximity to the customer or service location
+
+Automated assignment reduces delays and ensures the best-fit provider always gets the case.
+
+## What Providers See
+
+Once assigned, the service provider can access everything needed to carry out the service:
+
+- All stage and transition information
+- Custom fields and their current values
+- Attached documentation and guides
+- Inventory associated with the case
+- Communication history with the customer
+
+The manufacturer retains full visibility of progress throughout.
+
+## Benefits
+
+| Benefit | Detail |
+|---|---|
+| **Centralisation** | All service data, documents, communications, parts, and billing in one accessible record |
+| **Efficiency** | Automated creation and assignment reduce manual work and errors |
+| **Transparency** | Creators and providers share the same view — clear accountability at every stage |
+| **Flexibility** | Dynamic assignment criteria route cases to the best-suited provider automatically |

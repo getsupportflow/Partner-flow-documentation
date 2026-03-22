@@ -1,0 +1,8 @@
+{
+  "label": "Integrations",
+  "position": 5,
+  "link": {
+    "type": "generated-index",
+    "description": "Connect PartnerFlow to your existing tools — email, logistics, CRM, and more."
+  }
+}

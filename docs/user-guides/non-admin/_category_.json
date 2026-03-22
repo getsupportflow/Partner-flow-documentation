@@ -1,0 +1,8 @@
+{
+  "label": "Service Provider Guides",
+  "position": 2,
+  "link": {
+    "type": "generated-index",
+    "description": "Guides for service providers executing services — accounting, inventory, and service records."
+  }
+}
