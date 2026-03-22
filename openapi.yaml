@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: partner-flow V3 API
+  title: WarrantyFlow V3 API
   version: 3.0.0
   description: Versioned API for warranty and service management. Use API key or session auth.
 servers:
@@ -16665,7 +16665,7 @@ components:
       description: Stripe webhook handler response
   parameters: {}
 paths:
-  /business/customers:
+  /customers:
     get:
       summary: List customers
       description: Paginated list of customers for the authenticated company
@@ -17099,7 +17099,7 @@ paths:
                 required:
                   - id
                   - companyId
-  /business/customers/{id}:
+  /customers/{id}:
     get:
       summary: Get customer by ID
       description: Returns a single customer by ID
@@ -17528,7 +17528,7 @@ paths:
       responses:
         "200":
           description: Customer deleted
-  /business/customers/export:
+  /customers/export:
     get:
       summary: Export customers
       description: Export customer list (e.g. CSV)
@@ -17537,7 +17537,7 @@ paths:
       responses:
         "200":
           description: Export file or data
-  /business/customers/import:
+  /customers/import:
     post:
       summary: Import customers from CSV
       description: Bulk import customers from a CSV file. Requires ADMIN role. Accepts multipart/form-data with a CSV file and a JSON header mapping.
@@ -17606,7 +17606,7 @@ paths:
           description: Unauthorized
         "403":
           description: Only administrators can import customers
-  /business/customers/import-template:
+  /customers/import-template:
     get:
       summary: Download customer import CSV template
       description: Download a CSV template with headers and example rows for bulk customer import. Requires ADMIN role.
@@ -17624,7 +17624,7 @@ paths:
           description: Unauthorized
         "403":
           description: Only administrators can download templates
-  /business/suppliers:
+  /suppliers:
     get:
       summary: List suppliers
       description: Paginated list of suppliers for the authenticated company
@@ -17786,7 +17786,7 @@ paths:
                   - id
                   - companyId
                   - name
-  /business/suppliers/{id}:
+  /suppliers/{id}:
     get:
       summary: Get supplier by ID
       description: Returns a single supplier by ID
@@ -17915,7 +17915,7 @@ paths:
                   - id
                   - companyId
                   - name
-  /business/suppliers/search:
+  /suppliers/search:
     get:
       summary: Search suppliers
       description: Search suppliers by query
@@ -17996,7 +17996,7 @@ paths:
                 required:
                   - suppliers
                   - pagination
-  /business/suppliers/statistics:
+  /suppliers/statistics:
     get:
       summary: Supplier statistics
       description: Aggregated supplier statistics for the company
@@ -18005,7 +18005,7 @@ paths:
       responses:
         "200":
           description: Statistics object
-  /business/suppliers/by-status:
+  /suppliers/by-status:
     get:
       summary: List suppliers by status
       description: Suppliers filtered by status
@@ -18080,7 +18080,7 @@ paths:
                 required:
                   - suppliers
                   - pagination
-  /business/suppliers/by-category:
+  /suppliers/by-category:
     get:
       summary: List suppliers by category
       description: Suppliers filtered by category
@@ -18155,7 +18155,7 @@ paths:
                 required:
                   - suppliers
                   - pagination
-  /business/suppliers/activity-summary:
+  /suppliers/activity-summary:
     get:
       summary: Supplier activity summary
       description: Returns aggregated supplier activity metrics (new suppliers, products, orders, growth rate) for a configurable number of past days.
@@ -18198,7 +18198,7 @@ paths:
                   - suppliersWithNewOrders
                   - growthRate
                 description: Aggregated supplier activity metrics for a given time window.
-  /business/suppliers/bulk-update:
+  /suppliers/bulk-update:
     post:
       summary: Bulk update suppliers
       description: Apply the same update payload to multiple suppliers identified by their IDs.
@@ -18259,7 +18259,7 @@ paths:
                 required:
                   - updatedCount
                 description: Result of a bulk supplier update operation.
-  /business/suppliers/export:
+  /suppliers/export:
     post:
       summary: Export supplier data
       description: Export supplier records with aggregated product and order counts. An optional date range can be provided to filter by creation date.
@@ -18332,7 +18332,7 @@ paths:
                     - updatedAt
                   description: Single row of exported supplier data with aggregated order and product counts.
                 description: Array of supplier export rows.
-  /business/suppliers/{id}/products:
+  /suppliers/{id}/products:
     get:
       summary: List products by supplier
       description: Returns a paginated list of products associated with the specified supplier.
@@ -18438,7 +18438,7 @@ paths:
                   - data
                   - pagination
                 description: Paginated list of products belonging to a specific supplier.
-  /business/suppliers/performance-metrics:
+  /suppliers/performance-metrics:
     get:
       summary: Supplier performance metrics
       description: Retrieve performance metrics for all suppliers including order counts, product counts, average order values, and performance scores.
@@ -18528,7 +18528,7 @@ paths:
                 description: Aggregated supplier performance metrics for a company.
         "401":
           description: Unauthorized
-  /business/billing/transactions:
+  /billing/transactions:
     get:
       summary: List transactions
       description: Paginated list of billing transactions (estimates/invoices) for the company
@@ -18665,7 +18665,7 @@ paths:
                   - data
                   - pagination
                 description: Standard paginated response wrapper for billing transactions.
-  /business/billing/transactions/by-service-record:
+  /billing/transactions/by-service-record:
     get:
       summary: Get transaction by service record
       description: Return the billing transaction associated with a given service record, if one exists for the authenticated company.
@@ -18753,7 +18753,7 @@ paths:
                   - vatAmount
                   - vatRate
                 description: Normalized representation of a billing transaction including core financial amounts, status and recipient information.
-  /business/billing/estimates:
+  /billing/estimates:
     post:
       summary: Create estimate
       description: Create a new estimate
@@ -19107,7 +19107,7 @@ paths:
                   - data
                   - pagination
                 description: Standard paginated response wrapper for billing transactions.
-  /business/billing/invoices:
+  /billing/invoices:
     post:
       summary: Create invoice
       description: Create a new invoice
@@ -19471,7 +19471,7 @@ paths:
                   - data
                   - pagination
                 description: Standard paginated response wrapper for billing transactions.
-  /business/billing/transactions/{id}:
+  /billing/transactions/{id}:
     get:
       summary: Get transaction by ID
       description: Returns a single transaction (estimate or invoice) by ID
@@ -19669,7 +19669,7 @@ paths:
                   - vatAmount
                   - vatRate
                 description: Normalized representation of a billing transaction including core financial amounts, status and recipient information.
-  /business/billing/transactions/{id}/status:
+  /billing/transactions/{id}/status:
     patch:
       summary: Update transaction status
       description: Update the status of a billing transaction (e.g. approve, decline or cancel) and optionally capture approval metadata.
@@ -19787,7 +19787,7 @@ paths:
                   - vatAmount
                   - vatRate
                 description: Normalized representation of a billing transaction including core financial amounts, status and recipient information.
-  /business/billing/transactions/{id}/payments:
+  /billing/transactions/{id}/payments:
     get:
       summary: List transaction payments
       description: List payments that have been recorded against a given billing transaction.
@@ -19855,7 +19855,7 @@ paths:
                 required:
                   - data
                 description: Non‑paginated list response containing payments associated with a billing document.
-  /business/billing/transactions/{id}/approve:
+  /billing/transactions/{id}/approve:
     post:
       summary: Approve transaction (customer portal)
       description: Customer portal endpoint that allows the recipient to approve a billing transaction, optionally selecting logistics options.
@@ -19961,7 +19961,7 @@ paths:
                   - vatAmount
                   - vatRate
                 description: Normalized representation of a billing transaction including core financial amounts, status and recipient information.
-  /business/billing/transactions/{id}/decline:
+  /billing/transactions/{id}/decline:
     post:
       summary: Decline transaction (customer portal)
       description: Customer portal endpoint that allows the recipient to decline a billing transaction and optionally provide a reason.
@@ -20056,7 +20056,7 @@ paths:
                   - vatAmount
                   - vatRate
                 description: Normalized representation of a billing transaction including core financial amounts, status and recipient information.
-  /business/billing/transactions/{id}/reopen:
+  /billing/transactions/{id}/reopen:
     post:
       summary: Reopen transaction (customer portal)
       description: Customer portal endpoint that allows the recipient to reopen a previously declined or cancelled transaction.
@@ -20141,7 +20141,7 @@ paths:
                   - vatAmount
                   - vatRate
                 description: Normalized representation of a billing transaction including core financial amounts, status and recipient information.
-  /business/billing/invoices/upcoming-due:
+  /billing/invoices/upcoming-due:
     get:
       summary: List upcoming‑due invoices
       description: List invoices for the authenticated company that are due within the next N days (7 days by default) and not yet paid.
@@ -20231,7 +20231,7 @@ paths:
                     - vatAmount
                     - vatRate
                   description: Normalized representation of a billing transaction including core financial amounts, status and recipient information.
-  /business/billing/invoices/search:
+  /billing/invoices/search:
     post:
       summary: Search invoices
       description: Search invoices issued by the authenticated company using structured filters (status, recipient, service, date/amount ranges, payments, overdue) with pagination.
@@ -20404,7 +20404,7 @@ paths:
                   - data
                   - pagination
                 description: Standard paginated response wrapper for billing transactions.
-  /business/billing/invoices/by-status:
+  /billing/invoices/by-status:
     get:
       summary: List invoices by status
       description: List invoices issued by the authenticated company that match a specific status.
@@ -20492,7 +20492,7 @@ paths:
                     - vatAmount
                     - vatRate
                   description: Normalized representation of a billing transaction including core financial amounts, status and recipient information.
-  /business/billing/invoices/by-service:
+  /billing/invoices/by-service:
     get:
       summary: List invoices by service
       description: List invoices associated with a particular service.
@@ -20581,7 +20581,7 @@ paths:
                     - vatAmount
                     - vatRate
                   description: Normalized representation of a billing transaction including core financial amounts, status and recipient information.
-  /business/billing/invoices/by-reference:
+  /billing/invoices/by-reference:
     get:
       summary: Get invoice by reference number
       description: Retrieve a single invoice for the authenticated company using its human‑readable reference number. Returns null when no invoice matches.
@@ -20669,7 +20669,7 @@ paths:
                   - vatAmount
                   - vatRate
                 description: Normalized representation of a billing transaction including core financial amounts, status and recipient information.
-  /business/billing/invoices/by-recipient:
+  /billing/invoices/by-recipient:
     get:
       summary: List invoices by recipient
       description: List invoices for a specific recipient (customer or company).
@@ -20768,7 +20768,7 @@ paths:
                     - vatAmount
                     - vatRate
                   description: Normalized representation of a billing transaction including core financial amounts, status and recipient information.
-  /business/billing/invoices/overdue:
+  /billing/invoices/overdue:
     get:
       summary: List overdue invoices
       description: List invoices issued by the authenticated company that are currently overdue (unpaid and past their due date).
@@ -20848,7 +20848,7 @@ paths:
                     - vatAmount
                     - vatRate
                   description: Normalized representation of a billing transaction including core financial amounts, status and recipient information.
-  /business/billing/invoices/export:
+  /billing/invoices/export:
     post:
       summary: Export invoice data
       description: Export invoice data for the authenticated company, optionally filtered by status, recipient or service. Returns a list of invoices with line items, service, issuer and payments.
@@ -20950,7 +20950,7 @@ paths:
                     - vatAmount
                     - vatRate
                   description: Normalized representation of a billing transaction including core financial amounts, status and recipient information.
-  /business/billing/invoices/email:
+  /billing/invoices/email:
     post:
       summary: Send invoice by email
       description: Send an invoice by email to a specified recipient address, with an optional custom message.
@@ -20993,7 +20993,7 @@ paths:
                       nullable: true
                 required:
                   - success
-  /business/billing/invoices/download/{id}:
+  /billing/invoices/download/{id}:
     get:
       summary: Download invoice PDF
       description: Generate and download the invoice as a PDF file. Returns the PDF binary with Content-Disposition attachment.
@@ -21018,7 +21018,7 @@ paths:
           description: Invalid invoice or download failed.
         "404":
           description: Invoice not found.
-  /business/billing/invoices/bulk-update-status:
+  /billing/invoices/bulk-update-status:
     post:
       summary: Bulk update invoice status
       description: Update the status of multiple invoices in a single request.
@@ -21067,7 +21067,7 @@ paths:
                 required:
                   - success
                   - data
-  /business/billing/invoices/{id}/status:
+  /billing/invoices/{id}/status:
     patch:
       summary: Update invoice status
       description: Update the status of a single invoice.
@@ -21165,7 +21165,7 @@ paths:
                   - vatAmount
                   - vatRate
                 description: Normalized representation of a billing transaction including core financial amounts, status and recipient information.
-  /business/billing/invoices/{id}/statistics:
+  /billing/invoices/{id}/statistics:
     get:
       summary: Get invoice statistics
       description: Return aggregated payment statistics for a single invoice (totals, counts, last payment date).
@@ -21209,7 +21209,7 @@ paths:
                   - paymentCount
                   - lastPaymentDate
                 description: Aggregated payment statistics for a single invoice.
-  /business/billing/invoices/{id}/solution-sources:
+  /billing/invoices/{id}/solution-sources:
     get:
       summary: Get invoice solution sources
       description: Return the solutions and linked service records that are associated with this invoice (e.g. for line items).
@@ -21265,7 +21265,7 @@ paths:
                     - solutionId
                     - serviceRecords
                 description: Map of solution IDs to solution and service record data linked to this invoice.
-  /business/billing/invoices/{id}/soft-delete:
+  /billing/invoices/{id}/soft-delete:
     post:
       summary: Soft delete invoice
       description: Soft delete an invoice so it is no longer active but remains in the system.
@@ -21350,7 +21350,7 @@ paths:
                   - vatAmount
                   - vatRate
                 description: Normalized representation of a billing transaction including core financial amounts, status and recipient information.
-  /business/billing/invoices/{id}/create-payment-intent:
+  /billing/invoices/{id}/create-payment-intent:
     post:
       summary: Create payment intent for invoice
       description: Create a Stripe payment intent for the invoice using the company's connected Stripe account (Stripe Connect). Returns clientSecret and publishableKey for Stripe Elements. Always returns HTTP 200; when success is false (e.g. STRIPE_NOT_CONNECTED), the client may fall back to bank transfer.
@@ -21391,7 +21391,7 @@ paths:
                 required:
                   - success
                 description: Envelope for create-payment-intent, confirm-payment, and bank-transfer-payment responses.
-  /business/billing/invoices/{id}/confirm-payment:
+  /billing/invoices/{id}/confirm-payment:
     post:
       summary: Confirm invoice payment
       description: Confirm an invoice payment after the client has completed Stripe payment (e.g. via Stripe Elements). Requires the payment intent ID returned from create-payment-intent.
@@ -21447,7 +21447,7 @@ paths:
                 description: Envelope for create-payment-intent, confirm-payment, and bank-transfer-payment responses.
         "400":
           description: Missing paymentIntentId or confirmation failed.
-  /business/billing/invoices/{id}/bank-transfer-payment:
+  /billing/invoices/{id}/bank-transfer-payment:
     post:
       summary: Create bank transfer payment for invoice
       description: Create a bank transfer payment record for the invoice when Stripe is not connected. Returns payment instructions for the customer. Used as fallback after create-payment-intent returns success false.
@@ -21490,7 +21490,7 @@ paths:
                 description: Envelope for create-payment-intent, confirm-payment, and bank-transfer-payment responses.
         "400":
           description: Invoice not found or bank transfer creation failed.
-  /business/billing/estimates/{id}:
+  /billing/estimates/{id}:
     get:
       summary: Get estimate by ID (legacy)
       description: Return a single legacy estimate by ID. Estimates are deprecated; callers should prefer transactions for new flows.
@@ -21575,7 +21575,7 @@ paths:
                   - vatAmount
                   - vatRate
                 description: Normalized representation of a billing transaction including core financial amounts, status and recipient information.
-  /business/billing/invoices/{id}:
+  /billing/invoices/{id}:
     get:
       summary: Get invoice by ID
       description: Return a single invoice by ID with related entities (service, issuer company, line items).
@@ -21660,7 +21660,7 @@ paths:
                   - vatAmount
                   - vatRate
                 description: Normalized representation of a billing transaction including core financial amounts, status and recipient information.
-  /business/billing/invoices/{id}/payments:
+  /billing/invoices/{id}/payments:
     get:
       summary: List invoice payments
       description: List payments that have been recorded against a given invoice.
@@ -21728,7 +21728,7 @@ paths:
                 required:
                   - data
                 description: Non‑paginated list response containing payments associated with a billing document.
-  /business/billing/stats:
+  /billing/stats:
     get:
       summary: Get billing statistics
       description: Aggregate billing statistics for transactions, invoices or purchase orders over an optional time range.
@@ -21798,7 +21798,7 @@ paths:
                 description: Aggregated statistics for billing documents of a particular type and filter set.
         "400":
           description: Missing or invalid type parameter.
-  /business/billing/invoices/performance-metrics:
+  /billing/invoices/performance-metrics:
     get:
       summary: Get invoice performance metrics
       description: Return invoice performance metrics (counts, totals and collection rate) for the last N days (30 by default).
@@ -21852,7 +21852,7 @@ paths:
                   - overdueInvoices
                   - collectionRate
                 description: High‑level invoice performance metrics for the company over a configurable period.
-  /business/billing/invoices/activity-summary:
+  /billing/invoices/activity-summary:
     get:
       summary: Get invoice activity summary
       description: Return a high‑level summary of invoice activity (status counts and rates) for the last N days (30 by default).
@@ -21910,7 +21910,7 @@ paths:
                   - paidRate
                   - overdueRate
                 description: Summary of invoice activity (counts and rates) for the company over a configurable period.
-  /business/billing/aggregated-solutions-preview:
+  /billing/aggregated-solutions-preview:
     post:
       summary: Preview aggregated solutions from service records
       description: Aggregate solution line items from multiple service records for a given service, returning a preview suitable for invoice creation.
@@ -21959,7 +21959,7 @@ paths:
                   - data
         "400":
           description: Missing or invalid serviceRecordIds or serviceId.
-  /business/billing/commission:
+  /billing/commission:
     get:
       summary: Get commission data for a service record
       description: Return commission/billing data associated with a specific service record, used for partner billing calculations.
@@ -21996,7 +21996,7 @@ paths:
                   - data
         "400":
           description: Missing serviceRecordId query parameter.
-  /business/billing/documents/by-recipient:
+  /billing/documents/by-recipient:
     get:
       summary: List billing documents by recipient
       description: List all billing documents (estimates and invoices) for a specific recipient, with optional status and date range filters.
@@ -22130,7 +22130,7 @@ paths:
                   - data
         "400":
           description: Missing recipientType or recipientId query parameters.
-  /business/billing/documents/by-service:
+  /billing/documents/by-service:
     get:
       summary: List billing documents by service
       description: List all billing documents (estimates and invoices) associated with a particular service, with optional status and date range filters.
@@ -22254,7 +22254,7 @@ paths:
                   - data
         "400":
           description: Missing serviceId query parameter.
-  /business/billing/documents/by-service-record:
+  /billing/documents/by-service-record:
     get:
       summary: List billing documents by service record
       description: List all billing documents (estimates and invoices) associated with a particular service record, with optional status and date range filters.
@@ -22378,7 +22378,7 @@ paths:
                   - data
         "400":
           description: Missing serviceRecordId query parameter.
-  /business/billing/estimate/download/{id}:
+  /billing/estimate/download/{id}:
     get:
       summary: Download estimate PDF
       description: Generate and download the estimate as a PDF file. Returns the PDF binary with Content-Disposition attachment.
@@ -22403,7 +22403,7 @@ paths:
           description: Invalid estimate or download failed.
         "404":
           description: Estimate not found.
-  /business/billing/estimate/email:
+  /billing/estimate/email:
     post:
       summary: Send estimate by email
       description: Send an estimate by email to a specified recipient address, with an optional custom message.
@@ -22446,7 +22446,7 @@ paths:
                       nullable: true
                 required:
                   - success
-  /business/billing/estimates/{id}/approve:
+  /billing/estimates/{id}/approve:
     post:
       summary: Approve estimate (deprecated)
       description: Approve an estimate. This endpoint is deprecated — estimates have been superseded by transactions. Returns HTTP 410.
@@ -22481,7 +22481,7 @@ paths:
                   - success
                   - error
                   - code
-  /business/billing/estimates/{id}/can-convert:
+  /billing/estimates/{id}/can-convert:
     get:
       summary: Check if estimate can convert to invoice
       description: Check whether a given estimate is eligible to be converted into an invoice based on its current status and data completeness.
@@ -22517,7 +22517,7 @@ paths:
                 required:
                   - success
                   - data
-  /business/billing/estimates/{id}/create-new:
+  /billing/estimates/{id}/create-new:
     post:
       summary: Create new estimate from declined
       description: Create a new estimate by cloning a previously declined estimate. The new estimate is created in DRAFT status with data copied from the original.
@@ -22616,7 +22616,7 @@ paths:
                   - data
         "400":
           description: Estimate not found or not in a declined state.
-  /business/billing/estimates/{id}/decline:
+  /billing/estimates/{id}/decline:
     post:
       summary: Decline estimate (deprecated)
       description: Decline an estimate. This endpoint is deprecated — estimates have been superseded by transactions. Returns HTTP 410.
@@ -22651,7 +22651,7 @@ paths:
                   - success
                   - error
                   - code
-  /business/billing/estimates/{id}/invoices:
+  /billing/estimates/{id}/invoices:
     get:
       summary: List invoices created from an estimate
       description: Return all invoices that were created from (converted from) a given estimate.
@@ -22748,7 +22748,7 @@ paths:
                 required:
                   - success
                   - data
-  /business/billing/estimates/{id}/reopen:
+  /billing/estimates/{id}/reopen:
     post:
       summary: Reopen estimate (deprecated)
       description: Reopen a previously declined or cancelled estimate. This endpoint is deprecated — estimates have been superseded by transactions. Returns HTTP 410.
@@ -22783,7 +22783,7 @@ paths:
                   - success
                   - error
                   - code
-  /business/billing/estimates/{id}/soft-delete:
+  /billing/estimates/{id}/soft-delete:
     post:
       summary: Soft delete estimate (deprecated)
       description: Soft delete an estimate so it is no longer active. This endpoint is deprecated — estimates have been superseded by transactions. Returns HTTP 410.
@@ -22818,7 +22818,7 @@ paths:
                   - success
                   - error
                   - code
-  /business/billing/estimates/by-recipient:
+  /billing/estimates/by-recipient:
     get:
       summary: List estimates by recipient
       description: List estimates for a specific recipient (customer or company).
@@ -22929,7 +22929,7 @@ paths:
                   - data
         "400":
           description: Missing recipientType or recipientId query parameters.
-  /business/billing/estimates/by-reference:
+  /billing/estimates/by-reference:
     get:
       summary: Get estimate by reference number
       description: Retrieve a single estimate for the authenticated company using its human-readable reference number. Returns null when no estimate matches.
@@ -23029,7 +23029,7 @@ paths:
                   - data
         "400":
           description: Missing referenceNumber query parameter.
-  /business/billing/estimates/by-service-record:
+  /billing/estimates/by-service-record:
     get:
       summary: List estimates by service record
       description: List estimates associated with a particular service record.
@@ -23130,7 +23130,7 @@ paths:
                   - data
         "400":
           description: Missing serviceRecordId query parameter.
-  /business/billing/issuer-company-id:
+  /billing/issuer-company-id:
     get:
       summary: Get issuer company ID for a service record
       description: Determine the billing issuer company for a given service record. Returns the company ID that should issue invoices.
@@ -23170,7 +23170,7 @@ paths:
                   - data
         "400":
           description: Missing serviceRecordId query parameter.
-  /business/billing/payment-methods:
+  /billing/payment-methods:
     get:
       summary: List payment methods
       description: List all saved payment methods for the authenticated company.
@@ -23305,7 +23305,7 @@ paths:
                 required:
                   - success
                   - data
-  /business/billing/usage:
+  /billing/usage:
     get:
       summary: Get billing usage
       description: Return current billing usage data for the authenticated company, including subscription limits and current consumption.
@@ -23331,7 +23331,7 @@ paths:
                 required:
                   - success
                   - data
-  /business/billing/validate-recipient:
+  /billing/validate-recipient:
     post:
       summary: Validate billing recipient
       description: Validate that a billing recipient (customer or company) exists and is accessible to the authenticated company. Returns recipient details on success.
@@ -23377,7 +23377,7 @@ paths:
                   - data
         "400":
           description: Missing recipientType or recipientId in request body.
-  /business/service:
+  /service:
     get:
       summary: List services
       description: Paginated list of services for the company
@@ -23552,7 +23552,7 @@ paths:
                   - companyId
                   - name
                   - status
-  /business/service/{id}:
+  /service/{id}:
     get:
       summary: Get service by ID
       description: Returns a single service by ID
@@ -23679,7 +23679,7 @@ paths:
                   - companyId
                   - name
                   - status
-  /business/service/active:
+  /service/active:
     get:
       summary: List active services
       description: Services with status ACTIVE
@@ -23775,7 +23775,7 @@ paths:
                 required:
                   - services
                   - pagination
-  /business/service/by-id/{id}:
+  /service/by-id/{id}:
     get:
       summary: Get service by ID (by-id)
       description: Returns a single service by ID (alternative path)
@@ -23826,7 +23826,7 @@ paths:
                   - companyId
                   - name
                   - status
-  /business/service/{id}/activate:
+  /service/{id}/activate:
     post:
       summary: Activate service
       description: Set a service status to ACTIVE
@@ -23857,7 +23857,7 @@ paths:
                     description: Response payload
                 required:
                   - success
-  /business/service/{id}/contracts:
+  /service/{id}/contracts:
     get:
       summary: Get service contracts
       description: Returns contracts associated with the service
@@ -23888,7 +23888,7 @@ paths:
                     description: Response payload
                 required:
                   - success
-  /business/service/{id}/deactivate:
+  /service/{id}/deactivate:
     post:
       summary: Deactivate service
       description: Set a service status to INACTIVE
@@ -23919,7 +23919,7 @@ paths:
                     description: Response payload
                 required:
                   - success
-  /business/service/{id}/invoices:
+  /service/{id}/invoices:
     get:
       summary: Get service invoices
       description: Returns invoices associated with the service
@@ -23950,7 +23950,7 @@ paths:
                     description: Response payload
                 required:
                   - success
-  /business/service/{id}/performance-metrics:
+  /service/{id}/performance-metrics:
     get:
       summary: Get service performance metrics
       description: Returns performance metrics for the service over a configurable time window
@@ -23991,7 +23991,7 @@ paths:
                     description: Response payload
                 required:
                   - success
-  /business/service/{id}/pricing:
+  /service/{id}/pricing:
     patch:
       summary: Update service pricing
       description: Update pricing configuration for a service
@@ -24042,7 +24042,7 @@ paths:
                     description: Response payload
                 required:
                   - success
-  /business/service/{id}/statistics:
+  /service/{id}/statistics:
     get:
       summary: Get service statistics
       description: Returns aggregate statistics for the service (record counts, etc.)
@@ -24073,7 +24073,7 @@ paths:
                     description: Response payload
                 required:
                   - success
-  /business/service/{id}/status:
+  /service/{id}/status:
     patch:
       summary: Update service status
       description: Change the status of a single service (ACTIVE / INACTIVE / PENDING)
@@ -24116,7 +24116,7 @@ paths:
                     description: Response payload
                 required:
                   - success
-  /business/service/activity-summary:
+  /service/activity-summary:
     get:
       summary: Get service activity summary
       description: Returns an activity summary across all services for the company over a configurable number of days
@@ -24151,7 +24151,7 @@ paths:
                     description: Response payload
                 required:
                   - success
-  /business/service/add-system-stage:
+  /service/add-system-stage:
     post:
       summary: Add system stage to service
       description: Create a new system stage node in a service flow
@@ -24200,7 +24200,7 @@ paths:
                     description: Response payload
                 required:
                   - success
-  /business/service/bulk-status:
+  /service/bulk-status:
     post:
       summary: Bulk update service status
       description: Update the status of multiple services at once
@@ -24250,7 +24250,7 @@ paths:
                 required:
                   - success
                   - data
-  /business/service/by-name/{serviceName}:
+  /service/by-name/{serviceName}:
     get:
       summary: Get service by API name
       description: Retrieve a service using its unique API name
@@ -24282,7 +24282,7 @@ paths:
                     description: Response payload
                 required:
                   - success
-  /business/service/by-name/{serviceName}/records/{id}:
+  /service/by-name/{serviceName}/records/{id}:
     delete:
       summary: Delete service record
       description: Delete a specific record from a service identified by API name
@@ -24320,7 +24320,7 @@ paths:
                     description: Response payload
                 required:
                   - success
-  /business/service/by-name/{serviceName}/records/{id}/transition:
+  /service/by-name/{serviceName}/records/{id}/transition:
     post:
       summary: Transition service record
       description: Execute a workflow transition on a service record
@@ -24375,7 +24375,7 @@ paths:
                     description: Response payload
                 required:
                   - success
-  /business/service/by-partner:
+  /service/by-partner:
     get:
       summary: List services by partner
       description: Paginated list of services shared with or owned by a specific partner
@@ -24447,7 +24447,7 @@ paths:
                   - success
                   - data
                   - pagination
-  /business/service/by-partner-service:
+  /service/by-partner-service:
     get:
       summary: Get service by partner and name
       description: Retrieve a single service by partner company API name and service API name
@@ -24486,7 +24486,7 @@ paths:
                     description: Response payload
                 required:
                   - success
-  /business/service/by-type:
+  /service/by-type:
     get:
       summary: List services by type
       description: Returns services filtered by type for the current company
@@ -24518,7 +24518,7 @@ paths:
                     description: Response payload
                 required:
                   - success
-  /business/service/connected-services:
+  /service/connected-services:
     get:
       summary: List connected services
       description: Returns partner companies and their connected services for the given company API name, filtered by connection type (OFFERING or FULFILLMENT)
@@ -24575,7 +24575,7 @@ paths:
                     description: Response payload
                 required:
                   - success
-  /business/service/contract-properties:
+  /service/contract-properties:
     patch:
       summary: Update contract properties
       description: Update contract-related properties for a service identified by company and service API names
@@ -24621,7 +24621,7 @@ paths:
                     description: Response payload
                 required:
                   - success
-  /business/service/delete-version:
+  /service/delete-version:
     post:
       summary: Delete service version
       description: Delete the latest draft version of a service
@@ -24662,7 +24662,7 @@ paths:
                     description: Response payload
                 required:
                   - success
-  /business/service/dropdown:
+  /service/dropdown:
     get:
       summary: Services for dropdown
       description: Returns a lightweight list of services suitable for dropdown / select controls
@@ -24686,7 +24686,7 @@ paths:
                     description: Response payload
                 required:
                   - success
-  /business/service/export:
+  /service/export:
     get:
       summary: Export services (GET)
       description: Export service data with optional query-string filters
@@ -24761,7 +24761,7 @@ paths:
                     description: Response payload
                 required:
                   - success
-  /business/service/link-system-stage:
+  /service/link-system-stage:
     post:
       summary: Link system stage
       description: Link a flow edge to a system stage (transition between two stage nodes)
@@ -24820,7 +24820,7 @@ paths:
                     description: Response payload
                 required:
                   - success
-  /business/service/next-version:
+  /service/next-version:
     get:
       summary: Get next service version number
       description: Returns the next available version number for a service
@@ -24859,7 +24859,7 @@ paths:
                     description: Response payload
                 required:
                   - success
-  /business/service/partners-for-sharing:
+  /service/partners-for-sharing:
     get:
       summary: List partners available for sharing
       description: Returns connected partners that a service can be shared with
@@ -24898,7 +24898,7 @@ paths:
                     description: Response payload
                 required:
                   - success
-  /business/service/popular:
+  /service/popular:
     get:
       summary: List popular services
       description: Returns the most popular services for the company ranked by usage
@@ -24933,7 +24933,7 @@ paths:
                     description: Response payload
                 required:
                   - success
-  /business/service/public:
+  /service/public:
     get:
       summary: Get public service info
       description: Public endpoint (no auth) returning a service with merged fields for the customer portal
@@ -24972,7 +24972,7 @@ paths:
                     description: Response payload
                 required:
                   - success
-  /business/service/remove-share:
+  /service/remove-share:
     post:
       summary: Remove service share
       description: Stop sharing a service with a specific partner
@@ -25018,7 +25018,7 @@ paths:
                     description: Response payload
                 required:
                   - success
-  /business/service/restore:
+  /service/restore:
     post:
       summary: Restore deleted service
       description: Restore a soft-deleted service by its ID
@@ -25054,7 +25054,7 @@ paths:
                     description: Response payload
                 required:
                   - success
-  /business/service/revalidate:
+  /service/revalidate:
     post:
       summary: Revalidate service
       description: Trigger revalidation / cache refresh for a service
@@ -25095,7 +25095,7 @@ paths:
                     description: Response payload
                 required:
                   - success
-  /business/service/search:
+  /service/search:
     get:
       summary: Search services (GET)
       description: Search and filter services with query parameters. Supports text search, type, status, partner, and pagination.
@@ -25289,7 +25289,7 @@ paths:
                   - success
                   - data
                   - pagination
-  /business/service/services-with-customer-records:
+  /service/services-with-customer-records:
     get:
       summary: Services with customer records
       description: Returns services that have records belonging to a specific customer
@@ -25321,7 +25321,7 @@ paths:
                     description: Response payload
                 required:
                   - success
-  /business/service/share-partner:
+  /service/share-partner:
     post:
       summary: Share service with partner
       description: Share a service with a connected partner company
@@ -25367,7 +25367,7 @@ paths:
                     description: Response payload
                 required:
                   - success
-  /business/service/system-stages:
+  /service/system-stages:
     get:
       summary: List system stages
       description: Returns all available system stages, optionally filtered by service properties when serviceId is provided
@@ -25399,7 +25399,7 @@ paths:
                     description: Response payload
                 required:
                   - success
-  /business/service/versions:
+  /service/versions:
     get:
       summary: List service versions
       description: Returns all versions for a service identified by company and service API names
@@ -25483,7 +25483,7 @@ paths:
                     description: Response payload
                 required:
                   - success
-  /business/service-records:
+  /service-records:
     get:
       summary: List service records
       description: Paginated list of service records with optional filters.
@@ -25669,7 +25669,7 @@ paths:
                 additionalProperties:
                   nullable: true
                 description: Flattened service record coming from the EAV model. Includes core fields (id, status, etc.) and dynamic keys for service-specific fields. Shape may vary by service and evolve over time.
-  /business/service-records/{id}:
+  /service-records/{id}:
     get:
       summary: Get service record by ID
       description: Returns a single normalized service record by ID. This is the main detail endpoint for internal apps.
@@ -25724,7 +25724,7 @@ paths:
                   - serviceId
                   - status
                 description: Normalized service-record DTO used by v3 list/detail endpoints.
-  /business/service-records/by-id:
+  /service-records/by-id:
     get:
       summary: Get service record by partner/service/recordId
       description: Fetch a flattened EAV-based service record for a given partnerName, serviceName, and recordId, including customer and assigned company info when available.
@@ -25768,7 +25768,7 @@ paths:
                 description: Flattened service record coming from the EAV model. Includes core fields (id, status, etc.) and dynamic keys for service-specific fields. Shape may vary by service and evolve over time.
         "404":
           description: Service or record not found, or no access
-  /business/service-records/with-related:
+  /service-records/with-related:
     get:
       summary: Get service record with related data
       description: Fetch a service record together with its service definition, customer, documents, shipments, parts, service items, task lists, and timeline activities.
@@ -25812,7 +25812,7 @@ paths:
                 description: Composite payload containing a service record and its related entities, including service definition, customer, documents, shipments, inventory parts, activities, service items, and task lists. Shape is intentionally generic.
         "404":
           description: Service or record not found, or no access
-  /business/service-records/related:
+  /service-records/related:
     get:
       summary: List related service records
       description: Return service-record relationships for a given record and service, based on the ServiceRecordRelationship table or legacy metadata fallback.
@@ -25875,7 +25875,7 @@ paths:
                     - createdAt
                   description: Structured relationship between two service records/services.
                 description: List of related service records for the given record and service.
-  /business/service-records/transition-history:
+  /service-records/transition-history:
     get:
       summary: Get transition history
       description: Return the historical transitions that have been applied to a service record. Currently a placeholder implementation; the shape is stable for future extension.
@@ -25935,7 +25935,7 @@ paths:
                     - userId
                   description: Single transition-history entry for a service record.
                 description: Chronological list of transitions that have been applied to a service record.
-  /business/service-records/available-transitions:
+  /service-records/available-transitions:
     get:
       summary: Get available transitions
       description: Return the set of flow transitions (edges) that can be applied from the record’s current status.
@@ -25971,7 +25971,7 @@ paths:
                     nullable: true
                   description: Transition edge in the service flow graph (id, source, target, and configuration data). Exact shape comes from the service flow definition.
                 description: List of available transitions (flow edges) that can currently be applied to the service record.
-  /business/service-records/transition:
+  /service-records/transition:
     post:
       summary: Process configured transition
       description: Validate and apply a configured transition on a service record, updating its status and dynamic fields and optionally triggering an automation workflow.
@@ -26044,7 +26044,7 @@ paths:
                 description: Result object for a processed service-record transition.
         "400":
           description: Validation error (e.g. missing recordId/transitionId or invalid transition)
-  /business/service-records/update-status:
+  /service-records/update-status:
     post:
       summary: Update record status (flow node)
       description: Low-level helper to update a record status based on a specific flow node and transition configuration. Runs any configured automations and returns the updated flattened record.
@@ -26091,7 +26091,7 @@ paths:
                 additionalProperties:
                   nullable: true
                 description: Flattened service record coming from the EAV model. Includes core fields (id, status, etc.) and dynamic keys for service-specific fields. Shape may vary by service and evolve over time.
-  /business/service-records/trigger-automation:
+  /service-records/trigger-automation:
     post:
       summary: Trigger automation
       description: Trigger a configured automation (integration, webhook, or system action) for a service-record context.
@@ -26125,7 +26125,7 @@ paths:
                 type: object
                 properties: {}
                 description: Empty success payload for automation trigger operations. Clients should rely on HTTP status codes and error responses to detect failures.
-  /business/service-records/service-with-flow:
+  /service-records/service-with-flow:
     get:
       summary: Get service with flow
       description: Return a service definition (id, name, fields, properties) together with its parsed flow (nodes + edges).
@@ -26180,7 +26180,7 @@ paths:
                 description: Service definition together with its parsed flow graph.
         "404":
           description: Service not found or flow invalid
-  /business/service-records/media/upload:
+  /service-records/media/upload:
     post:
       summary: Upload service-record media
       description: Upload one or more media files (photos/videos) for a service record. The HTTP endpoint accepts multipart/form-data with files under the "files" field; this schema documents the non-file fields (serviceName, recordId, fieldApiName).
@@ -26261,7 +26261,7 @@ paths:
                 description: Response body for the service-record media upload endpoint.
         "400":
           description: Validation error (missing files, invalid type/size, or missing metadata)
-  /business/service-records/handle-invoice-paid:
+  /service-records/handle-invoice-paid:
     post:
       summary: Handle invoice paid
       description: Handle system behavior when an invoice associated with a service record has been marked as paid (e.g. update record state, trigger follow-up actions).
@@ -26294,7 +26294,7 @@ paths:
                 required:
                   - ok
                 description: Response body for invoice-paid handling on a service record.
-  /business/service-records/by-customer:
+  /service-records/by-customer:
     get:
       summary: List records by customer
       description: List flattened service records for a given customer across all services that support customer association. The array is already paginated according to page and limit.
@@ -26348,7 +26348,7 @@ paths:
                   additionalProperties:
                     nullable: true
                   description: Flattened service record coming from the EAV model. Includes core fields (id, status, etc.) and dynamic keys for service-specific fields. Shape may vary by service and evolve over time.
-  /business/service-records/by-partner-service:
+  /service-records/by-partner-service:
     get:
       summary: List records by partner and service
       description: List flattened service records for a given partner/service combination, respecting partner-connection authorization.
@@ -26403,7 +26403,7 @@ paths:
                   additionalProperties:
                     nullable: true
                   description: Flattened service record coming from the EAV model. Includes core fields (id, status, etc.) and dynamic keys for service-specific fields. Shape may vary by service and evolve over time.
-  /business/service-records/for-company:
+  /service-records/for-company:
     get:
       summary: List records for company
       description: List flattened service records that are assigned to a given company and visible to the current company (used by invoice flows between partners).
@@ -26430,7 +26430,7 @@ paths:
                   additionalProperties:
                     nullable: true
                   description: Flattened service record coming from the EAV model. Includes core fields (id, status, etc.) and dynamic keys for service-specific fields. Shape may vary by service and evolve over time.
-  /business/service-records/for-customer-service:
+  /service-records/for-customer-service:
     get:
       summary: List records for customer + service
       description: List flattened service records for a specific customer in a specific service, including basic service metadata.
@@ -26465,7 +26465,7 @@ paths:
                   additionalProperties:
                     nullable: true
                   description: Flattened service record coming from the EAV model. Includes core fields (id, status, etc.) and dynamic keys for service-specific fields. Shape may vary by service and evolve over time.
-  /business/service-records/count:
+  /service-records/count:
     get:
       summary: Count service records for company
       description: Return the total number of service records for services belonging to the company with the given API name.
@@ -26495,7 +26495,7 @@ paths:
                 required:
                   - count
                 description: Response body for service-record count endpoints.
-  /business/service-records/{serviceApiName}:
+  /service-records/{serviceApiName}:
     get:
       summary: List records for a service
       description: List flattened service records for a single service identified by its API name, including pagination and a short service summary.
@@ -26633,7 +26633,7 @@ paths:
                 additionalProperties:
                   nullable: true
                 description: Flattened service record coming from the EAV model. Includes core fields (id, status, etc.) and dynamic keys for service-specific fields. Shape may vary by service and evolve over time.
-  /business/service-records/{serviceApiName}/{recordId}:
+  /service-records/{serviceApiName}/{recordId}:
     get:
       summary: Get record by service + ID
       description: Get a single flattened service record by service API name and record ID, together with a summary of the owning service.
@@ -26759,7 +26759,7 @@ paths:
           description: Forbidden (user does not have access to this record)
         "404":
           description: Service or record not found
-  /business/service-records/from-customer-portal:
+  /service-records/from-customer-portal:
     post:
       summary: Create record from customer portal
       description: Create a new service record from the public/customer portal, given a companyApiName, serviceName, and dynamic recordData.
@@ -26803,7 +26803,7 @@ paths:
                 additionalProperties:
                   nullable: true
                 description: Flattened service record coming from the EAV model. Includes core fields (id, status, etc.) and dynamic keys for service-specific fields. Shape may vary by service and evolve over time.
-  /business/service-records/add-inventory-back:
+  /service-records/add-inventory-back:
     post:
       summary: Add inventory back from service record
       description: Add inventory back into stock based on a completed/adjusted service record, including product, quantity, and reason.
@@ -26859,7 +26859,7 @@ paths:
           description: Forbidden (service does not belong to the current company)
         "404":
           description: Service not found
-  /business/service-records/service-items/{serviceRecordServiceItemId}:
+  /service-records/service-items/{serviceRecordServiceItemId}:
     put:
       summary: Update service-record service item
       description: Update custom-field values for a single service-record service item, with authorization checks against the owning service and record.
@@ -26917,7 +26917,7 @@ paths:
           description: Service-record service item removed successfully
         "403":
           description: Forbidden (no access to this service record or item)
-  /business/shipping/shipments:
+  /shipping/shipments:
     get:
       summary: List shipments
       description: Paginated list of shipments for the current company.
@@ -27364,7 +27364,7 @@ paths:
                 description: Shipment DTO as returned by shipping v3 endpoints. Includes core shipment fields plus loosely-typed relational snapshots.
         "400":
           description: Validation error while creating shipment.
-  /business/shipping/shipments/{id}:
+  /shipping/shipments/{id}:
     get:
       summary: Get shipment by ID
       description: Returns a single shipment by ID, including common relations.
@@ -27693,7 +27693,7 @@ paths:
                   - id
                   - status
                 description: Shipment DTO as returned by shipping v3 endpoints. Includes core shipment fields plus loosely-typed relational snapshots.
-  /business/shipping/shipments/{id}/approve:
+  /shipping/shipments/{id}/approve:
     post:
       summary: Approve shipment
       description: Approve a pending shipment, optionally applying customer-provided updates before changing status to APPROVED. May trigger courier integrations (e.g. DPD).
@@ -27928,7 +27928,7 @@ paths:
           description: Validation error or approval not allowed for current status.
         "404":
           description: Shipment not found.
-  /business/shipping/shipments/report:
+  /shipping/shipments/report:
     get:
       summary: Shipment report and statistics
       description: Return high-level shipping KPIs, status counts, and recent shipments for dashboards (last 30 days).
@@ -28425,7 +28425,7 @@ paths:
                   - statusCounts
                   - recentShipments
                 description: Shipment report and statistics for the current company.
-  /business/shipping/sync-shipments-for-transaction:
+  /shipping/sync-shipments-for-transaction:
     post:
       summary: Sync shipments for transaction
       description: Replace existing shipments for a transaction with new collection/delivery shipments created from selected logistics methods.
@@ -28523,7 +28523,7 @@ paths:
                 description: Generic acknowledgement object for a successful sync operation. Currently empty, but reserved for future summary fields.
         "400":
           description: Validation error, missing company context, or permission mismatch between caller and transaction issuer company.
-  /business/shipping/create:
+  /shipping/create:
     post:
       summary: Create shipment (legacy/company)
       description: Legacy shipment creation endpoint used by existing UIs. Accepts detailed logistics payload including line items, dates, and optional manual recipient address.
@@ -28811,7 +28811,7 @@ paths:
                 description: Shipment DTO as returned by shipping v3 endpoints. Includes core shipment fields plus loosely-typed relational snapshots.
         "400":
           description: Validation error or missing company/service context.
-  /business/shipping/customers:
+  /shipping/customers:
     get:
       summary: List customers for shipping
       description: Paginated list of customers for the authenticated company, optimized for selection in shipping flows.
@@ -29016,7 +29016,7 @@ paths:
                   - customers
                   - pagination
                 description: Paginated list of customers for use in shipping flows.
-  /business/shipping/customer-shipments:
+  /shipping/customer-shipments:
     get:
       summary: List shipments for customer
       description: List all shipments that belong to a given customer, including basic status and tracking context.
@@ -29182,7 +29182,7 @@ paths:
                 description: All shipments associated with the specified customer.
         "400":
           description: Missing or invalid customerId.
-  /business/shipping/service-shipments:
+  /shipping/service-shipments:
     get:
       summary: List shipments for service record
       description: List all shipments associated with a given service record for the current company.
@@ -29348,7 +29348,7 @@ paths:
                 description: All shipments associated with the specified service record.
         "400":
           description: Missing or invalid serviceRecordId.
-  /business/shipping/service-records:
+  /shipping/service-records:
     get:
       summary: List service records by customer (shipping)
       description: List service records associated with a customer across services, for use in shipping-related UIs.
@@ -29397,7 +29397,7 @@ paths:
                 description: Service records associated with the specified customer, as used by shipping views.
         "400":
           description: Missing or invalid customerId.
-  /business/shipping/company-addresses:
+  /shipping/company-addresses:
     get:
       summary: List company addresses
       description: Addresses used for shipping
@@ -29406,7 +29406,7 @@ paths:
       responses:
         "200":
           description: List of company addresses
-  /business/shipping/services:
+  /shipping/services:
     get:
       summary: List shipments (advanced filters)
       description: Advanced listing of shipments filtered by status, type, and courierProvider. Historically exposed as "shipping services" in the UI.
@@ -29643,7 +29643,7 @@ paths:
                   - services
                   - pagination
                 description: Advanced shipment listing used by legacy "shipping services" UI components.
-  /business/task-lists:
+  /task-lists:
     get:
       summary: List task lists
       description: List task lists for the company
@@ -29763,7 +29763,7 @@ paths:
                 required:
                   - id
                 description: Task list definition used in workspace views and solution links
-  /business/task-lists/{taskListId}:
+  /task-lists/{taskListId}:
     get:
       summary: Get task list by ID
       description: Returns a single task list by ID
@@ -29818,7 +29818,7 @@ paths:
                 required:
                   - id
                 description: Task list definition used in workspace views and solution links
-  /business/task-lists/{taskListId}/tasks:
+  /task-lists/{taskListId}/tasks:
     get:
       summary: List tasks for a task list
       description: Returns tasks belonging to the given task list
@@ -29893,7 +29893,7 @@ paths:
                 required:
                   - tasks
                 description: Response wrapper for listing tasks inside a specific task list
-  /business/task-lists/for-solution:
+  /task-lists/for-solution:
     get:
       summary: List task lists for a solution
       description: Returns task lists linked to the given solution
@@ -29957,7 +29957,7 @@ paths:
                 required:
                   - taskLists
                 description: Response wrapper for endpoints that return multiple task lists
-  /business/task-lists/tasks/{taskId}:
+  /task-lists/tasks/{taskId}:
     get:
       summary: Get task by ID
       description: Returns a single task by ID
@@ -30023,7 +30023,7 @@ paths:
                   - id
                   - taskListId
                 description: Individual task within a task list
-  /business/task-lists/link-solution:
+  /task-lists/link-solution:
     post:
       summary: Link task list to solution
       description: Links an existing task list to a solution with an optional display order
@@ -30133,7 +30133,7 @@ paths:
           description: Missing required fields (solutionId, taskListId)
         "401":
           description: Unauthorized
-  /business/task-lists/unlink-solution:
+  /task-lists/unlink-solution:
     post:
       summary: Unlink task list from solution
       description: Removes the link between a task list and a solution
@@ -30164,7 +30164,7 @@ paths:
           description: Missing required fields (solutionId, taskListId)
         "401":
           description: Unauthorized
-  /business/workspace/items:
+  /workspace/items:
     get:
       summary: List workspace items
       description: Returns service records currently in progress as workspace board cards. Supports optional filters for location, assigned user, priority level, and completed items.
@@ -30302,7 +30302,7 @@ paths:
                 description: Response wrapper for the workspace items listing endpoint
         "401":
           description: Unauthorized
-  /business/workspace/complete:
+  /workspace/complete:
     post:
       summary: Complete workspace service record
       description: Completes a service record in the workspace and transitions it to the next stage using the specified transition
@@ -30350,7 +30350,7 @@ paths:
           description: Missing required fields (serviceRecordId, serviceId, transitionId)
         "401":
           description: Unauthorized
-  /business/workspace/tasks/for-service-record:
+  /workspace/tasks/for-service-record:
     get:
       summary: Get tasks for a service record
       description: Returns task list assignments and all tasks for a specific service record in the workspace
@@ -30403,7 +30403,7 @@ paths:
           description: Missing required query params (serviceRecordId, serviceId)
         "401":
           description: Unauthorized
-  /business/workspace/tasks/open-count:
+  /workspace/tasks/open-count:
     get:
       summary: Get open task count
       description: Returns the count of open (pending or in-progress) tasks for a given service record
@@ -30445,7 +30445,7 @@ paths:
           description: Missing required query params (serviceRecordId, serviceId)
         "401":
           description: Unauthorized
-  /business/workspace/tasks/{taskId}/start:
+  /workspace/tasks/{taskId}/start:
     post:
       summary: Start a workspace task
       description: Starts time tracking for a workspace task assignment. Creates a time log entry for the authenticated user.
@@ -30470,7 +30470,7 @@ paths:
                 description: Service-record-task assignment with related task, task list, assignee and time log data (shape may evolve).
         "401":
           description: Unauthorized
-  /business/workspace/tasks/{taskId}/complete:
+  /workspace/tasks/{taskId}/complete:
     post:
       summary: Complete a workspace task
       description: Marks a workspace task as completed and stops active time tracking for the authenticated user
@@ -30495,7 +30495,7 @@ paths:
                 description: Service-record-task assignment with related task, task list, assignee and time log data (shape may evolve).
         "401":
           description: Unauthorized
-  /business/workspace/tasks/{taskId}/pause:
+  /workspace/tasks/{taskId}/pause:
     post:
       summary: Pause a workspace task
       description: Pauses active time tracking for a workspace task without completing it
@@ -30528,7 +30528,7 @@ paths:
                 description: Simple success response for workspace task time-tracking actions
         "401":
           description: Unauthorized
-  /business/workspace/tasks/{taskId}/resume:
+  /workspace/tasks/{taskId}/resume:
     post:
       summary: Resume a workspace task
       description: Resumes time tracking for a previously paused workspace task
@@ -30561,7 +30561,7 @@ paths:
                 description: Simple success response for workspace task time-tracking actions
         "401":
           description: Unauthorized
-  /business/workspace/tasks/{taskId}/uncomplete:
+  /workspace/tasks/{taskId}/uncomplete:
     post:
       summary: Uncomplete a workspace task
       description: Reverts a completed workspace task back to in-progress status
@@ -30586,7 +30586,7 @@ paths:
                 description: Service-record-task assignment with related task, task list, assignee and time log data (shape may evolve).
         "401":
           description: Unauthorized
-  /business/workspace/task-lists/{taskListId}/start:
+  /workspace/task-lists/{taskListId}/start:
     post:
       summary: Start a workspace task list
       description: Starts time tracking for a workspace task list assignment. Initializes tracking for all tasks in the list.
@@ -30611,7 +30611,7 @@ paths:
                 description: Service-record-task-list instance with its task assignments and metadata (shape may evolve).
         "401":
           description: Unauthorized
-  /business/workspace/task-lists/{taskListId}/complete:
+  /workspace/task-lists/{taskListId}/complete:
     post:
       summary: Complete a workspace task list
       description: Marks a workspace task list as completed and stops all active time tracking
@@ -30636,7 +30636,7 @@ paths:
                 description: Service-record-task-list instance with its task assignments and metadata (shape may evolve).
         "401":
           description: Unauthorized
-  /business/workspace/task-lists/{taskListId}/pause:
+  /workspace/task-lists/{taskListId}/pause:
     post:
       summary: Pause a workspace task list
       description: Pauses time tracking for a workspace task list without completing it
@@ -30669,7 +30669,7 @@ paths:
                 description: Simple success response for workspace task time-tracking actions
         "401":
           description: Unauthorized
-  /business/workspace/task-lists/{taskListId}/resume:
+  /workspace/task-lists/{taskListId}/resume:
     post:
       summary: Resume a workspace task list
       description: Resumes time tracking for a previously paused workspace task list
@@ -30702,7 +30702,7 @@ paths:
                 description: Simple success response for workspace task time-tracking actions
         "401":
           description: Unauthorized
-  /business/users:
+  /users:
     get:
       summary: List users
       description: Paginated list of users for the company
@@ -30886,7 +30886,7 @@ paths:
                   - id
                   - email
                   - role
-  /business/users/{userId}:
+  /users/{userId}:
     get:
       summary: Get user by ID
       description: Returns a single user by ID
@@ -31022,7 +31022,7 @@ paths:
                   - id
                   - email
                   - role
-  /business/users/profile:
+  /users/profile:
     get:
       summary: Get current user profile
       description: Returns the profile of the currently authenticated user
@@ -31187,7 +31187,7 @@ paths:
                   - role
         "401":
           description: Unauthorized
-  /business/users/profile-image/signed-url:
+  /users/profile-image/signed-url:
     get:
       summary: Get signed URL for profile image
       description: Returns a signed or public URL for accessing a profile image file. Deprecated for public assets — use CloudFront URLs directly.
@@ -31223,7 +31223,7 @@ paths:
           description: Missing key parameter
         "401":
           description: Unauthorized
-  /business/users/profile-image/upload:
+  /users/profile-image/upload:
     post:
       summary: Upload profile image
       description: Upload a user profile image (multipart/form-data). Accepts JPG, PNG, GIF up to 2 MB.
@@ -31279,7 +31279,7 @@ paths:
           description: Invalid file type, size, or missing fields
         "401":
           description: Unauthorized
-  /business/roles:
+  /roles:
     get:
       summary: List roles
       description: List roles with user counts
@@ -31363,7 +31363,7 @@ paths:
                     description: Number of users assigned to this role
                 required:
                   - name
-  /business/roles/default:
+  /roles/default:
     get:
       summary: Get default roles
       description: Returns the list of system-defined default roles
@@ -31407,7 +31407,7 @@ paths:
                   - data
         "401":
           description: Unauthorized
-  /business/roles/{roleId}/permissions:
+  /roles/{roleId}/permissions:
     get:
       summary: Get role permissions
       description: Returns the permission set for a specific role
@@ -31504,7 +31504,7 @@ paths:
           description: Cannot update permissions for default roles
         "401":
           description: Unauthorized
-  /business/roles/{roleId}:
+  /roles/{roleId}:
     put:
       summary: Update role
       description: Update a role's name or description
@@ -31587,7 +31587,7 @@ paths:
           description: Cannot delete default/system roles
         "401":
           description: Unauthorized
-  /business/solutions:
+  /solutions:
     get:
       summary: List solutions
       description: List solutions for the company
@@ -31707,7 +31707,7 @@ paths:
                   - id
                   - companyId
                   - name
-  /business/solutions/{solutionId}:
+  /solutions/{solutionId}:
     get:
       summary: Get solution by ID
       description: Returns a single solution by ID
@@ -31822,7 +31822,7 @@ paths:
                   - id
                   - companyId
                   - name
-  /business/solutions/assign-to-record:
+  /solutions/assign-to-record:
     post:
       summary: Assign solution to service record
       description: Assign a solution to a service record. Deprecated — prefer adding solutions via record-item endpoints.
@@ -31892,7 +31892,7 @@ paths:
                     description: Array of solution objects
                 required:
                   - data
-  /business/solutions/remove-from-record:
+  /solutions/remove-from-record:
     post:
       summary: Remove solution from service record
       description: Remove a solution from a service record. Deprecated — prefer removing solutions via record-item endpoints.
@@ -31962,7 +31962,7 @@ paths:
                     description: Array of solution objects
                 required:
                   - data
-  /business/solutions/for-service-item:
+  /solutions/for-service-item:
     get:
       summary: List solutions for a service item
       description: Returns solutions linked to a specific service item within a service
@@ -32027,7 +32027,7 @@ paths:
                     description: Array of solution objects
                 required:
                   - data
-  /business/solutions/for-service-record:
+  /solutions/for-service-record:
     get:
       summary: List solutions for a service record
       description: Returns solutions assigned to service item instances on the given service record
@@ -32092,7 +32092,7 @@ paths:
                     description: Array of solution objects
                 required:
                   - data
-  /business/solutions/link-service-item:
+  /solutions/link-service-item:
     post:
       summary: Link solution to service item
       description: Create a link between a solution and a service item at the service-definition level
@@ -32153,7 +32153,7 @@ paths:
                   - serviceItemId
                   - solutionId
                   - serviceId
-  /business/solutions/unlink-service-item:
+  /solutions/unlink-service-item:
     post:
       summary: Unlink solution from service item
       description: Remove the link between a solution and a service item at the service-definition level
@@ -32184,7 +32184,7 @@ paths:
       responses:
         "200":
           description: Link removed
-  /business/inventory/products:
+  /inventory/products:
     get:
       summary: List products
       description: Paginated list of products for the authenticated company.
@@ -32424,7 +32424,7 @@ paths:
                   - companyId
                   - name
                 description: Standard product representation returned by inventory endpoints
-  /business/inventory/products/{id}:
+  /inventory/products/{id}:
     get:
       summary: Get product by ID
       description: Returns a single product by ID, including supplier and distributor information.
@@ -32615,7 +32615,7 @@ paths:
                 description: Standard product representation returned by inventory endpoints
         "404":
           description: Product not found.
-  /business/inventory/products/search:
+  /inventory/products/search:
     get:
       summary: Search products
       description: Search products with full-text, status, supplier, category, stock level and price range filters.
@@ -32781,7 +32781,7 @@ paths:
                   - data
                   - pagination
                 description: Paginated product list used by GET /business/inventory/products
-  /business/inventory/products/out-of-stock:
+  /inventory/products/out-of-stock:
     get:
       summary: List out-of-stock products
       description: Returns products that are currently out of stock for the authenticated company.
@@ -32848,7 +32848,7 @@ paths:
                     - companyId
                     - name
                   description: Standard product representation returned by inventory endpoints
-  /business/inventory/products/low-stock:
+  /inventory/products/low-stock:
     get:
       summary: List low-stock products
       description: Returns products that are below their configured minimum stock level.
@@ -32915,7 +32915,7 @@ paths:
                     - companyId
                     - name
                   description: Standard product representation returned by inventory endpoints
-  /business/inventory/products/needing-reorder:
+  /inventory/products/needing-reorder:
     get:
       summary: List products needing reorder
       description: Returns products that have reached their reorder point and should be replenished soon.
@@ -32982,7 +32982,7 @@ paths:
                     - companyId
                     - name
                   description: Standard product representation returned by inventory endpoints
-  /business/inventory/products/by-supplier:
+  /inventory/products/by-supplier:
     get:
       summary: List products by supplier
       description: Paginated list of products supplied by a given supplier.
@@ -33104,7 +33104,7 @@ paths:
                 description: Paginated product list used by GET /business/inventory/products
         "400":
           description: Missing or invalid supplierId.
-  /business/inventory/products/by-status:
+  /inventory/products/by-status:
     get:
       summary: List products by status
       description: List products filtered by publication status (e.g. DRAFT, PUBLISHED, INACTIVE).
@@ -33182,7 +33182,7 @@ paths:
                   description: Standard product representation returned by inventory endpoints
         "400":
           description: Missing or invalid status.
-  /business/inventory/products/by-sku:
+  /inventory/products/by-sku:
     get:
       summary: Get product by SKU
       description: Fetch a single product by its SKU within the authenticated company.
@@ -33260,7 +33260,7 @@ paths:
           description: Missing SKU.
         "404":
           description: No product found for the given SKU.
-  /business/inventory/products/public:
+  /inventory/products/public:
     get:
       summary: Get public product
       description: Public product lookup for the customer portal. Validates the product against a company API name.
@@ -33346,7 +33346,7 @@ paths:
           description: Missing productId or companyApiName.
         "404":
           description: Company or product not found, or mismatch.
-  /business/inventory/products-for-partner:
+  /inventory/products-for-partner:
     get:
       summary: List products for partner
       description: List products that are available for a given partner relationship (e.g. retailer or distributor).
@@ -33424,7 +33424,7 @@ paths:
                   description: Standard product representation returned by inventory endpoints
         "400":
           description: Missing partnerCompanyId.
-  /business/inventory/published-products:
+  /inventory/published-products:
     get:
       summary: List published products
       description: List products that are published for the authenticated company.
@@ -33491,7 +33491,7 @@ paths:
                     - companyId
                     - name
                   description: Standard product representation returned by inventory endpoints
-  /business/inventory/shared-products:
+  /inventory/shared-products:
     get:
       summary: List products shared with partner
       description: List products shared between the authenticated company and a partner company (e.g. distributor‑retailer).
@@ -33569,7 +33569,7 @@ paths:
                   description: Standard product representation returned by inventory endpoints
         "400":
           description: Missing partnerCompanyId.
-  /business/inventory/products/export:
+  /inventory/products/export:
     get:
       summary: Export products
       description: Export product data for reporting or offline analysis. Supports status, supplier and category filters.
@@ -33606,7 +33606,7 @@ paths:
                   type: object
                   additionalProperties:
                     nullable: true
-  /business/inventory/products/import:
+  /inventory/products/import:
     post:
       summary: Import products from CSV
       description: Upload a CSV file of products with a JSON header mapping to create or update products in bulk.
@@ -33640,7 +33640,7 @@ paths:
                   nullable: true
         "400":
           description: Validation error (missing file, invalid mapping, or bad CSV).
-  /business/inventory/products/import-template:
+  /inventory/products/import-template:
     get:
       summary: Download product import template
       description: Return a CSV template with headers and example rows for importing products into inventory.
@@ -33654,7 +33654,7 @@ paths:
               schema:
                 type: string
                 description: CSV document body.
-  /business/inventory/products/images/upload:
+  /inventory/products/images/upload:
     post:
       summary: Upload product images
       description: Upload one or more product images, validate basic constraints and store them against the product record.
@@ -33725,7 +33725,7 @@ paths:
                 description: Response body for POST /business/inventory/products/images/upload
         "400":
           description: Validation error (missing productId, invalid files, or size limits).
-  /business/inventory/products/bulk-status:
+  /inventory/products/bulk-status:
     post:
       summary: Bulk update product status
       description: Update the publication status of multiple products in a single operation.
@@ -33768,7 +33768,7 @@ paths:
                   - count
         "400":
           description: Body missing productIds or status.
-  /business/inventory/products/{id}/stock:
+  /inventory/products/{id}/stock:
     put:
       summary: Update product stock
       description: Adjust product stock by setting an absolute level or incrementing/decrementing by a quantity.
@@ -33863,7 +33863,7 @@ paths:
           description: No stock field provided or invalid combination.
         "404":
           description: Product not found.
-  /business/inventory/products/{id}/statistics:
+  /inventory/products/{id}/statistics:
     get:
       summary: Get product statistics
       description: Return aggregated statistics for a single product (usage, movements, etc.).
@@ -33888,7 +33888,7 @@ paths:
                 description: Aggregated statistics for a product (e.g. sales, movements, turnover) – flexible analytics payload
         "404":
           description: Product not found or not accessible.
-  /business/inventory/products/{id}/movements:
+  /inventory/products/{id}/movements:
     get:
       summary: List product movements
       description: List inventory movements for a product, including ins and outs.
@@ -33915,7 +33915,7 @@ paths:
                   description: Inventory movement entry for a product (e.g. in/out, related service record or purchase order)
         "404":
           description: Product not found or not accessible.
-  /business/inventory/products/{id}/reorder-history:
+  /inventory/products/{id}/reorder-history:
     get:
       summary: List product reorder history
       description: List historical reorder events (e.g. purchase orders) for a product.
@@ -33942,7 +33942,7 @@ paths:
                   description: Historical reorder event for a product (e.g. purchase orders, quantities, dates) – flexible payload
         "404":
           description: Product not found or not accessible.
-  /business/inventory/stats:
+  /inventory/stats:
     get:
       summary: Get inventory stats
       description: High-level inventory statistics for the authenticated company (stock levels, counts, value, etc.).
@@ -33958,7 +33958,7 @@ paths:
                 additionalProperties:
                   nullable: true
                 description: High-level inventory statistics for the company (e.g. counts by stock level, value on hand, etc.)
-  /business/inventory/performance-metrics:
+  /inventory/performance-metrics:
     get:
       summary: Get inventory performance metrics
       description: Aggregated inventory performance metrics over a recent time window, such as turnover and stock-outs.
@@ -33984,7 +33984,7 @@ paths:
                 additionalProperties:
                   nullable: true
                 description: Aggregated inventory performance metrics (e.g. turnover, stock-outs, fulfilment latency) – flexible payload
-  /business/inventory/low-stock-alerts:
+  /inventory/low-stock-alerts:
     get:
       summary: List low-stock alerts
       description: List current low-stock alerts for the authenticated company based on configured thresholds.
@@ -34002,7 +34002,7 @@ paths:
                   additionalProperties:
                     nullable: true
                   description: Low-stock alert for a product, including thresholds, current quantity and related metadata
-  /business/inventory/service-records/{id}/parts:
+  /inventory/service-records/{id}/parts:
     get:
       summary: List parts for service record
       description: List parts consumed on a specific service record.
@@ -34029,7 +34029,7 @@ paths:
                   description: Part line consumed on a service record, including product and quantity details
         "404":
           description: Service record not found or not accessible.
-  /business/inventory/service-records/{id}/inventory:
+  /inventory/service-records/{id}/inventory:
     get:
       summary: Get service record inventory
       description: Combined view of consumed parts and generated products for a service record (inventory perspective).
@@ -34072,7 +34072,7 @@ paths:
                 description: Combined inventory view (consumed parts and generated products) for a service record
         "404":
           description: Service record not found or not accessible.
-  /business/inventory/service-records/{id}/generated-products:
+  /inventory/service-records/{id}/generated-products:
     get:
       summary: List generated products for service record
       description: List products generated as a result of the specified service record (e.g. replacements).
@@ -34099,7 +34099,7 @@ paths:
                   description: Product generated from a service record (e.g. replacement or new warranty item)
         "404":
           description: Service record not found or not accessible.
-  /business/inventory/purchase-orders:
+  /inventory/purchase-orders:
     get:
       summary: List purchase orders
       description: List purchase orders for the authenticated company, optionally scoped to a partner or current company context.
@@ -34157,7 +34157,7 @@ paths:
                 additionalProperties:
                   nullable: true
                 description: Purchase order with issuer, recipient, line items and workflow information
-  /business/inventory/purchase-orders/by-supplier:
+  /inventory/purchase-orders/by-supplier:
     get:
       summary: List purchase orders by supplier
       description: List purchase orders for a specific supplier.
@@ -34186,7 +34186,7 @@ paths:
                   description: Purchase order with issuer, recipient, line items and workflow information
         "400":
           description: Missing supplierId.
-  /business/inventory/purchase-orders/by-status:
+  /inventory/purchase-orders/by-status:
     get:
       summary: List purchase orders by status
       description: List purchase orders filtered by their status.
@@ -34215,7 +34215,7 @@ paths:
                   description: Purchase order with issuer, recipient, line items and workflow information
         "400":
           description: Missing status.
-  /business/inventory/purchase-orders/export:
+  /inventory/purchase-orders/export:
     post:
       summary: Export purchase order data
       description: Export purchase order data for reporting or offline analysis with optional filters.
@@ -34253,7 +34253,7 @@ paths:
                   additionalProperties:
                     nullable: true
                   description: Single row or record in purchase order export output
-  /business/inventory/purchase-orders/statistics:
+  /inventory/purchase-orders/statistics:
     get:
       summary: Get purchase order statistics
       description: High-level statistics over purchase orders for the authenticated company.
@@ -34269,7 +34269,7 @@ paths:
                 additionalProperties:
                   nullable: true
                 description: Aggregated statistics over purchase orders (e.g. totals by status, supplier)
-  /business/inventory/purchase-orders/activity-summary:
+  /inventory/purchase-orders/activity-summary:
     get:
       summary: Get purchase order activity summary
       description: Summary of recent purchase order activity (counts, totals and trends) over a configurable period.
@@ -34294,7 +34294,7 @@ paths:
                 additionalProperties:
                   nullable: true
                 description: Summary of recent purchase order activity (counts, totals, trends) for the specified period
-  /business/inventory/purchase-orders/automatic:
+  /inventory/purchase-orders/automatic:
     get:
       summary: List automatic purchase orders
       description: List purchase orders created or considered by the automatic replenishment process.
@@ -34343,7 +34343,7 @@ paths:
                 additionalProperties:
                   nullable: true
                 description: Purchase order with issuer, recipient, line items and workflow information
-  /business/inventory/purchase-orders/{id}:
+  /inventory/purchase-orders/{id}:
     get:
       summary: Get purchase order by ID
       description: Fetch a single purchase order by ID from the issuer company perspective.
@@ -34423,7 +34423,7 @@ paths:
                   nullable: true
         "404":
           description: Purchase order not found or not accessible.
-  /business/inventory/purchase-orders/{id}/status:
+  /inventory/purchase-orders/{id}/status:
     patch:
       summary: Update purchase order status
       description: Update the status of a purchase order from the issuer perspective.
@@ -34463,7 +34463,7 @@ paths:
           description: Missing or invalid status.
         "404":
           description: Purchase order not found.
-  /business/inventory/purchase-orders/{id}/soft-delete:
+  /inventory/purchase-orders/{id}/soft-delete:
     post:
       summary: Soft-delete purchase order
       description: Soft-delete a purchase order, marking it as deleted without removing it from the database.
@@ -34487,7 +34487,7 @@ paths:
                   nullable: true
         "404":
           description: Purchase order not found.
-  /business/inventory/purchase-orders/{id}/pdf:
+  /inventory/purchase-orders/{id}/pdf:
     get:
       summary: Get purchase order PDF
       description: Generate a PDF for the purchase order and return it as a base64-encoded payload for download or inline display.
@@ -34518,7 +34518,7 @@ paths:
           description: Missing purchase order ID.
         "404":
           description: Purchase order not found or not accessible.
-  /business/inventory/distributor-products:
+  /inventory/distributor-products:
     get:
       summary: List distributor products
       description: List products offered by a distributor, with standard pagination and optional filters.
@@ -34587,7 +34587,7 @@ paths:
                 additionalProperties:
                   nullable: true
                 description: Distributor product as exposed via inventory APIs (pricing, metadata, mappings, etc.)
-  /business/inventory/distributor-products/import:
+  /inventory/distributor-products/import:
     post:
       summary: Import distributor products from CSV
       description: Upload a CSV file of distributor products with a JSON header mapping to create/update records.
@@ -34621,7 +34621,7 @@ paths:
                   nullable: true
         "400":
           description: Validation error (missing file, invalid mapping, or bad CSV).
-  /business/inventory/distributor-products/import-template:
+  /inventory/distributor-products/import-template:
     get:
       summary: Download distributor product import template
       description: Return a CSV template with headers and example rows for importing distributor products.
@@ -34635,7 +34635,7 @@ paths:
               schema:
                 type: string
                 description: CSV content containing headers and example rows for importing distributor products (text/csv)
-  /business/inventory/distributor-products/images/upload:
+  /inventory/distributor-products/images/upload:
     post:
       summary: Upload distributor product images
       description: Upload one or more images for a distributor product and update its image metadata.
@@ -34704,7 +34704,7 @@ paths:
                   - success
                   - message
                 description: Response body for POST /business/inventory/distributor-products/images/upload
-  /business/inventory/distributor-products/bulk-share:
+  /inventory/distributor-products/bulk-share:
     post:
       summary: Bulk share distributor products with retailers
       description: Share or unshare one or more distributor products with multiple retailers in a single call.
@@ -34750,7 +34750,7 @@ paths:
                 additionalProperties:
                   nullable: true
                 description: Result of distributor product share/unshare operations
-  /business/inventory/distributor-products/bulk-delete:
+  /inventory/distributor-products/bulk-delete:
     post:
       summary: Bulk delete distributor products
       description: Delete multiple distributor products at once.
@@ -34781,7 +34781,7 @@ paths:
                 type: object
                 additionalProperties:
                   nullable: true
-  /business/inventory/distributor-products/shared-retailers:
+  /inventory/distributor-products/shared-retailers:
     get:
       summary: List retailers shared for distributor products
       description: Given one or more distributor product IDs, return the retailers they are shared with.
@@ -34807,7 +34807,7 @@ paths:
                   additionalProperties:
                     nullable: true
                   description: Retailer company and sharing metadata for a distributor product (returned by shared-retailers APIs)
-  /business/inventory/distributor-products/connected-partners:
+  /inventory/distributor-products/connected-partners:
     get:
       summary: List connected partners for distributor products
       description: List partner companies (e.g. retailers) connected to the current distributor via shared products.
@@ -34825,7 +34825,7 @@ paths:
                   additionalProperties:
                     nullable: true
                   description: Partner company connected to the current distributor via shared products
-  /business/inventory/distributor-products/{productId}/sync:
+  /inventory/distributor-products/{productId}/sync:
     post:
       summary: Trigger distributor product sync
       description: Trigger an on‑demand sync for a distributor product, pushing changes to connected retailers.
@@ -34847,7 +34847,7 @@ paths:
                 type: object
                 additionalProperties:
                   nullable: true
-  /business/inventory/distributor-products/{productId}/shared-products:
+  /inventory/distributor-products/{productId}/shared-products:
     get:
       summary: List shared products for distributor product
       description: List the retailer-facing shared product instances created from a given distributor product.
@@ -34872,7 +34872,7 @@ paths:
                   additionalProperties:
                     nullable: true
                   description: Retailer-facing product derived from a distributor product (shared product record)
-  /business/inventory/distributor-products/{productId}/invite:
+  /inventory/distributor-products/{productId}/invite:
     post:
       summary: Share distributor product with retailer
       description: Share a distributor product with a specific retailer company, creating a shared product instance.
@@ -34910,7 +34910,7 @@ paths:
                 description: Result of distributor product share/unshare operations
         "400":
           description: Missing productId or retailerId.
-  /business/inventory/product-changes:
+  /inventory/product-changes:
     get:
       summary: List pending product changes
       description: List pending changes for shared products that the retailer has not yet synced.
@@ -34937,7 +34937,7 @@ paths:
                   additionalProperties:
                     nullable: true
                   description: Change record representing a distributor product update awaiting retailer sync
-  /business/inventory/product-changes/mark-synced:
+  /inventory/product-changes/mark-synced:
     post:
       summary: Mark product change as synced
       description: Mark a single product change log entry as synced by the retailer, acknowledging the update.
@@ -34965,7 +34965,7 @@ paths:
                 type: object
                 additionalProperties:
                   nullable: true
-  /business/inventory/product-changes/changelog:
+  /inventory/product-changes/changelog:
     get:
       summary: Get product change log
       description: Return the change log history for a product across distributor/retailer sync operations.
@@ -34994,7 +34994,7 @@ paths:
                   description: Historical change log entry for a product sync relationship
         "400":
           description: Missing productId.
-  /business/inventory/movements/{movementId}/assignment:
+  /inventory/movements/{movementId}/assignment:
     patch:
       summary: Update movement service-item assignment
       description: Assign or unassign an inventory movement to a specific service-record service item for traceability.
@@ -35033,7 +35033,7 @@ paths:
                 description: Movement record including its updated assignment to a service record item
         "404":
           description: Movement not found.
-  /business/inventory/process-receipt:
+  /inventory/process-receipt:
     post:
       summary: Process inventory receipt
       description: Process a receipt against a purchase order, updating stock levels and related records.
@@ -35069,7 +35069,7 @@ paths:
                 description: Result of applying receipt data to purchase orders and stock levels
         "400":
           description: Missing purchaseOrderId or invalid receipt payload.
-  /business/inventory/activity-summary:
+  /inventory/activity-summary:
     get:
       summary: Get inventory activity summary
       description: Summary of recent inventory activity (stock movements, receipts, allocations) over a configurable period.
@@ -35095,7 +35095,7 @@ paths:
                 additionalProperties:
                   nullable: true
                 description: Summary of recent inventory activity (stock movements, receipts, allocations) for the specified period
-  /business/inventory/allocate-parts:
+  /inventory/allocate-parts:
     post:
       summary: Allocate parts to service record
       description: Allocate inventory parts (products) to a service record, decrementing stock and creating a movement record.
@@ -35140,7 +35140,7 @@ paths:
                 description: Result of the parts allocation including updated stock and movement details
         "400":
           description: Missing serviceRecordId, productId or quantity.
-  /business/inventory/distributor-products/{productId}:
+  /inventory/distributor-products/{productId}:
     get:
       summary: Get distributor product by ID
       description: Fetch a single distributor product by its ID.
@@ -35224,7 +35224,7 @@ paths:
                   - success
         "404":
           description: Distributor product not found.
-  /business/communications:
+  /communications:
     get:
       summary: List communications
       description: Paginated list of communications for the company
@@ -35437,7 +35437,7 @@ paths:
                   - type
                   - status
                   - content
-  /business/communications/{id}:
+  /communications/{id}:
     get:
       summary: Get communication by ID
       description: Returns a single communication by ID
@@ -35592,7 +35592,7 @@ paths:
                   - type
                   - status
                   - content
-  /business/communications/{id}/attachments:
+  /communications/{id}/attachments:
     get:
       summary: Get communication attachments
       description: Returns the list of file attachments for a specific communication
@@ -35638,7 +35638,7 @@ paths:
                 required:
                   - success
                   - data
-  /business/communications/{id}/cancel:
+  /communications/{id}/cancel:
     post:
       summary: Cancel communication
       description: Cancel a scheduled or draft communication. An optional reason can be provided.
@@ -35709,7 +35709,7 @@ paths:
                   - type
                   - status
                   - content
-  /business/communications/{id}/schedule:
+  /communications/{id}/schedule:
     post:
       summary: Schedule communication
       description: Schedule a communication to be sent at a specific date and time
@@ -35783,7 +35783,7 @@ paths:
                   - type
                   - status
                   - content
-  /business/communications/{id}/send:
+  /communications/{id}/send:
     post:
       summary: Send communication
       description: Immediately send a communication. Optional override parameters may be provided.
@@ -35860,7 +35860,7 @@ paths:
                   - type
                   - status
                   - content
-  /business/communications/{id}/statistics:
+  /communications/{id}/statistics:
     get:
       summary: Get communication statistics
       description: Returns delivery and engagement statistics for a specific communication
@@ -35910,7 +35910,7 @@ paths:
                 required:
                   - success
                   - data
-  /business/communications/{id}/status:
+  /communications/{id}/status:
     patch:
       summary: Update communication status
       description: Update the status of a specific communication
@@ -35984,7 +35984,7 @@ paths:
                   - type
                   - status
                   - content
-  /business/communications/activity-summary:
+  /communications/activity-summary:
     get:
       summary: Get communication activity summary
       description: Returns an aggregated activity summary of communications over a configurable number of days
@@ -36048,7 +36048,7 @@ paths:
                 required:
                   - success
                   - data
-  /business/communications/bulk-update-status:
+  /communications/bulk-update-status:
     post:
       summary: Bulk update communication status
       description: Update the status of multiple communications at once
@@ -36095,7 +36095,7 @@ paths:
                 required:
                   - success
                   - data
-  /business/communications/by-customer:
+  /communications/by-customer:
     get:
       summary: Get communications by customer
       description: Returns a paginated list of communications filtered by customer ID
@@ -36201,7 +36201,7 @@ paths:
                       - totalPages
                 required:
                   - data
-  /business/communications/by-status:
+  /communications/by-status:
     get:
       summary: Get communications by status
       description: Returns communications filtered by a specific status
@@ -36275,7 +36275,7 @@ paths:
                 required:
                   - success
                   - data
-  /business/communications/by-template:
+  /communications/by-template:
     get:
       summary: Get communications by template
       description: Returns a paginated list of communications that used a specific template
@@ -36381,7 +36381,7 @@ paths:
                       - totalPages
                 required:
                   - data
-  /business/communications/by-type:
+  /communications/by-type:
     get:
       summary: Get communications by type
       description: Returns communications filtered by type (EMAIL, SMS, or NOTIFICATION)
@@ -36458,7 +36458,7 @@ paths:
                 required:
                   - success
                   - data
-  /business/communications/connections:
+  /communications/connections:
     get:
       summary: List communication connections
       description: Returns the list of email/messaging provider connections for the company or a specific user
@@ -36512,7 +36512,7 @@ paths:
                 required:
                   - success
                   - data
-  /business/communications/connections/remove:
+  /communications/connections/remove:
     post:
       summary: Remove communication connection
       description: Disconnect an email/messaging provider connection
@@ -36560,7 +36560,7 @@ paths:
                 required:
                   - success
                   - data
-  /business/communications/emails-by-customer:
+  /communications/emails-by-customer:
     get:
       summary: Get emails by customer
       description: Returns all email-type communications for a specific customer
@@ -36634,7 +36634,7 @@ paths:
                 required:
                   - success
                   - data
-  /business/communications/export:
+  /communications/export:
     post:
       summary: Export communication data
       description: Export communication records based on optional filter criteria
@@ -36679,7 +36679,7 @@ paths:
                 required:
                   - success
                   - data
-  /business/communications/failed:
+  /communications/failed:
     get:
       summary: Get failed communications
       description: Returns all communications with a FAILED status for the company
@@ -36744,7 +36744,7 @@ paths:
                 required:
                   - success
                   - data
-  /business/communications/performance-metrics:
+  /communications/performance-metrics:
     get:
       summary: Get communication performance metrics
       description: Returns delivery and performance metrics over a configurable number of days
@@ -36798,7 +36798,7 @@ paths:
                 required:
                   - success
                   - data
-  /business/communications/scheduled:
+  /communications/scheduled:
     get:
       summary: Get scheduled communications
       description: Returns all communications with a SCHEDULED status for the company
@@ -36863,7 +36863,7 @@ paths:
                 required:
                   - success
                   - data
-  /business/communications/search:
+  /communications/search:
     post:
       summary: Search communications
       description: Search communications with flexible filter criteria and pagination
@@ -36961,7 +36961,7 @@ paths:
                       - totalPages
                 required:
                   - data
-  /business/communications/send-email:
+  /communications/send-email:
     post:
       summary: Send email
       description: Compose and immediately send an email communication
@@ -37068,7 +37068,7 @@ paths:
                   - type
                   - status
                   - content
-  /business/communications/sent:
+  /communications/sent:
     get:
       summary: Get sent communications
       description: Returns all communications with a SENT status for the company
@@ -37133,7 +37133,7 @@ paths:
                 required:
                   - success
                   - data
-  /business/email-templates:
+  /email-templates:
     get:
       summary: List email templates
       description: List email templates for the company with optional filters
@@ -37302,7 +37302,7 @@ paths:
                   - companyId
                   - name
                   - subjectTemplate
-  /business/email-templates/{id}:
+  /email-templates/{id}:
     get:
       summary: Get email template by ID
       description: Returns a single email template by ID
@@ -37443,7 +37443,7 @@ paths:
                   - companyId
                   - name
                   - subjectTemplate
-  /business/email-templates/branding:
+  /email-templates/branding:
     get:
       summary: Get email branding
       description: Retrieve the company-level email branding configuration (logo, colours, font, footer)
@@ -37574,7 +37574,7 @@ paths:
                 required:
                   - id
                   - companyId
-  /business/email-templates/mapping:
+  /email-templates/mapping:
     get:
       summary: Get template-service mapping
       description: Retrieve the field mapping between an email template and a service
@@ -37729,7 +37729,7 @@ paths:
                     type: boolean
                 required:
                   - success
-  /business/email-templates/mapping/service-fields:
+  /email-templates/mapping/service-fields:
     get:
       summary: Get available service fields for mapping
       description: List all available fields from a service that can be mapped to email template variables
@@ -37760,7 +37760,7 @@ paths:
                     description: Available service fields for mapping
                 required:
                   - fields
-  /business/email-templates/preview:
+  /email-templates/preview:
     post:
       summary: Preview rendered email template
       description: Render an email template with real data from a service record and return the HTML preview
@@ -37799,7 +37799,7 @@ paths:
                   html:
                     type: string
                     description: Rendered email HTML body
-  /business/email-templates/regenerate:
+  /email-templates/regenerate:
     post:
       summary: Regenerate system templates
       description: Regenerate all system email templates with the latest default design for the company
@@ -37826,7 +37826,7 @@ paths:
                   - updated
                   - skipped
                   - total
-  /business/email-templates/reset:
+  /email-templates/reset:
     post:
       summary: Reset system template to default
       description: Reset a single system email template back to its default design
@@ -37856,7 +37856,7 @@ paths:
                     description: ID of the reset template
                 required:
                   - templateId
-  /business/email-templates/seed:
+  /email-templates/seed:
     post:
       summary: Seed mandatory system templates
       description: Create any missing mandatory system email templates for the company
@@ -37883,7 +37883,7 @@ paths:
                   - created
                   - skipped
                   - total
-  /business/email-templates/trigger-automation:
+  /email-templates/trigger-automation:
     post:
       summary: Trigger email automation
       description: Execute an email automation rule — renders the template, resolves the recipient, and sends the email
@@ -37950,7 +37950,7 @@ paths:
                     description: Error message if sending failed
                 required:
                   - success
-  /business/email-templates/variables:
+  /email-templates/variables:
     get:
       summary: List template variables
       description: List all variables defined for a given email template
@@ -38086,7 +38086,7 @@ paths:
                   - id
                   - templateId
                   - key
-  /business/email-templates/variables/{variableId}:
+  /email-templates/variables/{variableId}:
     get:
       summary: Get variable by ID
       description: Retrieve a single email template variable by its ID
@@ -38239,7 +38239,7 @@ paths:
                     type: boolean
                 required:
                   - success
-  /business/email-templates/variables/usage:
+  /email-templates/variables/usage:
     get:
       summary: Get variable usage count
       description: Count how many times a variable key appears in a given template
@@ -38273,7 +38273,7 @@ paths:
                     description: Number of times the variable is used in the template
                 required:
                   - count
-  /business/partner:
+  /partner:
     get:
       summary: List partners
       description: Retrieve a paginated, sortable, filterable list of partners connected to the authenticated company
@@ -38493,7 +38493,7 @@ paths:
                   - id
                   - companyAId
                   - status
-  /business/partner/invite:
+  /partner/invite:
     post:
       summary: Invite partner
       description: Send a partner invitation with company and contact details
@@ -38582,7 +38582,7 @@ paths:
                 required:
                   - inviterCompanyId
                   - status
-  /business/partner/accept:
+  /partner/accept:
     post:
       summary: Accept partner invitation
       description: Accept an incoming partner invitation by connected-partner ID
@@ -38630,7 +38630,7 @@ paths:
                 required:
                   - inviterCompanyId
                   - status
-  /business/partner/reject:
+  /partner/reject:
     post:
       summary: Reject partner invitation
       description: Reject an incoming partner invitation by connected-partner ID
@@ -38678,7 +38678,7 @@ paths:
                 required:
                   - inviterCompanyId
                   - status
-  /business/partner/contracts:
+  /partner/contracts:
     get:
       summary: List partner contracts
       description: Retrieve all contracts associated with partner relationships for the authenticated company
@@ -38739,7 +38739,7 @@ paths:
                     description: Pagination metadata
                 required:
                   - data
-  /business/partner/contracts/{id}:
+  /partner/contracts/{id}:
     get:
       summary: Get partner contract by ID
       description: Retrieve a single partner contract by its ID, including status and connected-service details
@@ -38782,7 +38782,7 @@ paths:
                 required:
                   - id
                   - status
-  /business/partner/relationship:
+  /partner/relationship:
     get:
       summary: Check partner relationship
       description: Check whether two companies have a partner relationship. Used for CASL partner permissions.
@@ -38839,7 +38839,7 @@ paths:
                   - isPartner
                   - connectionStatus
                   - connectionId
-  /business/partner/relationship/{id}:
+  /partner/relationship/{id}:
     get:
       summary: Get partner relationship by ID
       description: Retrieve details of a specific partner relationship by connection ID
@@ -38903,7 +38903,7 @@ paths:
       responses:
         "200":
           description: Partner relationship deleted
-  /business/partner/services:
+  /partner/services:
     get:
       summary: List partner services
       description: Retrieve services available through partner relationships for the authenticated company
@@ -38946,7 +38946,7 @@ paths:
                     description: List of partner services
                 required:
                   - data
-  /business/partner/shared-services:
+  /partner/shared-services:
     get:
       summary: List shared services
       description: Retrieve services shared between the authenticated company and its partners
@@ -38989,7 +38989,7 @@ paths:
                     description: List of shared services between partners
                 required:
                   - data
-  /business/partner/{id}/status:
+  /partner/{id}/status:
     patch:
       summary: Update partner status
       description: Update the status of a partner relationship (e.g. activate, suspend, deactivate)
@@ -39036,7 +39036,7 @@ paths:
                 required:
                   - id
                   - status
-  /business/partner/cancel:
+  /partner/cancel:
     post:
       summary: Cancel partner invitation
       description: Cancel an outgoing partner invitation by connected-partner ID
@@ -39084,7 +39084,7 @@ paths:
                 required:
                   - inviterCompanyId
                   - status
-  /business/partner/contracts/activate:
+  /partner/contracts/activate:
     post:
       summary: Activate partner contract
       description: Activate a partner contract by its connected-service ID
@@ -39134,7 +39134,7 @@ paths:
                   - status
         "400":
           description: Connected Service ID is required or activation failed
-  /business/partner/contracts/approve:
+  /partner/contracts/approve:
     post:
       summary: Approve partner contract
       description: Approve a partner contract by its connected-service ID
@@ -39184,7 +39184,7 @@ paths:
                   - status
         "400":
           description: Connected Service ID is required or approval failed
-  /business/partner/contracts/status/{id}:
+  /partner/contracts/status/{id}:
     get:
       summary: Get partner contract status
       description: Retrieve the current status of a partner contract by ID
@@ -39229,7 +39229,7 @@ paths:
                   - status
         "400":
           description: Failed to fetch partner contract status
-  /business/partner/contracts/verify/{token}:
+  /partner/contracts/verify/{token}:
     get:
       summary: Verify partner contract
       description: Verify a partner contract using its verification token
@@ -39275,7 +39275,7 @@ paths:
                   - status
         "400":
           description: Verification failed
-  /business/locations:
+  /locations:
     get:
       summary: List locations
       description: List company locations (warehouses, offices). Use activeOnly=false to include inactive.
@@ -39457,7 +39457,7 @@ paths:
                   - name
                   - companyId
                   - addressId
-  /business/locations/{locationId}:
+  /locations/{locationId}:
     get:
       summary: Get location by ID
       description: Returns a single location by ID
@@ -39648,7 +39648,7 @@ paths:
       responses:
         "200":
           description: Location deleted
-  /business/locations/default:
+  /locations/default:
     get:
       summary: Get default location
       description: Returns the company's default location
@@ -39725,7 +39725,7 @@ paths:
                   - data
         "401":
           description: Unauthorized
-  /business/locations/{locationId}/set-default:
+  /locations/{locationId}/set-default:
     post:
       summary: Set default location
       description: Set a specific location as the company's default. The location must belong to the authenticated company.
@@ -39812,7 +39812,7 @@ paths:
           description: Access denied — location belongs to another company
         "404":
           description: Location not found
-  /business/audit/logs:
+  /audit/logs:
     get:
       summary: List audit logs
       description: Paginated audit logs for the company with optional filters (date range, user, action, entity type, etc.)
@@ -40020,7 +40020,7 @@ paths:
                   - page
                   - limit
                   - totalPages
-  /business/audit/action-types:
+  /audit/action-types:
     get:
       summary: List audit action types
       description: Returns distinct action types recorded for the company, useful for populating filter dropdowns
@@ -40047,7 +40047,7 @@ paths:
                 required:
                   - success
                   - data
-  /business/audit/entity:
+  /audit/entity:
     get:
       summary: Get entity audit logs
       description: Returns all audit log entries for a specific entity identified by type and ID
@@ -40193,7 +40193,7 @@ paths:
                   - data
         "400":
           description: entityType and entityId are required
-  /business/audit/entity-types:
+  /audit/entity-types:
     get:
       summary: List audit entity types
       description: Returns distinct entity types recorded for the company, useful for populating filter dropdowns
@@ -40220,7 +40220,7 @@ paths:
                 required:
                   - success
                   - data
-  /business/audit/export:
+  /audit/export:
     get:
       summary: Export audit logs as CSV
       description: Exports filtered audit logs as a CSV string. Supports the same filters as the list endpoint.
@@ -40303,7 +40303,7 @@ paths:
                 required:
                   - success
                   - data
-  /business/audit/service-record-activities:
+  /audit/service-record-activities:
     get:
       summary: Get service record activities
       description: Returns audit activity entries for a specific service record, optionally scoped by service
@@ -40449,7 +40449,7 @@ paths:
                   - data
         "400":
           description: recordId is required
-  /business/audit/stats:
+  /audit/stats:
     get:
       summary: Get audit statistics
       description: Returns aggregated audit statistics grouped by action, entity type, and user within an optional date range
@@ -40527,7 +40527,7 @@ paths:
                 required:
                   - success
                   - data
-  /business/company/and-partners:
+  /company/and-partners:
     get:
       summary: Get company and partners
       description: Returns the current company and all connected partner companies (id, name, apiName)
@@ -40572,7 +40572,7 @@ paths:
                     description: The company and its connected partners
                 required:
                   - companies
-  /business/company/{companyApiName}/info:
+  /company/{companyApiName}/info:
     get:
       summary: Get company info by API name
       description: Company info with logo URL (e.g. for customer portal)
@@ -40616,7 +40616,7 @@ paths:
                   - id
                   - name
                   - apiName
-  /business/company/logo/signed-url:
+  /company/logo/signed-url:
     get:
       summary: Get logo signed URL
       description: Returns a signed or CloudFront URL for a company logo/file by S3 key. Deprecated for public assets — prefer CloudFront URLs stored in the database.
@@ -40651,7 +40651,7 @@ paths:
           description: Missing key parameter or failed to generate URL
         "401":
           description: Unauthorized – valid session required
-  /business/company/logo/upload:
+  /company/logo/upload:
     post:
       summary: Upload company logo
       description: Upload a new company logo image via multipart form data
@@ -40711,7 +40711,7 @@ paths:
           description: Unauthorized – valid session required
         "404":
           description: Company not found
-  /business/company/register:
+  /company/register:
     post:
       summary: Register a new company
       description: Public registration endpoint. Creates a company, admin user, default subscription, and optional billing address.
@@ -40870,7 +40870,7 @@ paths:
                   - apiName
         "400":
           description: Validation error or duplicate company/email
-  /business/company/settings:
+  /company/settings:
     get:
       summary: Get company settings
       description: Returns the settings object for the authenticated company
@@ -40928,7 +40928,7 @@ paths:
                   - settings
         "401":
           description: Unauthorized
-  /business/contracts/list:
+  /contracts/list:
     get:
       summary: List contracts
       description: Paginated list of contracts for the company
@@ -41040,7 +41040,7 @@ paths:
                 required:
                   - contracts
                   - pagination
-  /business/contracts/generate:
+  /contracts/generate:
     post:
       summary: Generate contract
       description: "Generate a contract from content and type (accepts multipart/form-data: companyApiName, serviceApiName, contractContent, contractType, status)"
@@ -41135,7 +41135,7 @@ paths:
                     description: S3 URL for the contract file
                 required:
                   - id
-  /business/contracts/sign:
+  /contracts/sign:
     post:
       summary: Sign contract
       description: Sign a contract with signature data
@@ -41233,7 +41233,7 @@ paths:
                     description: S3 URL for the contract file
                 required:
                   - id
-  /business/contracts/upload:
+  /contracts/upload:
     post:
       summary: Upload contract
       description: "Upload a contract document (multipart: file, contractType, title, description)"
@@ -41318,7 +41318,7 @@ paths:
                     description: S3 URL for the contract file
                 required:
                   - id
-  /business/contracts/download:
+  /contracts/download:
     get:
       summary: Download contract
       description: "Get contract file by ID (query: contractId)"
@@ -41336,7 +41336,7 @@ paths:
       responses:
         "200":
           description: Contract file or download URL
-  /business/contracts/verify/{token}:
+  /contracts/verify/{token}:
     get:
       summary: Verify contract signature
       description: Verify the authenticity of a contract signature using its verification token
@@ -41447,7 +41447,7 @@ paths:
                   - data
         "400":
           description: Token is required
-  /business/onboarding/status:
+  /onboarding/status:
     get:
       summary: Get onboarding status
       description: Check onboarding status for the authenticated user/company
@@ -41463,7 +41463,7 @@ paths:
                 additionalProperties:
                   nullable: true
                 description: Onboarding status (company, user, dashboard, etc.)
-  /business/onboarding/progress:
+  /onboarding/progress:
     get:
       summary: Get onboarding progress
       description: Onboarding progress for a company (optional companyId query)
@@ -41488,7 +41488,7 @@ paths:
                 additionalProperties:
                   nullable: true
                 description: Onboarding progress steps and completion state
-  /business/onboarding/complete:
+  /onboarding/complete:
     post:
       summary: Complete onboarding
       description: Mark onboarding as complete for a company
@@ -41507,7 +41507,7 @@ paths:
       responses:
         "200":
           description: Onboarding marked complete
-  /business/subscriptions:
+  /subscriptions:
     get:
       summary: Get subscription
       description: Current subscription info for the company
@@ -41632,7 +41632,7 @@ paths:
                     nullable: true
                     description: Timestamp when the subscription was last updated.
                 description: Normalized subscription DTO returned from subscription APIs.
-  /business/subscriptions/deactivate:
+  /subscriptions/deactivate:
     post:
       summary: Deactivate subscriptions
       description: Deactivate all active subscriptions for the authenticated company. Sets subscription status to inactive.
@@ -41664,7 +41664,7 @@ paths:
                   - success
                   - data
                 description: Response returned after successfully deactivating company subscriptions.
-  /business/subscriptions/history:
+  /subscriptions/history:
     get:
       summary: Get subscription history
       description: Retrieve the full subscription history for the authenticated company, ordered by creation date (most recent first).
@@ -41732,7 +41732,7 @@ paths:
                   - success
                   - data
                 description: Response containing the full subscription history for the company.
-  /business/subscriptions/initialize-trial:
+  /subscriptions/initialize-trial:
     post:
       summary: Initialize trial subscription
       description: Create a new trial subscription for the specified company. The authenticated user session must match the company.
@@ -41806,7 +41806,7 @@ paths:
                   - success
                   - data
                 description: Response returned after successfully initializing a trial subscription.
-  /business/subscriptions/check-trial-status:
+  /subscriptions/check-trial-status:
     post:
       summary: Check and update trial status
       description: Check whether the trial period has expired for the given company. If expired, automatically updates the subscription status to UNPAID and may trigger a notification email.
@@ -41859,7 +41859,7 @@ paths:
                   - success
                   - data
                 description: Response containing the current trial status after checking and optionally updating it.
-  /business/subscriptions/send-trial-ending-soon:
+  /subscriptions/send-trial-ending-soon:
     post:
       summary: Send trial ending soon email
       description: Send a notification email to the company informing them that their trial period is ending soon.
@@ -41910,7 +41910,7 @@ paths:
                   - success
                   - data
                 description: Response returned after successfully sending a trial-ending-soon email.
-  /business/subscriptions/usage:
+  /subscriptions/usage:
     get:
       summary: Get subscription usage
       description: Retrieve current subscription usage data (users, services, service records) versus plan limits for the authenticated company.
@@ -41992,7 +41992,7 @@ paths:
                   - success
                   - data
                 description: Response containing subscription usage metrics for the authenticated company.
-  /business/forms:
+  /forms:
     get:
       summary: List forms
       description: Paginated list of forms for the company
@@ -42169,7 +42169,7 @@ paths:
                     description: Soft-delete timestamp (null if active)
                 required:
                   - id
-  /business/forms/{formId}:
+  /forms/{formId}:
     get:
       summary: Get form by ID
       description: Returns a single form by ID
@@ -42228,7 +42228,7 @@ paths:
                     description: Soft-delete timestamp (null if active)
                 required:
                   - id
-  /business/forms/by-api-name:
+  /forms/by-api-name:
     get:
       summary: Get form by API name
       description: Look up a form by its unique API name. Requires session or API-key authentication.
@@ -42293,7 +42293,7 @@ paths:
           description: Missing apiName query parameter
         "404":
           description: Form not found
-  /business/forms/public:
+  /forms/public:
     get:
       summary: Get public form
       description: Retrieve an ACTIVE form by API name and company API name. No authentication required (customer portal).
@@ -42368,7 +42368,7 @@ paths:
           description: Form is not active
         "404":
           description: Company or form not found
-  /business/forms/{formId}/restore:
+  /forms/{formId}/restore:
     post:
       summary: Restore soft-deleted form
       description: Restore a previously soft-deleted form by clearing its deletedAt timestamp
@@ -42433,7 +42433,7 @@ paths:
           description: Access denied – form belongs to another company
         "404":
           description: Form not found
-  /business/forms/{formId}/flow:
+  /forms/{formId}/flow:
     put:
       summary: Save form flow
       description: Persist the React Flow configuration (nodes, edges, nodeData) for a form
@@ -42519,7 +42519,7 @@ paths:
           description: Access denied – form belongs to another company
         "404":
           description: Form not found
-  /business/api-keys:
+  /api-keys:
     get:
       summary: List API keys
       description: Paginated list of API keys for the authenticated company
@@ -42668,7 +42668,7 @@ paths:
                   apiKey:
                     type: string
                     description: Full key value; only present on create or regenerate
-  /business/api-keys/{id}:
+  /api-keys/{id}:
     get:
       summary: Get API key by ID
       description: Returns a single API key by ID (lastFour only; full key never returned)
@@ -42803,7 +42803,7 @@ paths:
       responses:
         "200":
           description: API key deleted
-  /business/api-keys/{id}/deactivate:
+  /api-keys/{id}/deactivate:
     post:
       summary: Deactivate API key
       description: Deactivate an API key (removes it from use)
@@ -42854,7 +42854,7 @@ paths:
                   apiKey:
                     type: string
                     description: Full key value; only present on create or regenerate
-  /business/api-keys/{id}/regenerate:
+  /api-keys/{id}/regenerate:
     post:
       summary: Regenerate API key
       description: Rotate the API key token (new plain key returned once)
@@ -42905,7 +42905,7 @@ paths:
                   apiKey:
                     type: string
                     description: Full key value; only present on create or regenerate
-  /business/api-keys/stats:
+  /api-keys/stats:
     get:
       summary: API key statistics
       description: Usage statistics for company API keys (total, active, expired, recentlyUsed)
@@ -42932,7 +42932,7 @@ paths:
                   - active
                   - expired
                   - recentlyUsed
-  /business/dashboard:
+  /dashboard:
     get:
       summary: List dashboards
       description: List dashboard configs for the authenticated company
@@ -43004,7 +43004,7 @@ paths:
                               updatedAt:
                                 type: string
                                 nullable: true
-  /business/dashboard/{id}:
+  /dashboard/{id}:
     get:
       summary: Get dashboard by ID
       description: Returns a single dashboard config by ID including widgets
@@ -43225,7 +43225,7 @@ paths:
       responses:
         "200":
           description: Dashboard deleted
-  /business/dashboard/import:
+  /dashboard/import:
     post:
       summary: Import dashboard configuration
       description: Import a full dashboard configuration (metadata + widgets) and assign it to the specified user.
@@ -43369,7 +43369,7 @@ paths:
                         updatedAt:
                           type: string
                           nullable: true
-  /business/dashboard/user/{userId}:
+  /dashboard/user/{userId}:
     get:
       summary: Get user dashboards
       description: Returns all dashboards belonging to the specified user.
@@ -43453,7 +43453,7 @@ paths:
                 required:
                   - data
                 description: Response containing all dashboards for a specific user.
-  /business/dashboard/view-preferences:
+  /dashboard/view-preferences:
     get:
       summary: Get view preferences
       description: Retrieve saved view preferences (visible columns, kanban toggle) for a user/partner/service combination.
@@ -43554,7 +43554,7 @@ paths:
                     type: boolean
                     description: Whether the kanban board layout is active.
                 description: User-specific view preferences for a partner/service combination.
-  /business/dashboard/widget-data:
+  /dashboard/widget-data:
     post:
       summary: Fetch widget data
       description: Retrieve data for a specific widget type (partner_metrics, service_analytics, contract_summary, recent_activity, performance_metrics).
@@ -43604,7 +43604,7 @@ paths:
                     type: boolean
                     description: Whether the data fetch succeeded.
                 description: Response envelope for widget data.
-  /business/dashboard/{id}/widgets:
+  /dashboard/{id}/widgets:
     post:
       summary: Add widget to dashboard
       description: Create a new widget and attach it to the specified dashboard.
@@ -43714,7 +43714,7 @@ paths:
                         updatedAt:
                           type: string
                           nullable: true
-  /business/dashboard/{id}/export:
+  /dashboard/{id}/export:
     get:
       summary: Export dashboard configuration
       description: Export a complete dashboard configuration (metadata, widgets, layout) as a portable JSON object.
@@ -43807,7 +43807,7 @@ paths:
                   - exportDate
                   - version
                 description: Full exported dashboard configuration including widgets and metadata.
-  /business/dashboard/{id}/duplicate:
+  /dashboard/{id}/duplicate:
     post:
       summary: Duplicate dashboard
       description: Create a copy of an existing dashboard with a new name, including all its widgets and layout.
@@ -43905,7 +43905,7 @@ paths:
           description: newName and userId are required
         "401":
           description: Unauthorized
-  /business/dashboard/statistics:
+  /dashboard/statistics:
     get:
       summary: Get dashboard statistics
       description: Retrieve aggregated statistics about dashboards for the authenticated company, including totals, widget counts, and active rates.
@@ -43964,7 +43964,7 @@ paths:
                 description: Aggregated dashboard statistics for a company.
         "401":
           description: Unauthorized
-  /business/documentation/nodes:
+  /documentation/nodes:
     get:
       summary: List documentation nodes
       description: List nodes by serviceId or all company nodes (company=true)
@@ -44203,7 +44203,7 @@ paths:
       responses:
         "200":
           description: Node deleted
-  /business/documentation/nodes/{nodeId}:
+  /documentation/nodes/{nodeId}:
     get:
       summary: Get documentation node by ID
       description: Returns a single documentation node by ID
@@ -44262,7 +44262,7 @@ paths:
                       nullable: true
                 required:
                   - id
-  /business/documentation/public:
+  /documentation/public:
     get:
       summary: Get public documentation node
       description: Retrieve a published documentation node for the customer portal. No authentication required. Requires nodeId and companyApiName query params. Only returns nodes with PUBLISHED status.
@@ -44348,7 +44348,7 @@ paths:
           description: Documentation not available (unpublished)
         "404":
           description: Company or documentation node not found
-  /business/email-sender-identities:
+  /email-sender-identities:
     get:
       summary: List email sender identities
       description: List sender identities for the company
@@ -44496,7 +44496,7 @@ paths:
                   - type
                   - isDefault
                   - isVerified
-  /business/email-sender-identities/{id}:
+  /email-sender-identities/{id}:
     get:
       summary: Get email sender identity by ID
       description: Returns a single sender identity by ID
@@ -44664,7 +44664,7 @@ paths:
       responses:
         "200":
           description: Sender identity deleted
-  /business/profile/{profileId}:
+  /profile/{profileId}:
     get:
       summary: Get profile by ID
       description: Returns profile (company) by profile ID
@@ -44725,7 +44725,7 @@ paths:
                       - email
                 required:
                   - data
-  /business/profile/offering-id:
+  /profile/offering-id:
     get:
       summary: Get offering profile ID
       description: Returns offering profile ID for the given companyId
@@ -44758,7 +44758,7 @@ paths:
                       - profileId
                 required:
                   - data
-  /business/profile/fulfillment-id:
+  /profile/fulfillment-id:
     get:
       summary: Get fulfillment profile ID
       description: Returns fulfillment profile ID for the given companyId
@@ -44791,7 +44791,7 @@ paths:
                       - profileId
                 required:
                   - data
-  /business/profile/offering-from-service:
+  /profile/offering-from-service:
     get:
       summary: Get offering profile ID from service record
       description: Returns offering profile ID for the service of the given serviceRecordId
@@ -44824,7 +44824,7 @@ paths:
                       - profileId
                 required:
                   - data
-  /business/service-items:
+  /service-items:
     get:
       summary: List service items
       description: List service items for the company (optional includeDeleted)
@@ -44944,7 +44944,7 @@ paths:
                     nullable: true
                 required:
                   - id
-  /business/service-items/for-service:
+  /service-items/for-service:
     get:
       summary: List service items for service
       description: List service items for a given service ID
@@ -45002,7 +45002,7 @@ paths:
                         - id
                 required:
                   - data
-  /business/service-items/{id}:
+  /service-items/{id}:
     get:
       summary: Get service item by ID
       description: Returns a single service item by ID
@@ -45130,7 +45130,7 @@ paths:
       responses:
         "200":
           description: Service item deleted
-  /business/service-items/associate:
+  /service-items/associate:
     post:
       summary: Associate service item to service
       description: Create an association between a service item and a service, with optional transition prices and visible fields
@@ -45207,7 +45207,7 @@ paths:
                   - id
                   - serviceItemId
                   - serviceId
-  /business/service-items/association:
+  /service-items/association:
     put:
       summary: Update service item association
       description: Update transition prices or visible fields for an existing service-item ↔ service association
@@ -45309,7 +45309,7 @@ paths:
       responses:
         "200":
           description: Association removed
-  /business/service-items/record-items:
+  /service-items/record-items:
     get:
       summary: List record items
       description: List service item instances attached to a service record
@@ -45463,7 +45463,7 @@ paths:
                   - serviceRecordId
                   - serviceItemId
                   - serviceId
-  /business/service-items/record-items/{recordItemId}/solutions:
+  /service-items/record-items/{recordItemId}/solutions:
     get:
       summary: List solutions for a record item
       description: Returns solutions assigned to a specific service record item
@@ -45574,7 +45574,7 @@ paths:
                   - id
                   - serviceRecordServiceItemId
                   - solutionId
-  /business/service-items/record-items/{recordItemId}/solutions/{solutionId}:
+  /service-items/record-items/{recordItemId}/solutions/{solutionId}:
     delete:
       summary: Remove solution from record item
       description: Remove a solution assignment from a specific service record item
@@ -45600,7 +45600,7 @@ paths:
       responses:
         "200":
           description: Solution removed from record item
-  /business/service-item-custom-fields:
+  /service-item-custom-fields:
     get:
       summary: List service item custom fields
       description: List custom fields (optional serviceId filter)
@@ -45742,7 +45742,7 @@ paths:
                   - companyId
                   - name
                   - type
-  /business/service-item-custom-fields/{id}:
+  /service-item-custom-fields/{id}:
     get:
       summary: Get service item custom field by ID
       description: Returns a single custom field by ID
@@ -45881,7 +45881,7 @@ paths:
       responses:
         "200":
           description: Custom field deleted
-  /business/system-automation/execute:
+  /system-automation/execute:
     post:
       summary: Execute system automation
       description: Runs a system automation by ID (e.g. create estimate, invoice, collection/delivery shipment, service transfer, task list). Requires automationId and context in the request body.
@@ -45974,7 +45974,7 @@ paths:
                     description: Optional metadata on error responses
                 required:
                   - success
-  /business/system-email-templates:
+  /system-email-templates:
     get:
       summary: List system email templates
       description: "List SaaS-level system email templates (ADMIN only). Optional filters: category, isActive, search."
@@ -46190,7 +46190,7 @@ paths:
                     description: Last update timestamp
                 required:
                   - id
-  /business/system-email-templates/{id}:
+  /system-email-templates/{id}:
     get:
       summary: Get system email template by ID
       description: Returns a single system email template by ID (ADMIN only)
@@ -46393,7 +46393,7 @@ paths:
       responses:
         "200":
           description: System email template deleted
-  /business/system-email-templates/notification-assignments:
+  /system-email-templates/notification-assignments:
     get:
       summary: List notification assignments
       description: Returns all system notifications with their template assignments and validation status (ADMIN only)
@@ -46525,7 +46525,7 @@ paths:
                 required:
                   - templateId
                   - notificationType
-  /business/system-email-templates/notification-assignments/{id}:
+  /system-email-templates/notification-assignments/{id}:
     put:
       summary: Update notification assignment validation
       description: Update the validatedAt timestamp for a notification assignment (ADMIN only)
@@ -46556,7 +46556,7 @@ paths:
       responses:
         "200":
           description: Template unassigned from notification
-  /business/system-email-templates/{id}/send-test:
+  /system-email-templates/{id}/send-test:
     post:
       summary: Send test email
       description: Send a test email using a specific system email template to the current admin user (ADMIN only)
@@ -46580,7 +46580,7 @@ paths:
                   messageId:
                     type: string
                     description: SES message ID of the sent test email
-  /business/system-email-templates/unassigned:
+  /system-email-templates/unassigned:
     get:
       summary: List unassigned templates
       description: Returns system email templates not currently assigned to any notification (ADMIN only)
@@ -46625,7 +46625,7 @@ paths:
                     description: Templates not assigned to any notification
                 required:
                   - data
-  /business/system-email-templates/validate-for-notification:
+  /system-email-templates/validate-for-notification:
     post:
       summary: Validate template for notification
       description: Check whether a template contains the required variables for a specific notification type (ADMIN only)
@@ -46685,7 +46685,7 @@ paths:
                   - foundVariables
                   - extraVariables
                   - errors
-  /business/system-email-templates/{id}/preview:
+  /system-email-templates/{id}/preview:
     post:
       summary: Preview template
       description: Render a preview of the system email template with optional variable substitution (ADMIN only)
@@ -46729,7 +46729,7 @@ paths:
                 required:
                   - subject
                   - html
-  /business/system-email-templates/{id}/variables:
+  /system-email-templates/{id}/variables:
     get:
       summary: Get template variables
       description: Extract and list all variable names used in the template subject and body (ADMIN only)
@@ -46757,7 +46757,7 @@ paths:
                     description: Variable names found in the template subject and body
                 required:
                   - variables
-  /business/system-email-templates/notification-assignments/assign:
+  /system-email-templates/notification-assignments/assign:
     post:
       summary: Assign template to notification (action)
       description: Assign a system email template to a notification type by notificationType and templateId (ADMIN only)
@@ -46804,7 +46804,7 @@ paths:
           description: Authentication required
         "403":
           description: Only administrators can access system notifications
-  /business/system-email-templates/notification-assignments/unassign:
+  /system-email-templates/notification-assignments/unassign:
     post:
       summary: Unassign template from notification (action)
       description: Remove the template assignment from a notification type by notificationType (ADMIN only)
@@ -46831,7 +46831,7 @@ paths:
           description: Authentication required
         "403":
           description: Only administrators can access system notifications
-  /business/system-email-templates/notification-assignments/update-validated:
+  /system-email-templates/notification-assignments/update-validated:
     post:
       summary: Update notification assignment validatedAt
       description: Update the validatedAt timestamp for a notification assignment by notificationType (ADMIN only)
@@ -46873,7 +46873,7 @@ paths:
           description: Authentication required
         "403":
           description: Only administrators can access system notifications
-  /business/ai/analyze-customer-data:
+  /ai/analyze-customer-data:
     post:
       summary: Analyze customer data with AI
       description: Returns AI-generated insights and recommendations from customer data
@@ -46937,7 +46937,7 @@ paths:
                 required:
                   - success
                   - data
-  /business/ai/analyze-flow:
+  /ai/analyze-flow:
     post:
       summary: Analyze flow with AI
       description: Returns AI-generated summary and suggestions for a service flow
@@ -47018,7 +47018,7 @@ paths:
                 required:
                   - success
                   - data
-  /business/ai/generate-contract-text:
+  /ai/generate-contract-text:
     post:
       summary: Generate contract text with AI
       description: Returns AI-generated contract text and standard clauses
@@ -47079,7 +47079,7 @@ paths:
                 required:
                   - success
                   - data
-  /business/ai/analyze-service:
+  /ai/analyze-service:
     post:
       summary: Analyze service with AI
       description: Accepts arbitrary service data and returns an AI-generated summary and actionable recommendations for improving the service.
@@ -47137,7 +47137,7 @@ paths:
                 required:
                   - success
                   - data
-  /business/ai/configuration-status:
+  /ai/configuration-status:
     get:
       summary: Get AI configuration status
       description: Returns the current AI provider configuration status, including whether the provider is configured, the provider name, and the model in use.
@@ -47176,7 +47176,7 @@ paths:
                 required:
                   - success
                   - data
-  /business/ai/test-connection:
+  /ai/test-connection:
     post:
       summary: Test AI connection
       description: Tests the connection to the configured AI provider by making a lightweight API call. Returns whether the connection succeeded and a human-readable message.
