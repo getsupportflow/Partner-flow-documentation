@@ -106,9 +106,10 @@ const config: Config = {
           label: 'Documentation',
         },
         {
-          to: '/docs/api/warrantyflow-v-3-api',
-          label: 'API Reference',
+          type: 'docSidebar',
+          sidebarId: 'apisidebar',
           position: 'left',
+          label: 'API Reference',
         },
       ],
     },

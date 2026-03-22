@@ -50,6 +50,68 @@
   font-weight: 600;
 }
 
+/* API method badges in the sidebar */
+.api-method .menu__link,
+.schema .menu__link {
+  align-items: center;
+  justify-content: start;
+}
+
+.api-method .menu__link::before,
+.schema .menu__link::before {
+  width: 50px;
+  height: 18px;
+  font-size: 10px;
+  line-height: 18px;
+  text-transform: uppercase;
+  font-weight: 700;
+  border-radius: 0.25rem;
+  margin-right: 0.5rem;
+  text-align: center;
+  flex-shrink: 0;
+  color: #fff;
+}
+
+.get .menu__link::before {
+  content: "get";
+  background-color: #10b981;
+}
+
+.post .menu__link::before {
+  content: "post";
+  background-color: #3b82f6;
+}
+
+.put .menu__link::before {
+  content: "put";
+  background-color: #f59e0b;
+}
+
+.patch .menu__link::before {
+  content: "patch";
+  background-color: #f97316;
+}
+
+.delete .menu__link::before {
+  content: "del";
+  background-color: #ef4444;
+}
+
+.head .menu__link::before {
+  content: "head";
+  background-color: #6b7280;
+}
+
+.event .menu__link::before {
+  content: "event";
+  background-color: #6b7280;
+}
+
+.schema .menu__link::before {
+  content: "schema";
+  background-color: #6b7280;
+}
+
 /* Inline code: subtle monochrome chip */
 code {
   border: 1px solid #e0e0e0;
