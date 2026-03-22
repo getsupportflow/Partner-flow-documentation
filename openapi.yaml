@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: WarrantyFlow V3 API
+  title: partner-flow V3 API
   version: 3.0.0
   description: Versioned API for warranty and service management. Use API key or session auth.
 servers:
