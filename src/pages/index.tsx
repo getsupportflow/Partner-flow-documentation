@@ -24,7 +24,7 @@ function HomepageHeader() {
           </Link>
           <Link
             className="button button--outline button--secondary button--lg"
-            style={{marginLeft: '1rem'}}
+            style={{marginLeft: '1rem', color: '#fff', borderColor: '#fff'}}
             to="/docs/api/warrantyflow-v-3-api">
             API Reference
           </Link>

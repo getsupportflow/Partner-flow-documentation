@@ -79,7 +79,7 @@ const config: Config = {
             specPath: './openapi.yaml',
             outputDir: 'docs/api',
             sidebarOptions: {
-              groupPathsBy: 'tag',
+              groupPathsBy: 'tagGroup',
               categoryLinkSource: 'tag',
             },
             hideSendButton: false,
