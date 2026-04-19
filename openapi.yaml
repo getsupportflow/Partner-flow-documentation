@@ -87,61 +87,6 @@ tags:
     description: Integration connections (e.g. Gmail, Stripe)
   - name: Webhooks
     description: Webhook handlers (e.g. Stripe)
-x-tagGroups:
-  - name: Service Management
-    tags:
-      - Service
-      - Service Records
-      - Service Items
-      - Service Item Custom Fields
-      - Solutions
-      - Shipping
-  - name: Customers & Partners
-    tags:
-      - Customers
-      - Customer Portal
-      - Partner
-      - Suppliers
-      - Contracts
-  - name: Users & Access
-    tags:
-      - Users
-      - Roles
-      - API Keys
-      - Auth
-      - Profile
-  - name: Billing & Finance
-    tags:
-      - Billing
-      - Subscriptions
-  - name: Communications
-    tags:
-      - Communications
-      - Email Templates
-      - Email Sender Identities
-      - System Email Templates
-      - Forms
-  - name: Workspace & Operations
-    tags:
-      - Workspace
-      - Company
-      - Locations
-      - Inventory
-      - Onboarding
-      - Dashboard
-  - name: Integrations & Automation
-    tags:
-      - Integrations
-      - Webhooks
-      - System Automation
-      - AI
-  - name: Platform & Admin
-    tags:
-      - Admin
-      - Analytics
-      - Audit
-      - Health
-      - Documentation
 components:
   schemas:
     Id:
@@ -163,7 +108,7 @@ components:
           type: string
         sortOrder:
           type: string
-          enum: &a8
+          enum: &a7
             - asc
             - desc
           default: desc
@@ -188,11 +133,9 @@ components:
       properties:
         firstName:
           type: string
-          minLength: 1
           maxLength: 50
         lastName:
           type: string
-          minLength: 1
           maxLength: 50
         email:
           type: string
@@ -201,6 +144,12 @@ components:
           type: string
           minLength: 7
           maxLength: 20
+        status:
+          type: string
+        country:
+          type: string
+        recordImage:
+          type: string
         shippingAddress:
           type: object
           properties:
@@ -252,105 +201,95 @@ components:
         notes:
           type: string
           maxLength: 1000
-      required:
-        - firstName
-        - lastName
     UpdateCustomerInput:
-      anyOf:
-        - type: object
+      type: object
+      properties:
+        firstName:
+          type: string
+          maxLength: 50
+        lastName:
+          type: string
+          maxLength: 50
+        email:
+          type: string
+          nullable: true
+          format: email
+        phone:
+          type: string
+          nullable: true
+        status:
+          type: string
+        country:
+          type: string
+          nullable: true
+        recordImage:
+          type: string
+          nullable: true
+        isActive:
+          type: boolean
+        notes:
+          type: string
+          maxLength: 1000
+        shippingAddress:
+          type: object
           properties:
-            user:
-              type: object
-              properties:
-                firstName:
-                  type: string
-                  minLength: 1
-                  maxLength: 50
-                lastName:
-                  type: string
-                  minLength: 1
-                  maxLength: 50
-                email:
-                  type: string
-                  format: email
-                phone:
-                  type: string
-                  minLength: 7
-                  maxLength: 20
-              additionalProperties: false
-            shippingAddress:
-              type: object
-              properties:
-                street:
-                  type: string
-                  minLength: 1
-                street2:
-                  type: string
-                  nullable: true
-                city:
-                  type: string
-                  minLength: 1
-                state:
-                  type: string
-                  nullable: true
-                postcode:
-                  type: string
-                  minLength: 1
-                country:
-                  type: string
-                  minLength: 1
-              additionalProperties: false
-            billingAddress:
-              type: object
-              properties:
-                street:
-                  type: string
-                  minLength: 1
-                street2:
-                  type: string
-                  nullable: true
-                city:
-                  type: string
-                  minLength: 1
-                state:
-                  type: string
-                  nullable: true
-                postcode:
-                  type: string
-                  minLength: 1
-                country:
-                  type: string
-                  minLength: 1
-              additionalProperties: false
-            isActive:
-              type: boolean
-            notes:
+            street:
               type: string
-              maxLength: 1000
+              minLength: 1
+            street2:
+              type: string
+              nullable: true
+            city:
+              type: string
+              minLength: 1
+            state:
+              type: string
+              nullable: true
+            postcode:
+              type: string
+              minLength: 1
+            country:
+              type: string
+              minLength: 1
           additionalProperties: false
-        - type: object
+        billingAddress:
+          type: object
+          properties:
+            street:
+              type: string
+              minLength: 1
+            street2:
+              type: string
+              nullable: true
+            city:
+              type: string
+              minLength: 1
+            state:
+              type: string
+              nullable: true
+            postcode:
+              type: string
+              minLength: 1
+            country:
+              type: string
+              minLength: 1
+          additionalProperties: false
+        user:
+          type: object
           properties:
             firstName:
               type: string
-              minLength: 1
               maxLength: 50
             lastName:
               type: string
-              minLength: 1
               maxLength: 50
             email:
               type: string
               format: email
             phone:
               type: string
-              minLength: 7
-              maxLength: 20
-            isActive:
-              type: boolean
-            notes:
+            companyId:
               type: string
-              maxLength: 1000
-          additionalProperties: false
     ListCustomersQuery:
       type: object
       properties:
@@ -368,7 +307,7 @@ components:
           default: createdAt
         sortOrder:
           type: string
-          enum: &a22
+          enum: &a24
             - asc
             - desc
           default: desc
@@ -383,10 +322,27 @@ components:
         companyId:
           type: string
           format: uuid
-        userId:
+        firstName:
           type: string
           nullable: true
-          format: uuid
+        lastName:
+          type: string
+          nullable: true
+        email:
+          type: string
+          nullable: true
+          format: email
+        phone:
+          type: string
+          nullable: true
+        status:
+          type: string
+        country:
+          type: string
+          nullable: true
+        recordImage:
+          type: string
+          nullable: true
         billingAddressId:
           type: string
           nullable: true
@@ -401,47 +357,9 @@ components:
         updatedAt:
           type: string
           nullable: true
-        user:
-          type: object
+        deletedAt:
+          type: string
           nullable: true
-          properties:
-            id:
-              type: string
-              format: uuid
-            firstName:
-              type: string
-              nullable: true
-            lastName:
-              type: string
-              nullable: true
-            email:
-              type: string
-              nullable: true
-              format: email
-            phone:
-              type: string
-              nullable: true
-            role:
-              type: string
-            recordImage:
-              type: string
-              nullable: true
-            status:
-              type: string
-            createdAt:
-              type: string
-              nullable: true
-            updatedAt:
-              type: string
-              nullable: true
-          required:
-            - id
-            - firstName
-            - lastName
-            - email
-            - phone
-            - role
-            - status
         billingAddress:
           type: object
           nullable: true
@@ -530,10 +448,27 @@ components:
               companyId:
                 type: string
                 format: uuid
-              userId:
+              firstName:
                 type: string
                 nullable: true
-                format: uuid
+              lastName:
+                type: string
+                nullable: true
+              email:
+                type: string
+                nullable: true
+                format: email
+              phone:
+                type: string
+                nullable: true
+              status:
+                type: string
+              country:
+                type: string
+                nullable: true
+              recordImage:
+                type: string
+                nullable: true
               billingAddressId:
                 type: string
                 nullable: true
@@ -548,47 +483,9 @@ components:
               updatedAt:
                 type: string
                 nullable: true
-              user:
-                type: object
+              deletedAt:
+                type: string
                 nullable: true
-                properties:
-                  id:
-                    type: string
-                    format: uuid
-                  firstName:
-                    type: string
-                    nullable: true
-                  lastName:
-                    type: string
-                    nullable: true
-                  email:
-                    type: string
-                    nullable: true
-                    format: email
-                  phone:
-                    type: string
-                    nullable: true
-                  role:
-                    type: string
-                  recordImage:
-                    type: string
-                    nullable: true
-                  status:
-                    type: string
-                  createdAt:
-                    type: string
-                    nullable: true
-                  updatedAt:
-                    type: string
-                    nullable: true
-                required:
-                  - id
-                  - firstName
-                  - lastName
-                  - email
-                  - phone
-                  - role
-                  - status
               billingAddress:
                 type: object
                 nullable: true
@@ -734,7 +631,7 @@ components:
           maxLength: 20
         category:
           type: string
-          enum: &a23
+          enum: &a25
             - ELECTRONICS
             - MECHANICAL
             - SOFTWARE
@@ -1563,12 +1460,19 @@ components:
         - totalAmount
         - lineItems
       description: Input payload for creating an invoice from line items, an estimate or multiple service records.
-    UpdateTransactionInput:
+    SaveTransactionInput:
       type: object
       properties:
+        id:
+          type: string
+          format: uuid
+          description: Optional transaction identifier; when provided the existing transaction is updated.
+        referenceNumber:
+          type: string
+          description: Optional human-friendly reference; generated server-side when omitted.
         status:
           type: string
-          enum: &a24
+          enum: &a6
             - DRAFT
             - PENDING
             - APPROVED
@@ -1577,6 +1481,161 @@ components:
             - CANCELLED
             - OVERDUE
             - PAID
+          description: Lifecycle status of the transaction.
+        recipientType:
+          type: string
+          enum: &a26
+            - CUSTOMER
+            - COMPANY
+          description: Recipient type for this transaction.
+        recipientId:
+          type: string
+          format: uuid
+          description: Identifier of the customer or company receiving this transaction.
+        issuerCompanyId:
+          type: string
+          format: uuid
+          description: Identifier of the company issuing this transaction.
+        serviceId:
+          type: string
+          format: uuid
+          description: Service associated with the transaction.
+        serviceRecordId:
+          type: string
+          format: uuid
+          description: Service record linked to this transaction when applicable.
+        dueDate:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: string
+              nullable: true
+            - nullable: true
+          description: Due date for payment of this transaction.
+        paymentTerms:
+          type: string
+          description: Optional payment terms text.
+        subTotal:
+          type: number
+          minimum: 0
+          description: Subtotal amount before VAT and shipping.
+        totalAmount:
+          type: number
+          minimum: 0
+          description: Total amount including VAT and shipping.
+        vatAmount:
+          type: number
+          minimum: 0
+          description: Total VAT amount.
+        vatRate:
+          type: number
+          minimum: 0
+          description: Blended VAT rate when applicable.
+        shippingCost:
+          type: number
+          minimum: 0
+          description: Optional explicit shipping/logistics amount.
+        notes:
+          type: string
+          description: Optional internal/customer-visible notes.
+        termsAndConditions:
+          type: string
+          description: Optional terms and conditions text.
+        currencyCode:
+          type: string
+          description: ISO currency code, e.g. GBP or EUR.
+        currencySymbol:
+          type: string
+          description: Display currency symbol, e.g. GBP symbol or EUR symbol.
+        lineItems:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum: *a4
+                description: Classification of the line item (service work, product, solution bundle or logistics).
+              description:
+                type: string
+                minLength: 1
+                description: Human‑readable description that appears on the invoice/transaction line.
+              note:
+                type: string
+                description: Optional internal or customer‑visible note for this line item.
+              quantity:
+                type: number
+                minimum: 0
+                exclusiveMinimum: true
+                description: Number of units being billed for this item.
+              unitPrice:
+                type: number
+                minimum: 0
+                description: Price per unit before discounts and tax.
+              totalPrice:
+                type: number
+                minimum: 0
+                description: Line total after discounts but before any overall invoice adjustments.
+              itemOrder:
+                type: number
+                description: Optional explicit ordering index; defaults to array index when omitted.
+              discount:
+                type: number
+                minimum: 0
+                description: Optional percentage discount to apply to this line (0–100).
+              productId:
+                type: string
+                format: uuid
+                description: Optional product identifier when this line represents a catalog product.
+              solutionId:
+                type: string
+                format: uuid
+                description: Optional solution identifier when this line represents a solution.
+              vatRate:
+                type: number
+                minimum: 0
+                description: Optional VAT rate in percent; used to derive vatAmount when not explicitly provided.
+              vatAmount:
+                type: number
+                minimum: 0
+                description: Optional explicit VAT amount for this line; overrides calculation from vatRate when set.
+              payableByCustomer:
+                type: boolean
+                description: Whether this line is payable by the end‑customer (vs internal or partner charges).
+              isMandatory:
+                type: boolean
+                description: Marks the line as mandatory when approving a transaction; mandatory items must be included in approvals.
+              serviceRecordServiceItemId:
+                type: string
+                format: uuid
+                description: Linked service record service item ID when relevant.
+              isApproved:
+                anyOf:
+                  - type: boolean
+                  - nullable: true
+                  - nullable: true
+                description: Approval flag for recipient actions; nullable when pending decision.
+            required:
+              - type
+              - description
+              - quantity
+              - unitPrice
+              - totalPrice
+            description: Single billing line item used to represent a service, product, solution, shipping or collection charge on a transaction or invoice.
+          minItems: 1
+          description: One or more transaction line items.
+      required:
+        - recipientType
+        - recipientId
+        - issuerCompanyId
+        - lineItems
+      description: Input payload for creating/updating billing transactions.
+    UpdateTransactionInput:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: *a6
           description: New status for the transaction, if being updated.
         dueDate:
           anyOf:
@@ -1767,7 +1826,7 @@ components:
       properties:
         type:
           type: string
-          enum: &a25
+          enum: &a27
             - estimate
             - invoice
             - purchase-order
@@ -1996,6 +2055,31 @@ components:
       required:
         - data
       description: Non‑paginated list response containing payments associated with a billing document.
+    ListEstimatesQuery:
+      type: object
+      properties:
+        page:
+          type: number
+          minimum: 1
+          default: 1
+        limit:
+          type: number
+          minimum: 1
+          maximum: 100
+          default: 10
+        sortBy:
+          type: string
+        sortOrder:
+          type: string
+          enum: *a7
+          default: desc
+        search:
+          type: string
+          description: Free-text search across estimate reference number
+        status:
+          type: string
+          description: Filter by estimate status (e.g. DRAFT, APPROVED)
+      description: Query parameters for listing estimates
     AggregatedSolutionsPreviewInput:
       type: object
       properties:
@@ -2071,7 +2155,7 @@ components:
       properties:
         recipientType:
           type: string
-          enum: &a26
+          enum: &a28
             - CUSTOMER
             - COMPANY
           description: Whether the recipient is a customer or another company.
@@ -2098,7 +2182,7 @@ components:
           format: uuid
         status:
           type: string
-          enum: &a27
+          enum: &a29
             - ACTIVE
             - INACTIVE
           default: ACTIVE
@@ -2130,7 +2214,7 @@ components:
           maxLength: 500
         status:
           type: string
-          enum: &a28
+          enum: &a30
             - ACTIVE
             - INACTIVE
         flow:
@@ -2238,7 +2322,7 @@ components:
       properties:
         status:
           type: string
-          enum: &a29
+          enum: &a31
             - ACTIVE
             - INACTIVE
             - PENDING
@@ -2256,7 +2340,7 @@ components:
           description: Array of service IDs to update
         status:
           type: string
-          enum: &a30
+          enum: &a32
             - ACTIVE
             - INACTIVE
             - PENDING
@@ -2592,7 +2676,7 @@ components:
           description: Field to sort by, e.g. createdAt or updatedAt
         sortOrder:
           type: string
-          enum: &a31
+          enum: &a33
             - asc
             - desc
           default: desc
@@ -2964,7 +3048,7 @@ components:
           description: File size in bytes
         type:
           type: string
-          enum: &a6
+          enum: &a8
             - photo
             - video
             - unknown
@@ -3008,7 +3092,7 @@ components:
                 description: File size in bytes
               type:
                 type: string
-                enum: *a6
+                enum: *a8
                 description: Media type classification based on file MIME type
               uploadedAt:
                 type: string
@@ -3073,6 +3157,19 @@ components:
           maximum: 100
           default: 10
           description: Maximum number of records per page
+        search:
+          type: string
+          description: Optional free-text search across record fields
+        sortBy:
+          type: string
+          description: Field to sort by (e.g. createdAt, name)
+        sortOrder:
+          type: string
+          enum: &a34
+            - asc
+            - desc
+          default: desc
+          description: Sort direction
       required:
         - serviceName
       description: Query parameters for GET /business/service-records/by-partner-service.
@@ -3140,7 +3237,7 @@ components:
           description: API name of the target service
         relationshipType:
           type: string
-          enum: &a7
+          enum: &a9
             - source
             - target
           description: Direction of the relationship relative to the current record
@@ -3191,7 +3288,7 @@ components:
             description: API name of the target service
           relationshipType:
             type: string
-            enum: *a7
+            enum: *a9
             description: Direction of the relationship relative to the current record
           createdAt:
             type: string
@@ -3569,7 +3666,7 @@ components:
       properties:
         type:
           type: string
-          enum: &a34
+          enum: &a37
             - DELIVERY
             - COLLECTION
           description: Shipment type, either 'DELIVERY' (to customer) or 'COLLECTION' (from customer).
@@ -3599,7 +3696,7 @@ components:
           description: Optional service record ID that this shipment is associated with. Empty string is treated as unset.
         courierProvider:
           type: string
-          enum: &a35
+          enum: &a38
             - DPD
             - ROYAL_MAIL
             - PARCELFORCE
@@ -3699,6 +3796,11 @@ components:
             - postcode
             - country
           description: Optional inline recipient address when not using a stored address record. Ignored when recipientAddressId is provided.
+        parcelCount:
+          type: integer
+          minimum: 0
+          exclusiveMinimum: true
+          description: Number of physical parcels for courier booking (e.g. DPD). When omitted, the backend may derive this from line items.
       required:
         - type
         - senderAddressId
@@ -3796,6 +3898,12 @@ components:
           type: string
           nullable: true
           description: When the shipment was last updated.
+        parcelCount:
+          type: integer
+          nullable: true
+          minimum: 0
+          exclusiveMinimum: true
+          description: Declared physical parcel count for courier APIs (e.g. DPD); when null, derived from line items where applicable.
         issuerCompany:
           type: object
           nullable: true
@@ -3942,6 +4050,12 @@ components:
                 type: string
                 nullable: true
                 description: When the shipment was last updated.
+              parcelCount:
+                type: integer
+                nullable: true
+                minimum: 0
+                exclusiveMinimum: true
+                description: Declared physical parcel count for courier APIs (e.g. DPD); when null, derived from line items where applicable.
               issuerCompany:
                 type: object
                 nullable: true
@@ -4028,9 +4142,12 @@ components:
           type: string
         sortOrder:
           type: string
-          enum: *a8
+          enum: *a7
           default: desc
-      description: Pagination and basic sorting parameters for listing shipments.
+        search:
+          type: string
+          description: Optional free-text search across shipment fields
+      description: Pagination, sorting, and search parameters for listing shipments.
     UpdateShipmentInput:
       type: object
       properties:
@@ -4064,6 +4181,12 @@ components:
             - type: string
             - nullable: true
           description: Updated expected delivery date, as a Date or ISO string.
+        parcelCount:
+          type: integer
+          nullable: true
+          minimum: 0
+          exclusiveMinimum: true
+          description: Physical parcel count for courier booking; set null to clear explicit override.
         manualRecipientAddress:
           type: object
           properties:
@@ -4132,6 +4255,12 @@ components:
                 - type: string
                 - nullable: true
               description: Updated expected delivery date, as a Date or ISO string.
+            parcelCount:
+              type: integer
+              nullable: true
+              minimum: 0
+              exclusiveMinimum: true
+              description: Physical parcel count for courier booking; set null to clear explicit override.
             manualRecipientAddress:
               type: object
               properties:
@@ -4301,6 +4430,12 @@ components:
                 type: string
                 nullable: true
                 description: When the shipment was last updated.
+              parcelCount:
+                type: integer
+                nullable: true
+                minimum: 0
+                exclusiveMinimum: true
+                description: Declared physical parcel count for courier APIs (e.g. DPD); when null, derived from line items where applicable.
               issuerCompany:
                 type: object
                 nullable: true
@@ -4445,6 +4580,12 @@ components:
                 type: string
                 nullable: true
                 description: When the shipment was last updated.
+              parcelCount:
+                type: integer
+                nullable: true
+                minimum: 0
+                exclusiveMinimum: true
+                description: Declared physical parcel count for courier APIs (e.g. DPD); when null, derived from line items where applicable.
               issuerCompany:
                 type: object
                 nullable: true
@@ -4589,6 +4730,12 @@ components:
                 type: string
                 nullable: true
                 description: When the shipment was last updated.
+              parcelCount:
+                type: integer
+                nullable: true
+                minimum: 0
+                exclusiveMinimum: true
+                description: Declared physical parcel count for courier APIs (e.g. DPD); when null, derived from line items where applicable.
               issuerCompany:
                 type: object
                 nullable: true
@@ -4782,6 +4929,12 @@ components:
                     type: string
                     nullable: true
                     description: When the shipment was last updated.
+                  parcelCount:
+                    type: integer
+                    nullable: true
+                    minimum: 0
+                    exclusiveMinimum: true
+                    description: Declared physical parcel count for courier APIs (e.g. DPD); when null, derived from line items where applicable.
                   issuerCompany:
                     type: object
                     nullable: true
@@ -4926,6 +5079,12 @@ components:
                     type: string
                     nullable: true
                     description: When the shipment was last updated.
+                  parcelCount:
+                    type: integer
+                    nullable: true
+                    minimum: 0
+                    exclusiveMinimum: true
+                    description: Declared physical parcel count for courier APIs (e.g. DPD); when null, derived from line items where applicable.
                   issuerCompany:
                     type: object
                     nullable: true
@@ -5070,6 +5229,12 @@ components:
                     type: string
                     nullable: true
                     description: When the shipment was last updated.
+                  parcelCount:
+                    type: integer
+                    nullable: true
+                    minimum: 0
+                    exclusiveMinimum: true
+                    description: Declared physical parcel count for courier APIs (e.g. DPD); when null, derived from line items where applicable.
                   issuerCompany:
                     type: object
                     nullable: true
@@ -5232,10 +5397,27 @@ components:
               companyId:
                 type: string
                 format: uuid
-              userId:
+              firstName:
                 type: string
                 nullable: true
-                format: uuid
+              lastName:
+                type: string
+                nullable: true
+              email:
+                type: string
+                nullable: true
+                format: email
+              phone:
+                type: string
+                nullable: true
+              status:
+                type: string
+              country:
+                type: string
+                nullable: true
+              recordImage:
+                type: string
+                nullable: true
               billingAddressId:
                 type: string
                 nullable: true
@@ -5250,47 +5432,9 @@ components:
               updatedAt:
                 type: string
                 nullable: true
-              user:
-                type: object
+              deletedAt:
+                type: string
                 nullable: true
-                properties:
-                  id:
-                    type: string
-                    format: uuid
-                  firstName:
-                    type: string
-                    nullable: true
-                  lastName:
-                    type: string
-                    nullable: true
-                  email:
-                    type: string
-                    nullable: true
-                    format: email
-                  phone:
-                    type: string
-                    nullable: true
-                  role:
-                    type: string
-                  recordImage:
-                    type: string
-                    nullable: true
-                  status:
-                    type: string
-                  createdAt:
-                    type: string
-                    nullable: true
-                  updatedAt:
-                    type: string
-                    nullable: true
-                required:
-                  - id
-                  - firstName
-                  - lastName
-                  - email
-                  - phone
-                  - role
-                  - status
               billingAddress:
                 type: object
                 nullable: true
@@ -5490,6 +5634,12 @@ components:
             type: string
             nullable: true
             description: When the shipment was last updated.
+          parcelCount:
+            type: integer
+            nullable: true
+            minimum: 0
+            exclusiveMinimum: true
+            description: Declared physical parcel count for courier APIs (e.g. DPD); when null, derived from line items where applicable.
           issuerCompany:
             type: object
             nullable: true
@@ -5644,6 +5794,12 @@ components:
             type: string
             nullable: true
             description: When the shipment was last updated.
+          parcelCount:
+            type: integer
+            nullable: true
+            minimum: 0
+            exclusiveMinimum: true
+            description: Declared physical parcel count for courier APIs (e.g. DPD); when null, derived from line items where applicable.
           issuerCompany:
             type: object
             nullable: true
@@ -5787,7 +5943,7 @@ components:
               - methodId
               - quantity
             description: Single logistics method selection used when syncing shipments for a transaction.
-          default: &a32 []
+          default: &a35 []
           description: Selections for collection shipments to create.
         deliverySelections:
           type: array
@@ -5813,7 +5969,7 @@ components:
               - methodId
               - quantity
             description: Single logistics method selection used when syncing shipments for a transaction.
-          default: &a33 []
+          default: &a36 []
           description: Selections for delivery shipments to create.
       required:
         - transactionId
@@ -5846,7 +6002,7 @@ components:
           description: Field to sort by, e.g. createdAt or updatedAt.
         sortOrder:
           type: string
-          enum: &a36
+          enum: &a39
             - asc
             - desc
           default: desc
@@ -5959,6 +6115,12 @@ components:
                 type: string
                 nullable: true
                 description: When the shipment was last updated.
+              parcelCount:
+                type: integer
+                nullable: true
+                minimum: 0
+                exclusiveMinimum: true
+                description: Declared physical parcel count for courier APIs (e.g. DPD); when null, derived from line items where applicable.
               issuerCompany:
                 type: object
                 nullable: true
@@ -6157,9 +6319,48 @@ components:
               - id
             description: Task list definition used in workspace views and solution links
           description: Task lists matching the request
+        pagination:
+          type: object
+          properties:
+            page:
+              type: number
+            limit:
+              type: number
+            total:
+              type: number
+            totalPages:
+              type: number
+          required:
+            - page
+            - limit
+            - total
+            - totalPages
+          description: Pagination metadata when the list is server-paginated
       required:
         - taskLists
       description: Response wrapper for endpoints that return multiple task lists
+    ListTaskListsQuery:
+      type: object
+      properties:
+        page:
+          type: number
+          minimum: 1
+          default: 1
+        limit:
+          type: number
+          minimum: 1
+          maximum: 100
+          default: 10
+        sortBy:
+          type: string
+        sortOrder:
+          type: string
+          enum: *a7
+          default: desc
+        search:
+          type: string
+          description: Free-text search across task list title
+      description: Query parameters for listing task lists
     TaskListTasksResponse:
       type: object
       properties:
@@ -6406,7 +6607,7 @@ components:
           description: Filter workspace items to a specific assigned user
         priorityLevel:
           type: string
-          enum: &a9
+          enum: &a10
             - CRITICAL
             - HIGH
             - MEDIUM
@@ -6415,7 +6616,7 @@ components:
           description: Filter workspace items to a single priority level
         showCompleted:
           type: string
-          enum: &a37
+          enum: &a40
             - "true"
             - "false"
           description: "Whether to include fully completed workspace items (default: false)"
@@ -6468,7 +6669,7 @@ components:
           properties:
             level:
               type: string
-              enum: *a9
+              enum: *a10
               description: Calculated priority bucket
             score:
               type: number
@@ -6508,7 +6709,7 @@ components:
       properties:
         level:
           type: string
-          enum: *a9
+          enum: *a10
           description: Calculated priority bucket
         score:
           type: number
@@ -6573,7 +6774,7 @@ components:
                 properties:
                   level:
                     type: string
-                    enum: *a9
+                    enum: *a10
                     description: Calculated priority bucket
                   score:
                     type: number
@@ -6665,7 +6866,7 @@ components:
           maxLength: 15
         role:
           type: string
-          enum: &a38
+          enum: &a41
             - USER
             - ADMIN
             - MANAGER
@@ -6692,7 +6893,7 @@ components:
           maxLength: 15
         role:
           type: string
-          enum: &a39
+          enum: &a42
             - USER
             - ADMIN
             - MANAGER
@@ -6914,6 +7115,28 @@ components:
           description: Error message if upload failed
       required:
         - success
+    ListUsersQuery:
+      type: object
+      properties:
+        page:
+          type: number
+          minimum: 1
+          default: 1
+        limit:
+          type: number
+          minimum: 1
+          maximum: 100
+          default: 10
+        sortBy:
+          type: string
+        sortOrder:
+          type: string
+          enum: *a7
+          default: desc
+        search:
+          type: string
+          description: Optional free-text search across user name or email
+      description: Query parameters for listing users with pagination and search
     CreateRoleInput:
       type: object
       properties:
@@ -7130,7 +7353,7 @@ components:
           minimum: 0
         status:
           type: string
-          enum: &a40
+          enum: &a44
             - ACTIVE
             - INACTIVE
     SolutionDto:
@@ -7162,6 +7385,27 @@ components:
         - id
         - companyId
         - name
+    ListSolutionsQuery:
+      type: object
+      properties:
+        includeDeleted:
+          type: string
+          enum: &a43
+            - "true"
+            - "false"
+          description: Include soft-deleted solutions
+        page:
+          type: number
+          minimum: 1
+          description: Page number (1-based)
+        limit:
+          type: number
+          minimum: 1
+          maximum: 100
+          description: Items per page (max 100)
+        search:
+          type: string
+          description: Optional free-text search across solution name or description
     SolutionListResponse:
       type: object
       properties:
@@ -7197,6 +7441,23 @@ components:
               - companyId
               - name
           description: Array of solution objects
+        pagination:
+          type: object
+          properties:
+            page:
+              type: number
+            limit:
+              type: number
+            total:
+              type: number
+            totalPages:
+              type: number
+          required:
+            - page
+            - limit
+            - total
+            - totalPages
+          description: Pagination metadata
       required:
         - data
     AssignSolutionToRecordInput:
@@ -7333,14 +7594,14 @@ components:
         - serviceId
     InventoryProductStatus:
       type: string
-      enum: &a10
+      enum: &a11
         - DRAFT
         - PUBLISHED
         - INACTIVE
       description: Publication status of a product in the inventory catalogue
     InventoryStockLevelFilter:
       type: string
-      enum: &a11
+      enum: &a12
         - IN_STOCK
         - LOW_STOCK
         - OUT_OF_STOCK
@@ -7380,7 +7641,7 @@ components:
           description: Optional category or family label used for grouping and filters
         status:
           type: string
-          enum: *a10
+          enum: *a11
           default: DRAFT
           description: Initial publication status
         minStockLevel:
@@ -7424,7 +7685,7 @@ components:
           description: Updated unit price
         status:
           type: string
-          enum: *a10
+          enum: *a11
           description: Updated publication status
         minStockLevel:
           type: integer
@@ -7590,9 +7851,12 @@ components:
           type: string
         sortOrder:
           type: string
-          enum: *a8
+          enum: *a7
           default: desc
-      description: Query parameters for listing products (page, limit, sort)
+        search:
+          type: string
+          description: Optional free-text search across product name, SKU, etc.
+      description: Query parameters for listing products (page, limit, sort, search)
     SearchProductsQuery:
       type: object
       properties:
@@ -7612,7 +7876,7 @@ components:
           description: Free‑text search against product name, SKU and description
         status:
           type: string
-          enum: *a10
+          enum: *a11
           description: Filter products by publication status
         supplierId:
           type: string
@@ -7623,7 +7887,7 @@ components:
           description: Filter products by category label
         stockLevel:
           type: string
-          enum: *a11
+          enum: *a12
           description: Filter by computed stock level bucket
         priceMin:
           type: number
@@ -7660,7 +7924,7 @@ components:
       properties:
         status:
           type: string
-          enum: *a10
+          enum: *a11
           description: Publication status to filter by
       required:
         - status
@@ -7722,7 +7986,7 @@ components:
           description: IDs of products whose status should be updated
         status:
           type: string
-          enum: *a10
+          enum: *a11
           description: New status applied to all provided products
       required:
         - productIds
@@ -7819,6 +8083,21 @@ components:
     ListPurchaseOrdersQuery:
       type: object
       properties:
+        page:
+          type: number
+          minimum: 1
+          default: 1
+        limit:
+          type: number
+          minimum: 1
+          maximum: 100
+          default: 10
+        sortBy:
+          type: string
+        sortOrder:
+          type: string
+          enum: *a7
+          default: desc
         partnerCompanyId:
           type: string
           format: uuid
@@ -7827,6 +8106,12 @@ components:
           type: string
           format: uuid
           description: Company whose perspective the list is being viewed from; defaults to authenticated company
+        search:
+          type: string
+          description: Optional free-text search across PO number or supplier name
+        status:
+          type: string
+          description: Optional status filter (e.g. DRAFT, SENT, APPROVED)
       description: Query parameters for GET /business/inventory/purchase-orders
     PurchaseOrderDto:
       type: object
@@ -7943,7 +8228,7 @@ components:
           type: string
         sortOrder:
           type: string
-          enum: *a8
+          enum: *a7
           default: desc
       description: Query parameters for GET /business/inventory/distributor-products (page, limit, sort)
     CreateDistributorProductInput:
@@ -7955,8 +8240,9 @@ components:
       type: object
       properties:
         file:
-          nullable: true
+          type: string
           description: CSV file uploaded in multipart/form-data field "file"
+          format: binary
         headerMapping:
           type: object
           additionalProperties:
@@ -8065,7 +8351,8 @@ components:
         files:
           type: array
           items:
-            nullable: true
+            type: string
+            format: binary
           minItems: 1
           description: One or more image files uploaded in "files" fields
         productId:
@@ -8120,7 +8407,8 @@ components:
         files:
           type: array
           items:
-            nullable: true
+            type: string
+            format: binary
           minItems: 1
           description: One or more image files uploaded in "files" fields
         distributorProductId:
@@ -8286,7 +8574,7 @@ components:
           format: uuid
         type:
           type: string
-          enum: &a41
+          enum: &a45
             - EMAIL
             - SMS
             - NOTIFICATION
@@ -8300,7 +8588,7 @@ components:
           minLength: 1
         status:
           type: string
-          enum: &a42
+          enum: &a46
             - DRAFT
             - SCHEDULED
             - SENT
@@ -8344,7 +8632,7 @@ components:
           format: uuid
         type:
           type: string
-          enum: &a43
+          enum: &a47
             - EMAIL
             - SMS
             - NOTIFICATION
@@ -8357,7 +8645,7 @@ components:
           minLength: 1
         status:
           type: string
-          enum: &a44
+          enum: &a48
             - DRAFT
             - SCHEDULED
             - SENT
@@ -8513,7 +8801,7 @@ components:
       properties:
         status:
           type: string
-          enum: &a12
+          enum: &a13
             - DRAFT
             - SCHEDULED
             - SENT
@@ -8534,7 +8822,7 @@ components:
           description: List of communication IDs to update
         status:
           type: string
-          enum: *a12
+          enum: *a13
           description: New status to apply to all specified communications
       required:
         - communicationIds
@@ -8780,13 +9068,13 @@ components:
           description: Filter by template category
         isSystem:
           type: string
-          enum: &a45
+          enum: &a49
             - "true"
             - "false"
           description: Filter by system template flag
         isActive:
           type: string
-          enum: &a46
+          enum: &a50
             - "true"
             - "false"
           description: Filter by active status
@@ -8803,7 +9091,7 @@ components:
           description: Template display name
         category:
           type: string
-          enum: &a13
+          enum: &a14
             - SYSTEM_COLLECTION_REQUEST
             - SYSTEM_DELIVERY_CONFIRMATION
             - SYSTEM_ESTIMATE
@@ -8836,7 +9124,7 @@ components:
           description: Template display name
         category:
           type: string
-          enum: *a13
+          enum: *a14
           description: Template category
         subjectTemplate:
           type: string
@@ -9175,10 +9463,18 @@ components:
               description: Optional sender identity ID
             toType:
               type: string
-              description: Recipient type (e.g. customer, partner)
+              enum: &a51
+                - customer
+                - internal
+                - custom
+                - specified
+              description: Recipient type
             toFieldPath:
               type: string
-              description: Dot-path to the recipient email field
+              description: Dot-path to the recipient email field (when toType=custom)
+            toEmail:
+              type: string
+              description: Specified recipient email address (when toType=specified)
           required:
             - automationId
             - templateId
@@ -9665,12 +9961,15 @@ components:
           nullable: true
           minimum: 0
           description: Number of items to skip
+        search:
+          type: string
+          description: Case-insensitive search across partner / connection fields
         sortBy:
           type: string
           description: Field to sort results by
         sortOrder:
           type: string
-          enum: &a47
+          enum: &a52
             - asc
             - desc
           description: Sort direction
@@ -9761,6 +10060,133 @@ components:
         - id
         - companyAId
         - status
+    PartnerCompanySummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        apiName:
+          type: string
+        email:
+          type: string
+          nullable: true
+        phone:
+          type: string
+          nullable: true
+        type:
+          type: string
+          nullable: true
+        recordImage:
+          type: string
+          nullable: true
+        billingAddress:
+          type: object
+          nullable: true
+          properties:
+            city:
+              type: string
+            country:
+              type: string
+          required:
+            - city
+            - country
+      required:
+        - id
+        - name
+        - apiName
+    PartnerListItem:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Connected partner record ID
+        status:
+          type: string
+          description: Partnership status
+        createdAt:
+          type: string
+          nullable: true
+          description: When the partnership was created
+        updatedAt:
+          type: string
+          nullable: true
+          description: When the partnership was last updated
+        inviterCompanyId:
+          type: string
+          format: uuid
+          description: Company that created the invitation
+        companyAId:
+          type: string
+          format: uuid
+          description: ID of the first company in the partnership
+        companyBId:
+          type: string
+          format: uuid
+          description: ID of the second company in the partnership
+        company:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: string
+              format: uuid
+            name:
+              type: string
+            apiName:
+              type: string
+            email:
+              type: string
+              nullable: true
+            phone:
+              type: string
+              nullable: true
+            type:
+              type: string
+              nullable: true
+            recordImage:
+              type: string
+              nullable: true
+            billingAddress:
+              type: object
+              nullable: true
+              properties:
+                city:
+                  type: string
+                country:
+                  type: string
+              required:
+                - city
+                - country
+          required:
+            - id
+            - name
+            - apiName
+          description: Partner company profile (the other company)
+        partnerCompanyId:
+          type: string
+          format: uuid
+          description: ID of the partner company (not the session company)
+        connectedPartnerId:
+          type: string
+          format: uuid
+          description: Same as id; explicit for invitation actions
+        relationshipType:
+          type: string
+          enum: &a15
+            - INVITER
+            - INVITEE
+          description: Whether the session company invited or was invited
+      required:
+        - id
+        - status
+        - inviterCompanyId
+        - companyAId
+        - companyBId
+        - relationshipType
     PartnerListResponse:
       type: object
       properties:
@@ -9772,21 +10198,10 @@ components:
               id:
                 type: string
                 format: uuid
-                description: Partner record ID
-              companyAId:
-                type: string
-                format: uuid
-                description: ID of the first company in the partnership
-              companyBId:
-                type: string
-                format: uuid
-                description: ID of the second company in the partnership
+                description: Connected partner record ID
               status:
                 type: string
-                description: Current partnership status
-              type:
-                type: string
-                description: Partner type
+                description: Partnership status
               createdAt:
                 type: string
                 nullable: true
@@ -9795,11 +10210,77 @@ components:
                 type: string
                 nullable: true
                 description: When the partnership was last updated
+              inviterCompanyId:
+                type: string
+                format: uuid
+                description: Company that created the invitation
+              companyAId:
+                type: string
+                format: uuid
+                description: ID of the first company in the partnership
+              companyBId:
+                type: string
+                format: uuid
+                description: ID of the second company in the partnership
+              company:
+                type: object
+                nullable: true
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  apiName:
+                    type: string
+                  email:
+                    type: string
+                    nullable: true
+                  phone:
+                    type: string
+                    nullable: true
+                  type:
+                    type: string
+                    nullable: true
+                  recordImage:
+                    type: string
+                    nullable: true
+                  billingAddress:
+                    type: object
+                    nullable: true
+                    properties:
+                      city:
+                        type: string
+                      country:
+                        type: string
+                    required:
+                      - city
+                      - country
+                required:
+                  - id
+                  - name
+                  - apiName
+                description: Partner company profile (the other company)
+              partnerCompanyId:
+                type: string
+                format: uuid
+                description: ID of the partner company (not the session company)
+              connectedPartnerId:
+                type: string
+                format: uuid
+                description: Same as id; explicit for invitation actions
+              relationshipType:
+                type: string
+                enum: *a15
+                description: Whether the session company invited or was invited
             required:
               - id
-              - companyAId
               - status
-          description: List of partner records
+              - inviterCompanyId
+              - companyAId
+              - companyBId
+              - relationshipType
+          description: Partner connections with company details
         pagination:
           type: object
           properties:
@@ -9936,7 +10417,7 @@ components:
       properties:
         activeOnly:
           type: string
-          enum: &a48
+          enum: &a53
             - "true"
             - "false"
           description: If false, includes inactive locations; default true
@@ -10713,7 +11194,7 @@ components:
       properties:
         companyType:
           type: string
-          enum: &a49
+          enum: &a54
             - SERVICE_FULFILLER
             - SERVICE_CREATOR
           description: Type of company being registered
@@ -10898,7 +11379,7 @@ components:
           description: Date the contract was last modified
         status:
           type: string
-          enum: &a14
+          enum: &a16
             - Draft
             - Published
             - Archived
@@ -10960,7 +11441,7 @@ components:
                 description: Date the contract was last modified
               status:
                 type: string
-                enum: *a14
+                enum: *a16
                 description: Current contract status
               uploadedBy:
                 type: string
@@ -11163,7 +11644,7 @@ components:
           description: Unique identifier of the subscription record.
         plan:
           type: string
-          enum: &a50
+          enum: &a55
             - BASIC
             - STANDARD
             - ENTERPRISE
@@ -11199,14 +11680,14 @@ components:
       properties:
         plan:
           type: string
-          enum: &a51
+          enum: &a56
             - BASIC
             - STANDARD
             - ENTERPRISE
           description: Target subscription plan tier to switch to.
         status:
           type: string
-          enum: &a52
+          enum: &a57
             - TRIAL
             - ACTIVE
             - PAST_DUE
@@ -11386,7 +11867,7 @@ components:
       properties:
         includeDeleted:
           type: string
-          enum: &a53
+          enum: &a58
             - "true"
             - "false"
           description: Include soft-deleted forms
@@ -11399,6 +11880,18 @@ components:
           minimum: 1
           maximum: 100
           description: Items per page (max 100)
+        search:
+          type: string
+          description: Optional free-text search across form name, description, apiName
+        sortBy:
+          type: string
+          description: Field to sort by (e.g. name, createdAt)
+        sortOrder:
+          type: string
+          enum: &a59
+            - asc
+            - desc
+          description: Sort direction
     CreateFormInput:
       type: object
       properties:
@@ -11413,7 +11906,7 @@ components:
           description: Optional description
         status:
           type: string
-          enum: &a54
+          enum: &a60
             - ACTIVE
             - INACTIVE
             - DRAFT
@@ -12276,7 +12769,7 @@ components:
           description: Filter by service ID
         company:
           type: string
-          enum: &a55
+          enum: &a61
             - "true"
           description: If true, return all company nodes
     CreateDocumentationNodeInput:
@@ -12490,7 +12983,7 @@ components:
           format: email
         type:
           type: string
-          enum: &a56
+          enum: &a62
             - TENANT
             - SYSTEM
         isDefault:
@@ -12519,7 +13012,7 @@ components:
           format: email
         type:
           type: string
-          enum: &a57
+          enum: &a63
             - TENANT
             - SYSTEM
         isDefault:
@@ -12547,7 +13040,7 @@ components:
           type: string
         type:
           type: string
-          enum: &a15
+          enum: &a17
             - TENANT
             - SYSTEM
         isDefault:
@@ -12599,7 +13092,7 @@ components:
                 type: string
               type:
                 type: string
-                enum: *a15
+                enum: *a17
               isDefault:
                 type: boolean
               isVerified:
@@ -12746,7 +13239,7 @@ components:
       properties:
         includeDeleted:
           type: string
-          enum: &a58
+          enum: &a64
             - "true"
             - "false"
           description: Include soft-deleted items
@@ -13079,7 +13572,7 @@ components:
       properties:
         includeDeleted:
           type: string
-          enum: &a59
+          enum: &a65
             - "true"
             - "false"
           description: Include soft-deleted custom fields
@@ -13096,7 +13589,7 @@ components:
           maxLength: 200
         type:
           type: string
-          enum: &a16
+          enum: &a18
             - STRING
             - NUMBER
             - DATE
@@ -13128,7 +13621,7 @@ components:
           maxLength: 200
         type:
           type: string
-          enum: *a16
+          enum: *a18
         required:
           type: boolean
         options:
@@ -13250,7 +13743,7 @@ components:
       properties:
         category:
           type: string
-          enum: &a17
+          enum: &a19
             - auth
             - transaction
             - billing
@@ -13259,7 +13752,7 @@ components:
           description: Filter by category
         isActive:
           type: string
-          enum: &a60
+          enum: &a66
             - "true"
             - "false"
           description: Filter by active status
@@ -13281,7 +13774,7 @@ components:
           description: Human-readable template name
         category:
           type: string
-          enum: *a17
+          enum: *a19
           description: Template category
         subjectTemplate:
           type: string
@@ -13320,7 +13813,7 @@ components:
           description: Human-readable template name
         category:
           type: string
-          enum: *a17
+          enum: *a19
           description: Template category
         subjectTemplate:
           type: string
@@ -14306,85 +14799,54 @@ components:
       required:
         - token
       description: Request payload for POST /auth/validate-magic-link
-    FindUserByPhoneInput:
+    FindCustomerByPhoneInput:
       type: object
       properties:
-        phoneNumber:
+        phone:
           type: string
           minLength: 1
-          description: User phone number used for lookup
+          description: Customer phone number used for lookup
         companyApiName:
           type: string
-          description: Optional company API name to scope the search
+          minLength: 1
+          description: Company API name identifier to scope the lookup
       required:
-        - phoneNumber
-      description: Request payload for POST /auth/find-user-by-phone
-    FindUserByPhoneResponse:
+        - phone
+        - companyApiName
+      description: Request payload for POST /auth/find-customer-by-phone
+    FindCustomerByPhoneResponse:
       type: object
       properties:
-        success:
+        exists:
           type: boolean
-          description: Whether the lookup succeeded
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-              description: User ID
-            email:
-              type: string
-              nullable: true
-              format: email
-            phone:
-              type: string
-              nullable: true
-            firstName:
-              type: string
-              nullable: true
-            lastName:
-              type: string
-              nullable: true
-            role:
-              type: string
-              description: User role name
-            company:
-              type: object
-              properties:
-                id:
-                  type: string
-                  format: uuid
-                  description: Company ID
-                name:
-                  type: string
-                  description: Company display name
-                apiName:
-                  type: string
-                  description: Company API name identifier
-                type:
-                  type: string
-                  description: Company type or category
-                recordImage:
-                  type: string
-                  nullable: true
-                  description: Optional URL or key for the company record image
-              required:
-                - id
-                - name
-                - apiName
-                - type
-              description: Company associated with the user
-          required:
-            - id
-            - role
-            - company
-          description: User and company information when lookup succeeds
-        error:
-          type: string
-          description: Error message when success is false
+          description: Whether a customer with the given phone exists in the scoped company
       required:
-        - success
-      description: Response for POST /auth/find-user-by-phone
+        - exists
+      description: Response for POST /auth/find-customer-by-phone
+    FindCustomerByEmailInput:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          description: Customer email used for lookup
+        companyApiName:
+          type: string
+          minLength: 1
+          description: Company API name identifier to scope the lookup
+      required:
+        - email
+        - companyApiName
+      description: Request payload for POST /auth/find-customer-by-email
+    FindCustomerByEmailResponse:
+      type: object
+      properties:
+        exists:
+          type: boolean
+          description: Whether a customer with the given email exists in the scoped company
+      required:
+        - exists
+      description: Response for POST /auth/find-customer-by-email
     UserByIdResponse:
       type: object
       properties:
@@ -15654,7 +16116,7 @@ components:
                 description: Human-readable recommendation detail
               priority:
                 type: string
-                enum: &a62
+                enum: &a68
                   - low
                   - medium
                   - high
@@ -15681,7 +16143,7 @@ components:
                 description: Alert details and remediation guidance
               severity:
                 type: string
-                enum: &a63
+                enum: &a69
                   - low
                   - medium
                   - high
@@ -15728,7 +16190,7 @@ components:
       properties:
         type:
           type: string
-          enum: &a18
+          enum: &a20
             - service
             - customer
             - partner
@@ -15742,7 +16204,7 @@ components:
           properties:
             type:
               type: string
-              enum: *a18
+              enum: *a20
               description: Type key for this data source
             fields:
               type: array
@@ -15793,12 +16255,12 @@ components:
           description: Dashboard data source schema (fields and relationships)
         - type: object
           properties:
-            service: &a19
+            service: &a21
               type: object
               properties:
                 type:
                   type: string
-                  enum: *a18
+                  enum: *a20
                   description: Type key for this data source
                 fields:
                   type: array
@@ -15847,10 +16309,10 @@ components:
                 - type
                 - fields
               description: Dashboard data source schema (fields and relationships)
-            customer: *a19
-            partner: *a19
-            transaction: *a19
-            inventory: *a19
+            customer: *a21
+            partner: *a21
+            transaction: *a21
+            inventory: *a21
       description: "Dashboard data-source schemas: either a single schema (when type is specified) or a map of all schemas by type"
     AnalyticsDateRangeWindowQuery:
       type: object
@@ -15865,7 +16327,7 @@ components:
           description: Required ISO8601 end date (inclusive) for the reporting window
         groupBy:
           type: string
-          enum: &a20
+          enum: &a22
             - day
             - week
             - month
@@ -15911,7 +16373,7 @@ components:
               description: Required ISO8601 end date (inclusive) for the reporting window
             groupBy:
               type: string
-              enum: *a20
+              enum: *a22
               default: month
               description: Aggregation grain for charts and time-series (defaults to month)
           required:
@@ -15969,7 +16431,7 @@ components:
       properties:
         status:
           type: string
-          enum: &a66
+          enum: &a72
             - healthy
             - unhealthy
         timestamp:
@@ -16053,7 +16515,7 @@ components:
           description: Identifier of the deleted connection record (matches the supplied connectionId)
         type:
           type: string
-          enum: &a64
+          enum: &a70
             - integration
             - auth_account
           description: "Storage type of the removed connection: 'integration' for IntegrationConnection rows, 'auth_account' for legacy AuthAccount-based Gmail connections."
@@ -16080,7 +16542,7 @@ components:
           description: Size of the uploaded file in bytes
         category:
           type: string
-          enum: &a21
+          enum: &a23
             - PROFILE
             - LOGO
             - DOCUMENT
@@ -16123,7 +16585,7 @@ components:
               description: Internal storage key for the uploaded file, used by backend services
             category:
               type: string
-              enum: *a21
+              enum: *a23
               description: Category under which the file was stored
             uploadedAt:
               type: string
@@ -16406,26 +16868,26 @@ components:
     DPDIntegrationCredentialsInput:
       type: object
       properties:
-        username:
+        apiKey:
           type: string
           minLength: 1
-          description: DPD web-services username for the current company
-        password:
+          description: DPD Customer API key for the current company
+        apiSecret:
           type: string
           minLength: 1
-          description: DPD web-services password for the current company
+          description: DPD Customer API secret for the current company
         accountNumber:
           type: string
           minLength: 1
           description: Optional DPD account number used for identification and billing
         action:
           type: string
-          enum: &a65
+          enum: &a71
             - verify
           description: When set to 'verify', the endpoint only verifies the credentials and does not persist them. Any other value (or omission) results in saving/updating the credentials.
       required:
-        - username
-        - password
+        - apiKey
+        - apiSecret
       description: Request body for POST /integrations/logistics/dpd (save or verify DPD credentials)
     DPDIntegrationSaveResponse:
       type: object
@@ -16750,7 +17212,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a22
+            enum: *a24
             default: desc
           required: false
           name: sortOrder
@@ -16779,10 +17241,27 @@ paths:
                         companyId:
                           type: string
                           format: uuid
-                        userId:
+                        firstName:
                           type: string
                           nullable: true
-                          format: uuid
+                        lastName:
+                          type: string
+                          nullable: true
+                        email:
+                          type: string
+                          nullable: true
+                          format: email
+                        phone:
+                          type: string
+                          nullable: true
+                        status:
+                          type: string
+                        country:
+                          type: string
+                          nullable: true
+                        recordImage:
+                          type: string
+                          nullable: true
                         billingAddressId:
                           type: string
                           nullable: true
@@ -16797,47 +17276,9 @@ paths:
                         updatedAt:
                           type: string
                           nullable: true
-                        user:
-                          type: object
+                        deletedAt:
+                          type: string
                           nullable: true
-                          properties:
-                            id:
-                              type: string
-                              format: uuid
-                            firstName:
-                              type: string
-                              nullable: true
-                            lastName:
-                              type: string
-                              nullable: true
-                            email:
-                              type: string
-                              nullable: true
-                              format: email
-                            phone:
-                              type: string
-                              nullable: true
-                            role:
-                              type: string
-                            recordImage:
-                              type: string
-                              nullable: true
-                            status:
-                              type: string
-                            createdAt:
-                              type: string
-                              nullable: true
-                            updatedAt:
-                              type: string
-                              nullable: true
-                          required:
-                            - id
-                            - firstName
-                            - lastName
-                            - email
-                            - phone
-                            - role
-                            - status
                         billingAddress:
                           type: object
                           nullable: true
@@ -16942,11 +17383,9 @@ paths:
               properties:
                 firstName:
                   type: string
-                  minLength: 1
                   maxLength: 50
                 lastName:
                   type: string
-                  minLength: 1
                   maxLength: 50
                 email:
                   type: string
@@ -16955,6 +17394,12 @@ paths:
                   type: string
                   minLength: 7
                   maxLength: 20
+                status:
+                  type: string
+                country:
+                  type: string
+                recordImage:
+                  type: string
                 shippingAddress:
                   type: object
                   properties:
@@ -17006,9 +17451,6 @@ paths:
                 notes:
                   type: string
                   maxLength: 1000
-              required:
-                - firstName
-                - lastName
       responses:
         "201":
           description: Customer created
@@ -17023,10 +17465,27 @@ paths:
                   companyId:
                     type: string
                     format: uuid
-                  userId:
+                  firstName:
                     type: string
                     nullable: true
-                    format: uuid
+                  lastName:
+                    type: string
+                    nullable: true
+                  email:
+                    type: string
+                    nullable: true
+                    format: email
+                  phone:
+                    type: string
+                    nullable: true
+                  status:
+                    type: string
+                  country:
+                    type: string
+                    nullable: true
+                  recordImage:
+                    type: string
+                    nullable: true
                   billingAddressId:
                     type: string
                     nullable: true
@@ -17041,47 +17500,9 @@ paths:
                   updatedAt:
                     type: string
                     nullable: true
-                  user:
-                    type: object
+                  deletedAt:
+                    type: string
                     nullable: true
-                    properties:
-                      id:
-                        type: string
-                        format: uuid
-                      firstName:
-                        type: string
-                        nullable: true
-                      lastName:
-                        type: string
-                        nullable: true
-                      email:
-                        type: string
-                        nullable: true
-                        format: email
-                      phone:
-                        type: string
-                        nullable: true
-                      role:
-                        type: string
-                      recordImage:
-                        type: string
-                        nullable: true
-                      status:
-                        type: string
-                      createdAt:
-                        type: string
-                        nullable: true
-                      updatedAt:
-                        type: string
-                        nullable: true
-                    required:
-                      - id
-                      - firstName
-                      - lastName
-                      - email
-                      - phone
-                      - role
-                      - status
                   billingAddress:
                     type: object
                     nullable: true
@@ -17181,10 +17602,27 @@ paths:
                   companyId:
                     type: string
                     format: uuid
-                  userId:
+                  firstName:
                     type: string
                     nullable: true
-                    format: uuid
+                  lastName:
+                    type: string
+                    nullable: true
+                  email:
+                    type: string
+                    nullable: true
+                    format: email
+                  phone:
+                    type: string
+                    nullable: true
+                  status:
+                    type: string
+                  country:
+                    type: string
+                    nullable: true
+                  recordImage:
+                    type: string
+                    nullable: true
                   billingAddressId:
                     type: string
                     nullable: true
@@ -17199,47 +17637,9 @@ paths:
                   updatedAt:
                     type: string
                     nullable: true
-                  user:
-                    type: object
+                  deletedAt:
+                    type: string
                     nullable: true
-                    properties:
-                      id:
-                        type: string
-                        format: uuid
-                      firstName:
-                        type: string
-                        nullable: true
-                      lastName:
-                        type: string
-                        nullable: true
-                      email:
-                        type: string
-                        nullable: true
-                        format: email
-                      phone:
-                        type: string
-                        nullable: true
-                      role:
-                        type: string
-                      recordImage:
-                        type: string
-                        nullable: true
-                      status:
-                        type: string
-                      createdAt:
-                        type: string
-                        nullable: true
-                      updatedAt:
-                        type: string
-                        nullable: true
-                    required:
-                      - id
-                      - firstName
-                      - lastName
-                      - email
-                      - phone
-                      - role
-                      - status
                   billingAddress:
                     type: object
                     nullable: true
@@ -17328,101 +17728,94 @@ paths:
         content:
           application/json:
             schema:
-              anyOf:
-                - type: object
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  maxLength: 50
+                lastName:
+                  type: string
+                  maxLength: 50
+                email:
+                  type: string
+                  nullable: true
+                  format: email
+                phone:
+                  type: string
+                  nullable: true
+                status:
+                  type: string
+                country:
+                  type: string
+                  nullable: true
+                recordImage:
+                  type: string
+                  nullable: true
+                isActive:
+                  type: boolean
+                notes:
+                  type: string
+                  maxLength: 1000
+                shippingAddress:
+                  type: object
                   properties:
-                    user:
-                      type: object
-                      properties:
-                        firstName:
-                          type: string
-                          minLength: 1
-                          maxLength: 50
-                        lastName:
-                          type: string
-                          minLength: 1
-                          maxLength: 50
-                        email:
-                          type: string
-                          format: email
-                        phone:
-                          type: string
-                          minLength: 7
-                          maxLength: 20
-                      additionalProperties: false
-                    shippingAddress:
-                      type: object
-                      properties:
-                        street:
-                          type: string
-                          minLength: 1
-                        street2:
-                          type: string
-                          nullable: true
-                        city:
-                          type: string
-                          minLength: 1
-                        state:
-                          type: string
-                          nullable: true
-                        postcode:
-                          type: string
-                          minLength: 1
-                        country:
-                          type: string
-                          minLength: 1
-                      additionalProperties: false
-                    billingAddress:
-                      type: object
-                      properties:
-                        street:
-                          type: string
-                          minLength: 1
-                        street2:
-                          type: string
-                          nullable: true
-                        city:
-                          type: string
-                          minLength: 1
-                        state:
-                          type: string
-                          nullable: true
-                        postcode:
-                          type: string
-                          minLength: 1
-                        country:
-                          type: string
-                          minLength: 1
-                      additionalProperties: false
-                    isActive:
-                      type: boolean
-                    notes:
+                    street:
                       type: string
-                      maxLength: 1000
+                      minLength: 1
+                    street2:
+                      type: string
+                      nullable: true
+                    city:
+                      type: string
+                      minLength: 1
+                    state:
+                      type: string
+                      nullable: true
+                    postcode:
+                      type: string
+                      minLength: 1
+                    country:
+                      type: string
+                      minLength: 1
                   additionalProperties: false
-                - type: object
+                billingAddress:
+                  type: object
+                  properties:
+                    street:
+                      type: string
+                      minLength: 1
+                    street2:
+                      type: string
+                      nullable: true
+                    city:
+                      type: string
+                      minLength: 1
+                    state:
+                      type: string
+                      nullable: true
+                    postcode:
+                      type: string
+                      minLength: 1
+                    country:
+                      type: string
+                      minLength: 1
+                  additionalProperties: false
+                user:
+                  type: object
                   properties:
                     firstName:
                       type: string
-                      minLength: 1
                       maxLength: 50
                     lastName:
                       type: string
-                      minLength: 1
                       maxLength: 50
                     email:
                       type: string
                       format: email
                     phone:
                       type: string
-                      minLength: 7
-                      maxLength: 20
-                    isActive:
-                      type: boolean
-                    notes:
+                    companyId:
                       type: string
-                      maxLength: 1000
-                  additionalProperties: false
       responses:
         "200":
           description: Customer updated
@@ -17437,10 +17830,27 @@ paths:
                   companyId:
                     type: string
                     format: uuid
-                  userId:
+                  firstName:
                     type: string
                     nullable: true
-                    format: uuid
+                  lastName:
+                    type: string
+                    nullable: true
+                  email:
+                    type: string
+                    nullable: true
+                    format: email
+                  phone:
+                    type: string
+                    nullable: true
+                  status:
+                    type: string
+                  country:
+                    type: string
+                    nullable: true
+                  recordImage:
+                    type: string
+                    nullable: true
                   billingAddressId:
                     type: string
                     nullable: true
@@ -17455,47 +17865,9 @@ paths:
                   updatedAt:
                     type: string
                     nullable: true
-                  user:
-                    type: object
+                  deletedAt:
+                    type: string
                     nullable: true
-                    properties:
-                      id:
-                        type: string
-                        format: uuid
-                      firstName:
-                        type: string
-                        nullable: true
-                      lastName:
-                        type: string
-                        nullable: true
-                      email:
-                        type: string
-                        nullable: true
-                        format: email
-                      phone:
-                        type: string
-                        nullable: true
-                      role:
-                        type: string
-                      recordImage:
-                        type: string
-                        nullable: true
-                      status:
-                        type: string
-                      createdAt:
-                        type: string
-                        nullable: true
-                      updatedAt:
-                        type: string
-                        nullable: true
-                    required:
-                      - id
-                      - firstName
-                      - lastName
-                      - email
-                      - phone
-                      - role
-                      - status
                   billingAddress:
                     type: object
                     nullable: true
@@ -17605,8 +17977,9 @@ paths:
               type: object
               properties:
                 file:
-                  nullable: true
+                  type: string
                   description: CSV file to import (max 10 MB)
+                  format: binary
                 headerMapping:
                   type: string
                   description: JSON string mapping CSV column headers to customer fields
@@ -17772,7 +18145,7 @@ paths:
                   maxLength: 20
                 category:
                   type: string
-                  enum: *a23
+                  enum: *a25
                   default: OTHER
                 address:
                   type: object
@@ -18612,7 +18985,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a8
+            enum: *a7
             default: desc
           required: false
           name: sortOrder
@@ -18720,6 +19093,246 @@ paths:
                   - data
                   - pagination
                 description: Standard paginated response wrapper for billing transactions.
+    post:
+      summary: Save transaction
+      description: Create or update a billing transaction.
+      tags:
+        - Billing
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  format: uuid
+                  description: Optional transaction identifier; when provided the existing transaction is updated.
+                referenceNumber:
+                  type: string
+                  description: Optional human-friendly reference; generated server-side when omitted.
+                status:
+                  type: string
+                  enum: *a6
+                  description: Lifecycle status of the transaction.
+                recipientType:
+                  type: string
+                  enum: *a26
+                  description: Recipient type for this transaction.
+                recipientId:
+                  type: string
+                  format: uuid
+                  description: Identifier of the customer or company receiving this transaction.
+                issuerCompanyId:
+                  type: string
+                  format: uuid
+                  description: Identifier of the company issuing this transaction.
+                serviceId:
+                  type: string
+                  format: uuid
+                  description: Service associated with the transaction.
+                serviceRecordId:
+                  type: string
+                  format: uuid
+                  description: Service record linked to this transaction when applicable.
+                dueDate:
+                  anyOf:
+                    - type: string
+                      format: date-time
+                    - type: string
+                      nullable: true
+                    - nullable: true
+                  description: Due date for payment of this transaction.
+                paymentTerms:
+                  type: string
+                  description: Optional payment terms text.
+                subTotal:
+                  type: number
+                  minimum: 0
+                  description: Subtotal amount before VAT and shipping.
+                totalAmount:
+                  type: number
+                  minimum: 0
+                  description: Total amount including VAT and shipping.
+                vatAmount:
+                  type: number
+                  minimum: 0
+                  description: Total VAT amount.
+                vatRate:
+                  type: number
+                  minimum: 0
+                  description: Blended VAT rate when applicable.
+                shippingCost:
+                  type: number
+                  minimum: 0
+                  description: Optional explicit shipping/logistics amount.
+                notes:
+                  type: string
+                  description: Optional internal/customer-visible notes.
+                termsAndConditions:
+                  type: string
+                  description: Optional terms and conditions text.
+                currencyCode:
+                  type: string
+                  description: ISO currency code, e.g. GBP or EUR.
+                currencySymbol:
+                  type: string
+                  description: Display currency symbol, e.g. GBP symbol or EUR symbol.
+                lineItems:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        enum: *a4
+                        description: Classification of the line item (service work, product, solution bundle or logistics).
+                      description:
+                        type: string
+                        minLength: 1
+                        description: Human‑readable description that appears on the invoice/transaction line.
+                      note:
+                        type: string
+                        description: Optional internal or customer‑visible note for this line item.
+                      quantity:
+                        type: number
+                        minimum: 0
+                        exclusiveMinimum: true
+                        description: Number of units being billed for this item.
+                      unitPrice:
+                        type: number
+                        minimum: 0
+                        description: Price per unit before discounts and tax.
+                      totalPrice:
+                        type: number
+                        minimum: 0
+                        description: Line total after discounts but before any overall invoice adjustments.
+                      itemOrder:
+                        type: number
+                        description: Optional explicit ordering index; defaults to array index when omitted.
+                      discount:
+                        type: number
+                        minimum: 0
+                        description: Optional percentage discount to apply to this line (0–100).
+                      productId:
+                        type: string
+                        format: uuid
+                        description: Optional product identifier when this line represents a catalog product.
+                      solutionId:
+                        type: string
+                        format: uuid
+                        description: Optional solution identifier when this line represents a solution.
+                      vatRate:
+                        type: number
+                        minimum: 0
+                        description: Optional VAT rate in percent; used to derive vatAmount when not explicitly provided.
+                      vatAmount:
+                        type: number
+                        minimum: 0
+                        description: Optional explicit VAT amount for this line; overrides calculation from vatRate when set.
+                      payableByCustomer:
+                        type: boolean
+                        description: Whether this line is payable by the end‑customer (vs internal or partner charges).
+                      isMandatory:
+                        type: boolean
+                        description: Marks the line as mandatory when approving a transaction; mandatory items must be included in approvals.
+                      serviceRecordServiceItemId:
+                        type: string
+                        format: uuid
+                        description: Linked service record service item ID when relevant.
+                      isApproved:
+                        anyOf:
+                          - type: boolean
+                          - nullable: true
+                          - nullable: true
+                        description: Approval flag for recipient actions; nullable when pending decision.
+                    required:
+                      - type
+                      - description
+                      - quantity
+                      - unitPrice
+                      - totalPrice
+                    description: Single billing line item used to represent a service, product, solution, shipping or collection charge on a transaction or invoice.
+                  minItems: 1
+                  description: One or more transaction line items.
+              required:
+                - recipientType
+                - recipientId
+                - issuerCompanyId
+                - lineItems
+              description: Input payload for creating/updating billing transactions.
+      responses:
+        "200":
+          description: Transaction saved.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    description: Unique identifier of the transaction.
+                  referenceNumber:
+                    type: string
+                    description: Human‑readable reference number for the transaction.
+                  status:
+                    type: string
+                    description: Current transaction status; aligns with DocumentStatus but may include legacy values.
+                  recipientType:
+                    type: string
+                    description: Type of recipient (CUSTOMER or COMPANY) stored with this transaction.
+                  recipientId:
+                    type: string
+                    format: uuid
+                    description: Identifier of the customer or company being billed.
+                  issuerCompanyId:
+                    type: string
+                    format: uuid
+                    description: Company issuing this transaction.
+                  subTotal:
+                    type: number
+                    description: Subtotal before VAT and shipping for this transaction.
+                  totalAmount:
+                    type: number
+                    description: Total amount including VAT and shipping for this transaction.
+                  vatAmount:
+                    type: number
+                    description: Total VAT amount for this transaction.
+                  vatRate:
+                    type: number
+                    description: Blended VAT rate for this transaction.
+                  paidAmount:
+                    type: number
+                    description: Amount already paid against this transaction, if tracked.
+                  dueDate:
+                    type: string
+                    nullable: true
+                    description: Due date for payment, if any.
+                  paymentTerms:
+                    type: string
+                    nullable: true
+                    description: Free‑form payment terms text, when present.
+                  createdAt:
+                    type: string
+                    nullable: true
+                    description: Creation timestamp of the transaction.
+                  updatedAt:
+                    type: string
+                    nullable: true
+                    description: Last update timestamp of the transaction.
+                required:
+                  - id
+                  - referenceNumber
+                  - status
+                  - recipientType
+                  - recipientId
+                  - issuerCompanyId
+                  - subTotal
+                  - totalAmount
+                  - vatAmount
+                  - vatRate
+                description: Normalized representation of a billing transaction including core financial amounts, status and recipient information.
   /billing/transactions/by-service-record:
     get:
       summary: Get transaction by service record
@@ -19054,10 +19667,24 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a8
+            enum: *a7
             default: desc
           required: false
           name: sortOrder
+          in: query
+        - schema:
+            type: string
+            description: Free-text search across estimate reference number
+          required: false
+          description: Free-text search across estimate reference number
+          name: search
+          in: query
+        - schema:
+            type: string
+            description: Filter by estimate status (e.g. DRAFT, APPROVED)
+          required: false
+          description: Filter by estimate status (e.g. DRAFT, APPROVED)
+          name: status
           in: query
       responses:
         "200":
@@ -19418,7 +20045,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a8
+            enum: *a7
             default: desc
           required: false
           name: sortOrder
@@ -19631,7 +20258,7 @@ paths:
               properties:
                 status:
                   type: string
-                  enum: *a24
+                  enum: *a6
                   description: New status for the transaction, if being updated.
                 dueDate:
                   anyOf:
@@ -21792,7 +22419,7 @@ paths:
       parameters:
         - schema:
             type: string
-            enum: *a25
+            enum: *a27
             description: "Which billing document type to aggregate statistics for: 'estimate' (transactions behaving as quotes), 'invoice' or 'purchase-order'."
           required: true
           description: "Which billing document type to aggregate statistics for: 'estimate' (transactions behaving as quotes), 'invoice' or 'purchase-order'."
@@ -23400,7 +24027,7 @@ paths:
               properties:
                 recipientType:
                   type: string
-                  enum: *a26
+                  enum: *a28
                   description: Whether the recipient is a customer or another company.
                 recipientId:
                   type: string
@@ -23461,7 +24088,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a8
+            enum: *a7
             default: desc
           required: false
           name: sortOrder
@@ -23551,7 +24178,7 @@ paths:
                   format: uuid
                 status:
                   type: string
-                  enum: *a27
+                  enum: *a29
                   default: ACTIVE
                 flow:
                   nullable: true
@@ -23685,7 +24312,7 @@ paths:
                   maxLength: 500
                 status:
                   type: string
-                  enum: *a28
+                  enum: *a30
                 flow:
                   nullable: true
                 properties:
@@ -23763,7 +24390,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a8
+            enum: *a7
             default: desc
           required: false
           name: sortOrder
@@ -24149,7 +24776,7 @@ paths:
               properties:
                 status:
                   type: string
-                  enum: *a29
+                  enum: *a31
                   description: New service status
               required:
                 - status
@@ -24275,7 +24902,7 @@ paths:
                   description: Array of service IDs to update
                 status:
                   type: string
-                  enum: *a30
+                  enum: *a32
                   description: Target status for all services
               required:
                 - serviceIds
@@ -25574,7 +26201,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a31
+            enum: *a33
             default: desc
             description: Sort direction for the list
           required: false
@@ -25916,7 +26543,7 @@ paths:
                       description: API name of the target service
                     relationshipType:
                       type: string
-                      enum: *a7
+                      enum: *a9
                       description: Direction of the relationship relative to the current record
                     createdAt:
                       type: string
@@ -26297,7 +26924,7 @@ paths:
                           description: File size in bytes
                         type:
                           type: string
-                          enum: *a6
+                          enum: *a8
                           description: Media type classification based on file MIME type
                         uploadedAt:
                           type: string
@@ -26446,6 +27073,29 @@ paths:
           description: Maximum number of records per page
           name: limit
           in: query
+        - schema:
+            type: string
+            description: Optional free-text search across record fields
+          required: false
+          description: Optional free-text search across record fields
+          name: search
+          in: query
+        - schema:
+            type: string
+            description: Field to sort by (e.g. createdAt, name)
+          required: false
+          description: Field to sort by (e.g. createdAt, name)
+          name: sortBy
+          in: query
+        - schema:
+            type: string
+            enum: *a34
+            default: desc
+            description: Sort direction
+          required: false
+          description: Sort direction
+          name: sortOrder
+          in: query
       responses:
         "200":
           description: Service records for the partner and service
@@ -26584,7 +27234,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a8
+            enum: *a7
             default: desc
           required: false
           name: sortOrder
@@ -27001,10 +27651,17 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a8
+            enum: *a7
             default: desc
           required: false
           name: sortOrder
+          in: query
+        - schema:
+            type: string
+            description: Optional free-text search across shipment fields
+          required: false
+          description: Optional free-text search across shipment fields
+          name: search
           in: query
       responses:
         "200":
@@ -27109,6 +27766,12 @@ paths:
                           type: string
                           nullable: true
                           description: When the shipment was last updated.
+                        parcelCount:
+                          type: integer
+                          nullable: true
+                          minimum: 0
+                          exclusiveMinimum: true
+                          description: Declared physical parcel count for courier APIs (e.g. DPD); when null, derived from line items where applicable.
                         issuerCompany:
                           type: object
                           nullable: true
@@ -27369,6 +28032,12 @@ paths:
                     type: string
                     nullable: true
                     description: When the shipment was last updated.
+                  parcelCount:
+                    type: integer
+                    nullable: true
+                    minimum: 0
+                    exclusiveMinimum: true
+                    description: Declared physical parcel count for courier APIs (e.g. DPD); when null, derived from line items where applicable.
                   issuerCompany:
                     type: object
                     nullable: true
@@ -27530,6 +28199,12 @@ paths:
                     type: string
                     nullable: true
                     description: When the shipment was last updated.
+                  parcelCount:
+                    type: integer
+                    nullable: true
+                    minimum: 0
+                    exclusiveMinimum: true
+                    description: Declared physical parcel count for courier APIs (e.g. DPD); when null, derived from line items where applicable.
                   issuerCompany:
                     type: object
                     nullable: true
@@ -27700,6 +28375,12 @@ paths:
                     type: string
                     nullable: true
                     description: When the shipment was last updated.
+                  parcelCount:
+                    type: integer
+                    nullable: true
+                    minimum: 0
+                    exclusiveMinimum: true
+                    description: Declared physical parcel count for courier APIs (e.g. DPD); when null, derived from line items where applicable.
                   issuerCompany:
                     type: object
                     nullable: true
@@ -27800,6 +28481,12 @@ paths:
                         - type: string
                         - nullable: true
                       description: Updated expected delivery date, as a Date or ISO string.
+                    parcelCount:
+                      type: integer
+                      nullable: true
+                      minimum: 0
+                      exclusiveMinimum: true
+                      description: Physical parcel count for courier booking; set null to clear explicit override.
                     manualRecipientAddress:
                       type: object
                       properties:
@@ -27931,6 +28618,12 @@ paths:
                     type: string
                     nullable: true
                     description: When the shipment was last updated.
+                  parcelCount:
+                    type: integer
+                    nullable: true
+                    minimum: 0
+                    exclusiveMinimum: true
+                    description: Declared physical parcel count for courier APIs (e.g. DPD); when null, derived from line items where applicable.
                   issuerCompany:
                     type: object
                     nullable: true
@@ -28133,6 +28826,12 @@ paths:
                               type: string
                               nullable: true
                               description: When the shipment was last updated.
+                            parcelCount:
+                              type: integer
+                              nullable: true
+                              minimum: 0
+                              exclusiveMinimum: true
+                              description: Declared physical parcel count for courier APIs (e.g. DPD); when null, derived from line items where applicable.
                             issuerCompany:
                               type: object
                               nullable: true
@@ -28277,6 +28976,12 @@ paths:
                               type: string
                               nullable: true
                               description: When the shipment was last updated.
+                            parcelCount:
+                              type: integer
+                              nullable: true
+                              minimum: 0
+                              exclusiveMinimum: true
+                              description: Declared physical parcel count for courier APIs (e.g. DPD); when null, derived from line items where applicable.
                             issuerCompany:
                               type: object
                               nullable: true
@@ -28421,6 +29126,12 @@ paths:
                               type: string
                               nullable: true
                               description: When the shipment was last updated.
+                            parcelCount:
+                              type: integer
+                              nullable: true
+                              minimum: 0
+                              exclusiveMinimum: true
+                              description: Declared physical parcel count for courier APIs (e.g. DPD); when null, derived from line items where applicable.
                             issuerCompany:
                               type: object
                               nullable: true
@@ -28532,7 +29243,7 @@ paths:
                       - methodId
                       - quantity
                     description: Single logistics method selection used when syncing shipments for a transaction.
-                  default: *a32
+                  default: *a35
                   description: Selections for collection shipments to create.
                 deliverySelections:
                   type: array
@@ -28558,7 +29269,7 @@ paths:
                       - methodId
                       - quantity
                     description: Single logistics method selection used when syncing shipments for a transaction.
-                  default: *a33
+                  default: *a36
                   description: Selections for delivery shipments to create.
               required:
                 - transactionId
@@ -28592,7 +29303,7 @@ paths:
               properties:
                 type:
                   type: string
-                  enum: *a34
+                  enum: *a37
                   description: Shipment type, either 'DELIVERY' (to customer) or 'COLLECTION' (from customer).
                 senderAddressId:
                   type: string
@@ -28620,7 +29331,7 @@ paths:
                   description: Optional service record ID that this shipment is associated with. Empty string is treated as unset.
                 courierProvider:
                   type: string
-                  enum: *a35
+                  enum: *a38
                   description: Courier provider to use for this shipment, if already known.
                 expectedDeliveryDate:
                   anyOf:
@@ -28714,6 +29425,11 @@ paths:
                     - postcode
                     - country
                   description: Optional inline recipient address when not using a stored address record. Ignored when recipientAddressId is provided.
+                parcelCount:
+                  type: integer
+                  minimum: 0
+                  exclusiveMinimum: true
+                  description: Number of physical parcels for courier booking (e.g. DPD). When omitted, the backend may derive this from line items.
               required:
                 - type
                 - senderAddressId
@@ -28816,6 +29532,12 @@ paths:
                     type: string
                     nullable: true
                     description: When the shipment was last updated.
+                  parcelCount:
+                    type: integer
+                    nullable: true
+                    minimum: 0
+                    exclusiveMinimum: true
+                    description: Declared physical parcel count for courier APIs (e.g. DPD); when null, derived from line items where applicable.
                   issuerCompany:
                     type: object
                     nullable: true
@@ -28918,10 +29640,27 @@ paths:
                         companyId:
                           type: string
                           format: uuid
-                        userId:
+                        firstName:
                           type: string
                           nullable: true
-                          format: uuid
+                        lastName:
+                          type: string
+                          nullable: true
+                        email:
+                          type: string
+                          nullable: true
+                          format: email
+                        phone:
+                          type: string
+                          nullable: true
+                        status:
+                          type: string
+                        country:
+                          type: string
+                          nullable: true
+                        recordImage:
+                          type: string
+                          nullable: true
                         billingAddressId:
                           type: string
                           nullable: true
@@ -28936,47 +29675,9 @@ paths:
                         updatedAt:
                           type: string
                           nullable: true
-                        user:
-                          type: object
+                        deletedAt:
+                          type: string
                           nullable: true
-                          properties:
-                            id:
-                              type: string
-                              format: uuid
-                            firstName:
-                              type: string
-                              nullable: true
-                            lastName:
-                              type: string
-                              nullable: true
-                            email:
-                              type: string
-                              nullable: true
-                              format: email
-                            phone:
-                              type: string
-                              nullable: true
-                            role:
-                              type: string
-                            recordImage:
-                              type: string
-                              nullable: true
-                            status:
-                              type: string
-                            createdAt:
-                              type: string
-                              nullable: true
-                            updatedAt:
-                              type: string
-                              nullable: true
-                          required:
-                            - id
-                            - firstName
-                            - lastName
-                            - email
-                            - phone
-                            - role
-                            - status
                         billingAddress:
                           type: object
                           nullable: true
@@ -29186,6 +29887,12 @@ paths:
                       type: string
                       nullable: true
                       description: When the shipment was last updated.
+                    parcelCount:
+                      type: integer
+                      nullable: true
+                      minimum: 0
+                      exclusiveMinimum: true
+                      description: Declared physical parcel count for courier APIs (e.g. DPD); when null, derived from line items where applicable.
                     issuerCompany:
                       type: object
                       nullable: true
@@ -29352,6 +30059,12 @@ paths:
                       type: string
                       nullable: true
                       description: When the shipment was last updated.
+                    parcelCount:
+                      type: integer
+                      nullable: true
+                      minimum: 0
+                      exclusiveMinimum: true
+                      description: Declared physical parcel count for courier APIs (e.g. DPD); when null, derived from line items where applicable.
                     issuerCompany:
                       type: object
                       nullable: true
@@ -29497,7 +30210,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a36
+            enum: *a39
             default: desc
             description: Sort direction for the records list.
           required: false
@@ -29628,6 +30341,12 @@ paths:
                           type: string
                           nullable: true
                           description: When the shipment was last updated.
+                        parcelCount:
+                          type: integer
+                          nullable: true
+                          minimum: 0
+                          exclusiveMinimum: true
+                          description: Declared physical parcel count for courier APIs (e.g. DPD); when null, derived from line items where applicable.
                         issuerCompany:
                           type: object
                           nullable: true
@@ -29704,6 +30423,41 @@ paths:
       description: List task lists for the company
       tags:
         - Workspace
+      parameters:
+        - schema:
+            type: number
+            minimum: 1
+            default: 1
+          required: false
+          name: page
+          in: query
+        - schema:
+            type: number
+            minimum: 1
+            maximum: 100
+            default: 10
+          required: false
+          name: limit
+          in: query
+        - schema:
+            type: string
+          required: false
+          name: sortBy
+          in: query
+        - schema:
+            type: string
+            enum: *a7
+            default: desc
+          required: false
+          name: sortOrder
+          in: query
+        - schema:
+            type: string
+            description: Free-text search across task list title
+          required: false
+          description: Free-text search across task list title
+          name: search
+          in: query
       responses:
         "200":
           description: Task lists
@@ -29752,6 +30506,23 @@ paths:
                         - id
                       description: Task list definition used in workspace views and solution links
                     description: Task lists matching the request
+                  pagination:
+                    type: object
+                    properties:
+                      page:
+                        type: number
+                      limit:
+                        type: number
+                      total:
+                        type: number
+                      totalPages:
+                        type: number
+                    required:
+                      - page
+                      - limit
+                      - total
+                      - totalPages
+                    description: Pagination metadata when the list is server-paginated
                 required:
                   - taskLists
                 description: Response wrapper for endpoints that return multiple task lists
@@ -30009,6 +30780,23 @@ paths:
                         - id
                       description: Task list definition used in workspace views and solution links
                     description: Task lists matching the request
+                  pagination:
+                    type: object
+                    properties:
+                      page:
+                        type: number
+                      limit:
+                        type: number
+                      total:
+                        type: number
+                      totalPages:
+                        type: number
+                    required:
+                      - page
+                      - limit
+                      - total
+                      - totalPages
+                    description: Pagination metadata when the list is server-paginated
                 required:
                   - taskLists
                 description: Response wrapper for endpoints that return multiple task lists
@@ -30244,7 +31032,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a9
+            enum: *a10
             description: Filter workspace items to a single priority level
           required: false
           description: Filter workspace items to a single priority level
@@ -30252,7 +31040,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a37
+            enum: *a40
             description: "Whether to include fully completed workspace items (default: false)"
           required: false
           description: "Whether to include fully completed workspace items (default: false)"
@@ -30316,7 +31104,7 @@ paths:
                           properties:
                             level:
                               type: string
-                              enum: *a9
+                              enum: *a10
                               description: Calculated priority bucket
                             score:
                               type: number
@@ -30786,10 +31574,17 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a8
+            enum: *a7
             default: desc
           required: false
           name: sortOrder
+          in: query
+        - schema:
+            type: string
+            description: Optional free-text search across user name or email
+          required: false
+          description: Optional free-text search across user name or email
+          name: search
           in: query
       responses:
         "200":
@@ -30890,7 +31685,7 @@ paths:
                   maxLength: 15
                 role:
                   type: string
-                  enum: *a38
+                  enum: *a41
                   default: USER
               required:
                 - email
@@ -31030,7 +31825,7 @@ paths:
                   maxLength: 15
                 role:
                   type: string
-                  enum: *a39
+                  enum: *a42
                 isActive:
                   type: boolean
       responses:
@@ -31291,8 +32086,9 @@ paths:
               type: object
               properties:
                 file:
-                  nullable: true
+                  type: string
                   description: Image file (JPG, PNG, or GIF, max 2 MB)
+                  format: binary
                 userId:
                   type: string
                   description: ID of the user whose profile image is being uploaded
@@ -31651,11 +32447,35 @@ paths:
       parameters:
         - schema:
             type: string
-            enum:
-              - "true"
-              - "false"
+            enum: *a43
+            description: Include soft-deleted solutions
           required: false
+          description: Include soft-deleted solutions
           name: includeDeleted
+          in: query
+        - schema:
+            type: number
+            minimum: 1
+            description: Page number (1-based)
+          required: false
+          description: Page number (1-based)
+          name: page
+          in: query
+        - schema:
+            type: number
+            minimum: 1
+            maximum: 100
+            description: Items per page (max 100)
+          required: false
+          description: Items per page (max 100)
+          name: limit
+          in: query
+        - schema:
+            type: string
+            description: Optional free-text search across solution name or description
+          required: false
+          description: Optional free-text search across solution name or description
+          name: search
           in: query
       responses:
         "200":
@@ -31697,6 +32517,23 @@ paths:
                         - companyId
                         - name
                     description: Array of solution objects
+                  pagination:
+                    type: object
+                    properties:
+                      page:
+                        type: number
+                      limit:
+                        type: number
+                      total:
+                        type: number
+                      totalPages:
+                        type: number
+                    required:
+                      - page
+                      - limit
+                      - total
+                      - totalPages
+                    description: Pagination metadata
                 required:
                   - data
     post:
@@ -31842,7 +32679,7 @@ paths:
                   minimum: 0
                 status:
                   type: string
-                  enum: *a40
+                  enum: *a44
       responses:
         "200":
           description: Solution updated
@@ -31945,6 +32782,23 @@ paths:
                         - companyId
                         - name
                     description: Array of solution objects
+                  pagination:
+                    type: object
+                    properties:
+                      page:
+                        type: number
+                      limit:
+                        type: number
+                      total:
+                        type: number
+                      totalPages:
+                        type: number
+                    required:
+                      - page
+                      - limit
+                      - total
+                      - totalPages
+                    description: Pagination metadata
                 required:
                   - data
   /solutions/remove-from-record:
@@ -32015,6 +32869,23 @@ paths:
                         - companyId
                         - name
                     description: Array of solution objects
+                  pagination:
+                    type: object
+                    properties:
+                      page:
+                        type: number
+                      limit:
+                        type: number
+                      total:
+                        type: number
+                      totalPages:
+                        type: number
+                    required:
+                      - page
+                      - limit
+                      - total
+                      - totalPages
+                    description: Pagination metadata
                 required:
                   - data
   /solutions/for-service-item:
@@ -32080,6 +32951,23 @@ paths:
                         - companyId
                         - name
                     description: Array of solution objects
+                  pagination:
+                    type: object
+                    properties:
+                      page:
+                        type: number
+                      limit:
+                        type: number
+                      total:
+                        type: number
+                      totalPages:
+                        type: number
+                    required:
+                      - page
+                      - limit
+                      - total
+                      - totalPages
+                    description: Pagination metadata
                 required:
                   - data
   /solutions/for-service-record:
@@ -32145,6 +33033,23 @@ paths:
                         - companyId
                         - name
                     description: Array of solution objects
+                  pagination:
+                    type: object
+                    properties:
+                      page:
+                        type: number
+                      limit:
+                        type: number
+                      total:
+                        type: number
+                      totalPages:
+                        type: number
+                    required:
+                      - page
+                      - limit
+                      - total
+                      - totalPages
+                    description: Pagination metadata
                 required:
                   - data
   /solutions/link-service-item:
@@ -32268,10 +33173,17 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a8
+            enum: *a7
             default: desc
           required: false
           name: sortOrder
+          in: query
+        - schema:
+            type: string
+            description: Optional free-text search across product name, SKU, etc.
+          required: false
+          description: Optional free-text search across product name, SKU, etc.
+          name: search
           in: query
       responses:
         "200":
@@ -32402,7 +33314,7 @@ paths:
                   description: Optional category or family label used for grouping and filters
                 status:
                   type: string
-                  enum: *a10
+                  enum: *a11
                   default: DRAFT
                   description: Initial publication status
                 minStockLevel:
@@ -32594,7 +33506,7 @@ paths:
                   description: Updated unit price
                 status:
                   type: string
-                  enum: *a10
+                  enum: *a11
                   description: Updated publication status
                 minStockLevel:
                   type: integer
@@ -32705,7 +33617,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a10
+            enum: *a11
             description: Filter products by publication status
           required: false
           description: Filter products by publication status
@@ -32728,7 +33640,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a11
+            enum: *a12
             description: Filter by computed stock level bucket
           required: false
           description: Filter by computed stock level bucket
@@ -33168,7 +34080,7 @@ paths:
       parameters:
         - schema:
             type: string
-            enum: *a10
+            enum: *a11
             description: Publication status to filter by
           required: true
           description: Publication status to filter by
@@ -33633,7 +34545,7 @@ paths:
       parameters:
         - schema:
             type: string
-            enum: *a10
+            enum: *a11
             description: Publication status of a product in the inventory catalogue
           required: false
           description: Publication status of a product in the inventory catalogue
@@ -33674,8 +34586,9 @@ paths:
               type: object
               properties:
                 file:
-                  nullable: true
+                  type: string
                   description: CSV file uploaded in multipart/form-data field "file"
+                  format: binary
                 headerMapping:
                   type: object
                   additionalProperties:
@@ -33724,7 +34637,8 @@ paths:
                 files:
                   type: array
                   items:
-                    nullable: true
+                    type: string
+                    format: binary
                   minItems: 1
                   description: One or more image files uploaded in "files" fields
                 productId:
@@ -33801,7 +34715,7 @@ paths:
                   description: IDs of products whose status should be updated
                 status:
                   type: string
-                  enum: *a10
+                  enum: *a11
                   description: New status applied to all provided products
               required:
                 - productIds
@@ -34162,6 +35076,33 @@ paths:
         - Inventory
       parameters:
         - schema:
+            type: number
+            minimum: 1
+            default: 1
+          required: false
+          name: page
+          in: query
+        - schema:
+            type: number
+            minimum: 1
+            maximum: 100
+            default: 10
+          required: false
+          name: limit
+          in: query
+        - schema:
+            type: string
+          required: false
+          name: sortBy
+          in: query
+        - schema:
+            type: string
+            enum: *a7
+            default: desc
+          required: false
+          name: sortOrder
+          in: query
+        - schema:
             type: string
             format: uuid
             description: Optional partner company ID to scope purchase orders (for partner-specific views)
@@ -34176,6 +35117,20 @@ paths:
           required: false
           description: Company whose perspective the list is being viewed from; defaults to authenticated company
           name: currentCompanyId
+          in: query
+        - schema:
+            type: string
+            description: Optional free-text search across PO number or supplier name
+          required: false
+          description: Optional free-text search across PO number or supplier name
+          name: search
+          in: query
+        - schema:
+            type: string
+            description: Optional status filter (e.g. DRAFT, SENT, APPROVED)
+          required: false
+          description: Optional status filter (e.g. DRAFT, SENT, APPROVED)
+          name: status
           in: query
       responses:
         "200":
@@ -34602,7 +35557,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a8
+            enum: *a7
             default: desc
           required: false
           name: sortOrder
@@ -34655,8 +35610,9 @@ paths:
               type: object
               properties:
                 file:
-                  nullable: true
+                  type: string
                   description: CSV file uploaded in multipart/form-data field "file"
+                  format: binary
                 headerMapping:
                   type: object
                   additionalProperties:
@@ -34705,7 +35661,8 @@ paths:
                 files:
                   type: array
                   items:
-                    nullable: true
+                    type: string
+                    format: binary
                   minItems: 1
                   description: One or more image files uploaded in "files" fields
                 distributorProductId:
@@ -35308,7 +36265,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a8
+            enum: *a7
             default: desc
           required: false
           name: sortOrder
@@ -35404,7 +36361,7 @@ paths:
                   format: uuid
                 type:
                   type: string
-                  enum: *a41
+                  enum: *a45
                   default: EMAIL
                 subject:
                   type: string
@@ -35415,7 +36372,7 @@ paths:
                   minLength: 1
                 status:
                   type: string
-                  enum: *a42
+                  enum: *a46
                   default: DRAFT
                 scheduledAt:
                   anyOf:
@@ -35580,7 +36537,7 @@ paths:
                   format: uuid
                 type:
                   type: string
-                  enum: *a43
+                  enum: *a47
                 subject:
                   type: string
                   minLength: 1
@@ -35590,7 +36547,7 @@ paths:
                   minLength: 1
                 status:
                   type: string
-                  enum: *a44
+                  enum: *a48
                 scheduledAt:
                   anyOf:
                     - type: string
@@ -35986,7 +36943,7 @@ paths:
               properties:
                 status:
                   type: string
-                  enum: *a12
+                  enum: *a13
                   description: New status to set on the communication
               required:
                 - status
@@ -36124,7 +37081,7 @@ paths:
                   description: List of communication IDs to update
                 status:
                   type: string
-                  enum: *a12
+                  enum: *a13
                   description: New status to apply to all specified communications
               required:
                 - communicationIds
@@ -36265,7 +37222,7 @@ paths:
       parameters:
         - schema:
             type: string
-            enum: *a12
+            enum: *a13
             description: Communication status to filter by
           required: true
           description: Communication status to filter by
@@ -37204,7 +38161,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a45
+            enum: *a49
             description: Filter by system template flag
           required: false
           description: Filter by system template flag
@@ -37212,7 +38169,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a46
+            enum: *a50
             description: Filter by active status
           required: false
           description: Filter by active status
@@ -37295,7 +38252,7 @@ paths:
                   description: Template display name
                 category:
                   type: string
-                  enum: *a13
+                  enum: *a14
                   description: Template category
                 subjectTemplate:
                   type: string
@@ -37439,7 +38396,7 @@ paths:
                   description: Template display name
                 category:
                   type: string
-                  enum: *a13
+                  enum: *a14
                   description: Template category
                 subjectTemplate:
                   type: string
@@ -37964,10 +38921,14 @@ paths:
                       description: Optional sender identity ID
                     toType:
                       type: string
-                      description: Recipient type (e.g. customer, partner)
+                      enum: *a51
+                      description: Recipient type
                     toFieldPath:
                       type: string
-                      description: Dot-path to the recipient email field
+                      description: Dot-path to the recipient email field (when toType=custom)
+                    toEmail:
+                      type: string
+                      description: Specified recipient email address (when toType=specified)
                   required:
                     - automationId
                     - templateId
@@ -38363,6 +39324,13 @@ paths:
           in: query
         - schema:
             type: string
+            description: Case-insensitive search across partner / connection fields
+          required: false
+          description: Case-insensitive search across partner / connection fields
+          name: search
+          in: query
+        - schema:
+            type: string
             description: Field to sort results by
           required: false
           description: Field to sort results by
@@ -38370,7 +39338,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a47
+            enum: *a52
             description: Sort direction
           required: false
           description: Sort direction
@@ -38406,21 +39374,10 @@ paths:
                         id:
                           type: string
                           format: uuid
-                          description: Partner record ID
-                        companyAId:
-                          type: string
-                          format: uuid
-                          description: ID of the first company in the partnership
-                        companyBId:
-                          type: string
-                          format: uuid
-                          description: ID of the second company in the partnership
+                          description: Connected partner record ID
                         status:
                           type: string
-                          description: Current partnership status
-                        type:
-                          type: string
-                          description: Partner type
+                          description: Partnership status
                         createdAt:
                           type: string
                           nullable: true
@@ -38429,11 +39386,77 @@ paths:
                           type: string
                           nullable: true
                           description: When the partnership was last updated
+                        inviterCompanyId:
+                          type: string
+                          format: uuid
+                          description: Company that created the invitation
+                        companyAId:
+                          type: string
+                          format: uuid
+                          description: ID of the first company in the partnership
+                        companyBId:
+                          type: string
+                          format: uuid
+                          description: ID of the second company in the partnership
+                        company:
+                          type: object
+                          nullable: true
+                          properties:
+                            id:
+                              type: string
+                              format: uuid
+                            name:
+                              type: string
+                            apiName:
+                              type: string
+                            email:
+                              type: string
+                              nullable: true
+                            phone:
+                              type: string
+                              nullable: true
+                            type:
+                              type: string
+                              nullable: true
+                            recordImage:
+                              type: string
+                              nullable: true
+                            billingAddress:
+                              type: object
+                              nullable: true
+                              properties:
+                                city:
+                                  type: string
+                                country:
+                                  type: string
+                              required:
+                                - city
+                                - country
+                          required:
+                            - id
+                            - name
+                            - apiName
+                          description: Partner company profile (the other company)
+                        partnerCompanyId:
+                          type: string
+                          format: uuid
+                          description: ID of the partner company (not the session company)
+                        connectedPartnerId:
+                          type: string
+                          format: uuid
+                          description: Same as id; explicit for invitation actions
+                        relationshipType:
+                          type: string
+                          enum: *a15
+                          description: Whether the session company invited or was invited
                       required:
                         - id
-                        - companyAId
                         - status
-                    description: List of partner records
+                        - inviterCompanyId
+                        - companyAId
+                        - companyBId
+                        - relationshipType
+                    description: Partner connections with company details
                   pagination:
                     type: object
                     properties:
@@ -39339,7 +40362,7 @@ paths:
       parameters:
         - schema:
             type: string
-            enum: *a48
+            enum: *a53
             description: If false, includes inactive locations; default true
           required: false
           description: If false, includes inactive locations; default true
@@ -40719,8 +41742,9 @@ paths:
               type: object
               properties:
                 file:
-                  nullable: true
+                  type: string
                   description: Logo image file (max 2 MB, image/* types)
+                  format: binary
                 companyId:
                   type: string
                   description: ID of the company to update
@@ -40780,7 +41804,7 @@ paths:
               properties:
                 companyType:
                   type: string
-                  enum: *a49
+                  enum: *a54
                   description: Type of company being registered
                 companyDetails:
                   type: object
@@ -41055,7 +42079,7 @@ paths:
                           description: Date the contract was last modified
                         status:
                           type: string
-                          enum: *a14
+                          enum: *a16
                           description: Current contract status
                         uploadedBy:
                           type: string
@@ -41174,7 +42198,7 @@ paths:
                     description: Date the contract was last modified
                   status:
                     type: string
-                    enum: *a14
+                    enum: *a16
                     description: Current contract status
                   uploadedBy:
                     type: string
@@ -41272,7 +42296,7 @@ paths:
                     description: Date the contract was last modified
                   status:
                     type: string
-                    enum: *a14
+                    enum: *a16
                     description: Current contract status
                   uploadedBy:
                     type: string
@@ -41357,7 +42381,7 @@ paths:
                     description: Date the contract was last modified
                   status:
                     type: string
-                    enum: *a14
+                    enum: *a16
                     description: Current contract status
                   uploadedBy:
                     type: string
@@ -41583,7 +42607,7 @@ paths:
                     description: Unique identifier of the subscription record.
                   plan:
                     type: string
-                    enum: *a50
+                    enum: *a55
                     description: Active subscription plan tier.
                   status:
                     type: string
@@ -41624,11 +42648,11 @@ paths:
               properties:
                 plan:
                   type: string
-                  enum: *a51
+                  enum: *a56
                   description: Target subscription plan tier to switch to.
                 status:
                   type: string
-                  enum: *a52
+                  enum: *a57
                   description: Optional new subscription status to set.
                 currentPeriodStart:
                   type: string
@@ -41659,7 +42683,7 @@ paths:
                     description: Unique identifier of the subscription record.
                   plan:
                     type: string
-                    enum: *a50
+                    enum: *a55
                     description: Active subscription plan tier.
                   status:
                     type: string
@@ -41829,7 +42853,7 @@ paths:
                         description: Unique identifier of the subscription record.
                       plan:
                         type: string
-                        enum: *a50
+                        enum: *a55
                         description: Active subscription plan tier.
                       status:
                         type: string
@@ -42056,7 +43080,7 @@ paths:
       parameters:
         - schema:
             type: string
-            enum: *a53
+            enum: *a58
             description: Include soft-deleted forms
           required: false
           description: Include soft-deleted forms
@@ -42078,6 +43102,28 @@ paths:
           required: false
           description: Items per page (max 100)
           name: limit
+          in: query
+        - schema:
+            type: string
+            description: Optional free-text search across form name, description, apiName
+          required: false
+          description: Optional free-text search across form name, description, apiName
+          name: search
+          in: query
+        - schema:
+            type: string
+            description: Field to sort by (e.g. name, createdAt)
+          required: false
+          description: Field to sort by (e.g. name, createdAt)
+          name: sortBy
+          in: query
+        - schema:
+            type: string
+            enum: *a59
+            description: Sort direction
+          required: false
+          description: Sort direction
+          name: sortOrder
           in: query
       responses:
         "200":
@@ -42174,7 +43220,7 @@ paths:
                   description: Optional description
                 status:
                   type: string
-                  enum: *a54
+                  enum: *a60
                   description: Initial form status
               required:
                 - name
@@ -44036,7 +45082,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a55
+            enum: *a61
             description: If true, return all company nodes
           required: false
           description: If true, return all company nodes
@@ -44436,7 +45482,7 @@ paths:
                           type: string
                         type:
                           type: string
-                          enum: *a15
+                          enum: *a17
                         isDefault:
                           type: boolean
                         isVerified:
@@ -44490,7 +45536,7 @@ paths:
                   format: email
                 type:
                   type: string
-                  enum: *a56
+                  enum: *a62
                 isDefault:
                   type: boolean
                 gmailIntegrationConnectionId:
@@ -44523,7 +45569,7 @@ paths:
                     type: string
                   type:
                     type: string
-                    enum: *a15
+                    enum: *a17
                   isDefault:
                     type: boolean
                   isVerified:
@@ -44586,7 +45632,7 @@ paths:
                     type: string
                   type:
                     type: string
-                    enum: *a15
+                    enum: *a17
                   isDefault:
                     type: boolean
                   isVerified:
@@ -44645,7 +45691,7 @@ paths:
                   format: email
                 type:
                   type: string
-                  enum: *a57
+                  enum: *a63
                 isDefault:
                   type: boolean
                 isVerified:
@@ -44676,7 +45722,7 @@ paths:
                     type: string
                   type:
                     type: string
-                    enum: *a15
+                    enum: *a17
                   isDefault:
                     type: boolean
                   isVerified:
@@ -44888,7 +45934,7 @@ paths:
       parameters:
         - schema:
             type: string
-            enum: *a58
+            enum: *a64
             description: Include soft-deleted items
           required: false
           description: Include soft-deleted items
@@ -45573,6 +46619,23 @@ paths:
                         - companyId
                         - name
                     description: Array of solution objects
+                  pagination:
+                    type: object
+                    properties:
+                      page:
+                        type: number
+                      limit:
+                        type: number
+                      total:
+                        type: number
+                      totalPages:
+                        type: number
+                    required:
+                      - page
+                      - limit
+                      - total
+                      - totalPages
+                    description: Pagination metadata
                 required:
                   - data
     post:
@@ -45664,7 +46727,7 @@ paths:
       parameters:
         - schema:
             type: string
-            enum: *a59
+            enum: *a65
             description: Include soft-deleted custom fields
           required: false
           description: Include soft-deleted custom fields
@@ -45742,7 +46805,7 @@ paths:
                   maxLength: 200
                 type:
                   type: string
-                  enum: *a16
+                  enum: *a18
                 required:
                   type: boolean
                   default: false
@@ -45874,7 +46937,7 @@ paths:
                   maxLength: 200
                 type:
                   type: string
-                  enum: *a16
+                  enum: *a18
                 required:
                   type: boolean
                 options:
@@ -46038,7 +47101,7 @@ paths:
       parameters:
         - schema:
             type: string
-            enum: *a17
+            enum: *a19
             description: Filter by category
           required: false
           description: Filter by category
@@ -46046,7 +47109,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a60
+            enum: *a66
             description: Filter by active status
           required: false
           description: Filter by active status
@@ -46153,7 +47216,7 @@ paths:
                   description: Human-readable template name
                 category:
                   type: string
-                  enum: *a17
+                  enum: *a19
                   description: Template category
                 subjectTemplate:
                   type: string
@@ -46346,7 +47409,7 @@ paths:
                   description: Human-readable template name
                 category:
                   type: string
-                  enum: *a17
+                  enum: *a19
                   description: Template category
                 subjectTemplate:
                   type: string
@@ -48165,10 +49228,10 @@ paths:
                 required:
                   - success
                 description: Generic wrapper used by many /auth endpoints
-  /auth/find-user-by-phone:
+  /auth/find-customer-by-phone:
     post:
-      summary: Find user by phone number
-      description: Look up a user by phone number for phone-based sign-in. Normalises UK phone formats. No authentication required.
+      summary: Find customer by phone number
+      description: Look up a customer by phone number within a specific company. No authentication required; companyApiName-gated per R-B option (c).
       tags:
         - Auth
       requestBody:
@@ -48177,89 +49240,34 @@ paths:
             schema:
               type: object
               properties:
-                phoneNumber:
+                phone:
                   type: string
                   minLength: 1
-                  description: User phone number used for lookup
+                  description: Customer phone number used for lookup
                 companyApiName:
                   type: string
-                  description: Optional company API name to scope the search
+                  minLength: 1
+                  description: Company API name identifier to scope the lookup
               required:
-                - phoneNumber
-              description: Request payload for POST /auth/find-user-by-phone
+                - phone
+                - companyApiName
+              description: Request payload for POST /auth/find-customer-by-phone
       responses:
         "200":
-          description: User found
+          description: Lookup successful — returns whether a matching customer exists
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  success:
+                  exists:
                     type: boolean
-                    description: Whether the lookup succeeded
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: string
-                        format: uuid
-                        description: User ID
-                      email:
-                        type: string
-                        nullable: true
-                        format: email
-                      phone:
-                        type: string
-                        nullable: true
-                      firstName:
-                        type: string
-                        nullable: true
-                      lastName:
-                        type: string
-                        nullable: true
-                      role:
-                        type: string
-                        description: User role name
-                      company:
-                        type: object
-                        properties:
-                          id:
-                            type: string
-                            format: uuid
-                            description: Company ID
-                          name:
-                            type: string
-                            description: Company display name
-                          apiName:
-                            type: string
-                            description: Company API name identifier
-                          type:
-                            type: string
-                            description: Company type or category
-                          recordImage:
-                            type: string
-                            nullable: true
-                            description: Optional URL or key for the company record image
-                        required:
-                          - id
-                          - name
-                          - apiName
-                          - type
-                        description: Company associated with the user
-                    required:
-                      - id
-                      - role
-                      - company
-                    description: User and company information when lookup succeeds
-                  error:
-                    type: string
-                    description: Error message when success is false
+                    description: Whether a customer with the given phone exists in the scoped company
                 required:
-                  - success
-                description: Response for POST /auth/find-user-by-phone
+                  - exists
+                description: Response for POST /auth/find-customer-by-phone
         "400":
-          description: Phone number required or user has no company
+          description: Invalid body or missing required fields
           content:
             application/json:
               schema:
@@ -48281,7 +49289,133 @@ paths:
                   - success
                 description: Generic wrapper used by many /auth endpoints
         "404":
-          description: No user found with the given phone number
+          description: Company not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Whether the operation succeeded
+                  data:
+                    nullable: true
+                    description: Optional operation-specific payload
+                  error:
+                    type: string
+                    description: Error message when success is false
+                  message:
+                    type: string
+                    description: Human-readable success or informational message
+                required:
+                  - success
+                description: Generic wrapper used by many /auth endpoints
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Whether the operation succeeded
+                  data:
+                    nullable: true
+                    description: Optional operation-specific payload
+                  error:
+                    type: string
+                    description: Error message when success is false
+                  message:
+                    type: string
+                    description: Human-readable success or informational message
+                required:
+                  - success
+                description: Generic wrapper used by many /auth endpoints
+  /auth/find-customer-by-email:
+    post:
+      summary: Find customer by email
+      description: Look up a customer by email address within a specific company. No authentication required; companyApiName-gated per R-B option (c).
+      tags:
+        - Auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: Customer email used for lookup
+                companyApiName:
+                  type: string
+                  minLength: 1
+                  description: Company API name identifier to scope the lookup
+              required:
+                - email
+                - companyApiName
+              description: Request payload for POST /auth/find-customer-by-email
+      responses:
+        "200":
+          description: Lookup successful — returns whether a matching customer exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  exists:
+                    type: boolean
+                    description: Whether a customer with the given email exists in the scoped company
+                required:
+                  - exists
+                description: Response for POST /auth/find-customer-by-email
+        "400":
+          description: Invalid body or missing required fields
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Whether the operation succeeded
+                  data:
+                    nullable: true
+                    description: Optional operation-specific payload
+                  error:
+                    type: string
+                    description: Error message when success is false
+                  message:
+                    type: string
+                    description: Human-readable success or informational message
+                required:
+                  - success
+                description: Generic wrapper used by many /auth endpoints
+        "404":
+          description: Company not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Whether the operation succeeded
+                  data:
+                    nullable: true
+                    description: Optional operation-specific payload
+                  error:
+                    type: string
+                    description: Error message when success is false
+                  message:
+                    type: string
+                    description: Human-readable success or informational message
+                required:
+                  - success
+                description: Generic wrapper used by many /auth endpoints
+        "500":
+          description: Internal server error
           content:
             application/json:
               schema:
@@ -49827,7 +50961,7 @@ paths:
       parameters:
         - schema:
             type: string
-            enum: *a18
+            enum: *a20
             description: Optional data source type filter; when omitted, returns schemas for all supported data sources
           required: false
           description: Optional data source type filter; when omitted, returns schemas for all supported data sources
@@ -49844,7 +50978,7 @@ paths:
                     properties:
                       type:
                         type: string
-                        enum: *a18
+                        enum: *a20
                         description: Type key for this data source
                       fields:
                         type: array
@@ -49895,12 +51029,12 @@ paths:
                     description: Dashboard data source schema (fields and relationships)
                   - type: object
                     properties:
-                      service: &a61
+                      service: &a67
                         type: object
                         properties:
                           type:
                             type: string
-                            enum: *a18
+                            enum: *a20
                             description: Type key for this data source
                           fields:
                             type: array
@@ -49949,10 +51083,10 @@ paths:
                           - type
                           - fields
                         description: Dashboard data source schema (fields and relationships)
-                      customer: *a61
-                      partner: *a61
-                      transaction: *a61
-                      inventory: *a61
+                      customer: *a67
+                      partner: *a67
+                      transaction: *a67
+                      inventory: *a67
                 description: "Dashboard data-source schemas: either a single schema (when type is specified) or a map of all schemas by type"
   /analytics/date-range:
     get:
@@ -49979,7 +51113,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a20
+            enum: *a22
             default: month
             description: Aggregation grain for charts and time-series (defaults to month)
           required: false
@@ -50025,7 +51159,7 @@ paths:
                         description: Required ISO8601 end date (inclusive) for the reporting window
                       groupBy:
                         type: string
-                        enum: *a20
+                        enum: *a22
                         default: month
                         description: Aggregation grain for charts and time-series (defaults to month)
                     required:
@@ -50296,7 +51430,7 @@ paths:
                           description: Human-readable recommendation detail
                         priority:
                           type: string
-                          enum: *a62
+                          enum: *a68
                           description: Priority level for this recommendation
                       required:
                         - type
@@ -50320,7 +51454,7 @@ paths:
                           description: Alert details and remediation guidance
                         severity:
                           type: string
-                          enum: *a63
+                          enum: *a69
                           description: Severity level for this alert
                       required:
                         - type
@@ -50641,7 +51775,7 @@ paths:
                     description: Identifier of the deleted connection record (matches the supplied connectionId)
                   type:
                     type: string
-                    enum: *a64
+                    enum: *a70
                     description: "Storage type of the removed connection: 'integration' for IntegrationConnection rows, 'auth_account' for legacy AuthAccount-based Gmail connections."
                 required:
                   - success
@@ -50679,7 +51813,7 @@ paths:
                   description: Size of the uploaded file in bytes
                 category:
                   type: string
-                  enum: *a21
+                  enum: *a23
                   default: OTHER
                   description: High-level category used to organise uploaded files
                 fileData:
@@ -50721,7 +51855,7 @@ paths:
                         description: Internal storage key for the uploaded file, used by backend services
                       category:
                         type: string
-                        enum: *a21
+                        enum: *a23
                         description: Category under which the file was stored
                       uploadedAt:
                         type: string
@@ -51270,7 +52404,7 @@ paths:
           description: Server error
     post:
       summary: Save or verify DPD credentials
-      description: Saves DPD web-services credentials for the current company, or verifies them without persisting when action="verify". Used to set up the DPD logistics integration.
+      description: Saves DPD Customer API credentials (API key and secret) for the current company, or verifies them without persisting when action="verify". Used to set up the DPD logistics integration.
       tags:
         - Integrations
       requestBody:
@@ -51279,25 +52413,25 @@ paths:
             schema:
               type: object
               properties:
-                username:
+                apiKey:
                   type: string
                   minLength: 1
-                  description: DPD web-services username for the current company
-                password:
+                  description: DPD Customer API key for the current company
+                apiSecret:
                   type: string
                   minLength: 1
-                  description: DPD web-services password for the current company
+                  description: DPD Customer API secret for the current company
                 accountNumber:
                   type: string
                   minLength: 1
                   description: Optional DPD account number used for identification and billing
                 action:
                   type: string
-                  enum: *a65
+                  enum: *a71
                   description: When set to 'verify', the endpoint only verifies the credentials and does not persist them. Any other value (or omission) results in saving/updating the credentials.
               required:
-                - username
-                - password
+                - apiKey
+                - apiSecret
               description: Request body for POST /integrations/logistics/dpd (save or verify DPD credentials)
       responses:
         "200":
@@ -51784,7 +52918,7 @@ paths:
                 properties:
                   status:
                     type: string
-                    enum: *a66
+                    enum: *a72
                   timestamp:
                     type: string
                   uptime:
@@ -51830,7 +52964,7 @@ paths:
                 properties:
                   status:
                     type: string
-                    enum: *a66
+                    enum: *a72
                   timestamp:
                     type: string
                   uptime:
