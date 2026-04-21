@@ -2802,6 +2802,17 @@ components:
       additionalProperties:
         nullable: true
       description: Flattened service record coming from the EAV model. Includes core fields (id, status, etc.) and dynamic keys for service-specific fields. Shape may vary by service and evolve over time.
+    CreateServiceRecordResponse:
+      type: object
+      properties:
+        transactionId:
+          type: string
+          description: ID of the draft Transaction atomically created with the service record
+      required:
+        - transactionId
+      additionalProperties:
+        nullable: true
+      description: "Creation response: flat EAV service-record fields plus transactionId from the paired draft Transaction."
     ServiceRecordTransitionInput:
       type: object
       properties:
