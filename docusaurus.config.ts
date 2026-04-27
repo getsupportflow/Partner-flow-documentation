@@ -12,8 +12,8 @@ const config: Config = {
     v4: true,
   },
 
-  url: 'https://getsupportflow.github.io',
-  baseUrl: '/Partner-flow-documentation/',
+  url: 'https://docs.partner-flow.com',
+  baseUrl: '/',
 
   organizationName: 'getsupportflow',
   projectName: 'Partner-flow-documentation',
