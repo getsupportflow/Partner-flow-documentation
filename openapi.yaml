@@ -87,6 +87,61 @@ tags:
     description: Integration connections (e.g. Gmail, Stripe)
   - name: Webhooks
     description: Webhook handlers (e.g. Stripe)
+x-tagGroups:
+  - name: Service Management
+    tags:
+      - Service
+      - Service Records
+      - Service Items
+      - Service Item Custom Fields
+      - Solutions
+      - Shipping
+  - name: Customers & Partners
+    tags:
+      - Customers
+      - Customer Portal
+      - Partner
+      - Suppliers
+      - Contracts
+  - name: Users & Access
+    tags:
+      - Users
+      - Roles
+      - API Keys
+      - Auth
+      - Profile
+  - name: Billing & Finance
+    tags:
+      - Billing
+      - Subscriptions
+  - name: Communications
+    tags:
+      - Communications
+      - Email Templates
+      - Email Sender Identities
+      - System Email Templates
+      - Forms
+  - name: Workspace & Operations
+    tags:
+      - Workspace
+      - Company
+      - Locations
+      - Inventory
+      - Onboarding
+      - Dashboard
+  - name: Integrations & Automation
+    tags:
+      - Integrations
+      - Webhooks
+      - System Automation
+      - AI
+  - name: Platform & Admin
+    tags:
+      - Admin
+      - Analytics
+      - Audit
+      - Health
+      - Documentation
 components:
   schemas:
     Id:
