@@ -27475,6 +27475,69 @@ paths:
           description: Forbidden (user does not have access to this record)
         "404":
           description: Service or record not found
+  /service-records/{serviceApiName}/{recordId}/shipment-summaries:
+    get:
+      summary: List shipment summaries for a service record
+      description: Returns lightweight shipment summaries for all shipments linked to the given service record. Accessible by both the service owner and an assigned fulfiller (cross-party read).
+      tags:
+        - Service Records
+      parameters:
+        - schema:
+            type: string
+          required: true
+          name: serviceApiName
+          in: path
+        - schema:
+            type: string
+            format: uuid
+          required: true
+          name: recordId
+          in: path
+      responses:
+        "200":
+          description: List of shipment summaries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    status:
+                      type: string
+                      nullable: true
+                    carrier:
+                      type: string
+                      nullable: true
+                    trackingNumber:
+                      type: string
+                      nullable: true
+                    createdAt:
+                      type: string
+                      format: date-time
+                    deliveredAt:
+                      type: string
+                      nullable: true
+                      format: date-time
+                    issuerCompanyId:
+                      type: string
+                      nullable: true
+                      format: uuid
+                  required:
+                    - id
+                    - status
+                    - carrier
+                    - trackingNumber
+                    - createdAt
+                    - deliveredAt
+                    - issuerCompanyId
+        "403":
+          description: Forbidden (caller is not the service owner or an assigned fulfiller)
+        "404":
+          description: Service record not found
   /service-records/from-customer-portal:
     post:
       summary: Create record from customer portal
