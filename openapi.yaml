@@ -1695,13 +1695,6 @@ components:
         paidAmount:
           type: number
           description: Amount already paid against this transaction, if tracked.
-        creditAmount:
-          type: number
-          description: Sum of all credit lines applied to this invoice.
-        creditNote:
-          type: string
-          nullable: true
-          description: Note from the first credit line, if any.
         creditLines:
           type: array
           items:
@@ -1787,13 +1780,6 @@ components:
               paidAmount:
                 type: number
                 description: Amount already paid against this transaction, if tracked.
-              creditAmount:
-                type: number
-                description: Sum of all credit lines applied to this invoice.
-              creditNote:
-                type: string
-                nullable: true
-                description: Note from the first credit line, if any.
               creditLines:
                 type: array
                 items:
@@ -19090,13 +19076,6 @@ paths:
                         paidAmount:
                           type: number
                           description: Amount already paid against this transaction, if tracked.
-                        creditAmount:
-                          type: number
-                          description: Sum of all credit lines applied to this invoice.
-                        creditNote:
-                          type: string
-                          nullable: true
-                          description: Note from the first credit line, if any.
                         creditLines:
                           type: array
                           items:
@@ -19376,13 +19355,6 @@ paths:
                   paidAmount:
                     type: number
                     description: Amount already paid against this transaction, if tracked.
-                  creditAmount:
-                    type: number
-                    description: Sum of all credit lines applied to this invoice.
-                  creditNote:
-                    type: string
-                    nullable: true
-                    description: Note from the first credit line, if any.
                   creditLines:
                     type: array
                     items:
@@ -19484,13 +19456,6 @@ paths:
                   paidAmount:
                     type: number
                     description: Amount already paid against this transaction, if tracked.
-                  creditAmount:
-                    type: number
-                    description: Sum of all credit lines applied to this invoice.
-                  creditNote:
-                    type: string
-                    nullable: true
-                    description: Note from the first credit line, if any.
                   creditLines:
                     type: array
                     items:
@@ -19722,13 +19687,6 @@ paths:
                   paidAmount:
                     type: number
                     description: Amount already paid against this transaction, if tracked.
-                  creditAmount:
-                    type: number
-                    description: Sum of all credit lines applied to this invoice.
-                  creditNote:
-                    type: string
-                    nullable: true
-                    description: Note from the first credit line, if any.
                   creditLines:
                     type: array
                     items:
@@ -19866,13 +19824,6 @@ paths:
                         paidAmount:
                           type: number
                           description: Amount already paid against this transaction, if tracked.
-                        creditAmount:
-                          type: number
-                          description: Sum of all credit lines applied to this invoice.
-                        creditNote:
-                          type: string
-                          nullable: true
-                          description: Note from the first credit line, if any.
                         creditLines:
                           type: array
                           items:
@@ -20140,13 +20091,6 @@ paths:
                   paidAmount:
                     type: number
                     description: Amount already paid against this transaction, if tracked.
-                  creditAmount:
-                    type: number
-                    description: Sum of all credit lines applied to this invoice.
-                  creditNote:
-                    type: string
-                    nullable: true
-                    description: Note from the first credit line, if any.
                   creditLines:
                     type: array
                     items:
@@ -20270,13 +20214,6 @@ paths:
                         paidAmount:
                           type: number
                           description: Amount already paid against this transaction, if tracked.
-                        creditAmount:
-                          type: number
-                          description: Sum of all credit lines applied to this invoice.
-                        creditNote:
-                          type: string
-                          nullable: true
-                          description: Note from the first credit line, if any.
                         creditLines:
                           type: array
                           items:
@@ -20401,13 +20338,6 @@ paths:
                   paidAmount:
                     type: number
                     description: Amount already paid against this transaction, if tracked.
-                  creditAmount:
-                    type: number
-                    description: Sum of all credit lines applied to this invoice.
-                  creditNote:
-                    type: string
-                    nullable: true
-                    description: Note from the first credit line, if any.
                   creditLines:
                     type: array
                     items:
@@ -20534,13 +20464,6 @@ paths:
                   paidAmount:
                     type: number
                     description: Amount already paid against this transaction, if tracked.
-                  creditAmount:
-                    type: number
-                    description: Sum of all credit lines applied to this invoice.
-                  creditNote:
-                    type: string
-                    nullable: true
-                    description: Note from the first credit line, if any.
                   creditLines:
                     type: array
                     items:
@@ -20672,13 +20595,6 @@ paths:
                   paidAmount:
                     type: number
                     description: Amount already paid against this transaction, if tracked.
-                  creditAmount:
-                    type: number
-                    description: Sum of all credit lines applied to this invoice.
-                  creditNote:
-                    type: string
-                    nullable: true
-                    description: Note from the first credit line, if any.
                   creditLines:
                     type: array
                     items:
@@ -20866,13 +20782,6 @@ paths:
                   paidAmount:
                     type: number
                     description: Amount already paid against this transaction, if tracked.
-                  creditAmount:
-                    type: number
-                    description: Sum of all credit lines applied to this invoice.
-                  creditNote:
-                    type: string
-                    nullable: true
-                    description: Note from the first credit line, if any.
                   creditLines:
                     type: array
                     items:
@@ -20981,13 +20890,6 @@ paths:
                   paidAmount:
                     type: number
                     description: Amount already paid against this transaction, if tracked.
-                  creditAmount:
-                    type: number
-                    description: Sum of all credit lines applied to this invoice.
-                  creditNote:
-                    type: string
-                    nullable: true
-                    description: Note from the first credit line, if any.
                   creditLines:
                     type: array
                     items:
@@ -21086,13 +20988,6 @@ paths:
                   paidAmount:
                     type: number
                     description: Amount already paid against this transaction, if tracked.
-                  creditAmount:
-                    type: number
-                    description: Sum of all credit lines applied to this invoice.
-                  creditNote:
-                    type: string
-                    nullable: true
-                    description: Note from the first credit line, if any.
                   creditLines:
                     type: array
                     items:
@@ -21196,13 +21091,6 @@ paths:
                     paidAmount:
                       type: number
                       description: Amount already paid against this transaction, if tracked.
-                    creditAmount:
-                      type: number
-                      description: Sum of all credit lines applied to this invoice.
-                    creditNote:
-                      type: string
-                      nullable: true
-                      description: Note from the first credit line, if any.
                     creditLines:
                       type: array
                       items:
@@ -21363,13 +21251,6 @@ paths:
                         paidAmount:
                           type: number
                           description: Amount already paid against this transaction, if tracked.
-                        creditAmount:
-                          type: number
-                          description: Sum of all credit lines applied to this invoice.
-                        creditNote:
-                          type: string
-                          nullable: true
-                          description: Note from the first credit line, if any.
                         creditLines:
                           type: array
                           items:
@@ -21497,13 +21378,6 @@ paths:
                     paidAmount:
                       type: number
                       description: Amount already paid against this transaction, if tracked.
-                    creditAmount:
-                      type: number
-                      description: Sum of all credit lines applied to this invoice.
-                    creditNote:
-                      type: string
-                      nullable: true
-                      description: Note from the first credit line, if any.
                     creditLines:
                       type: array
                       items:
@@ -21606,13 +21480,6 @@ paths:
                     paidAmount:
                       type: number
                       description: Amount already paid against this transaction, if tracked.
-                    creditAmount:
-                      type: number
-                      description: Sum of all credit lines applied to this invoice.
-                    creditNote:
-                      type: string
-                      nullable: true
-                      description: Note from the first credit line, if any.
                     creditLines:
                       type: array
                       items:
@@ -21714,13 +21581,6 @@ paths:
                   paidAmount:
                     type: number
                     description: Amount already paid against this transaction, if tracked.
-                  creditAmount:
-                    type: number
-                    description: Sum of all credit lines applied to this invoice.
-                  creditNote:
-                    type: string
-                    nullable: true
-                    description: Note from the first credit line, if any.
                   creditLines:
                     type: array
                     items:
@@ -21833,13 +21693,6 @@ paths:
                     paidAmount:
                       type: number
                       description: Amount already paid against this transaction, if tracked.
-                    creditAmount:
-                      type: number
-                      description: Sum of all credit lines applied to this invoice.
-                    creditNote:
-                      type: string
-                      nullable: true
-                      description: Note from the first credit line, if any.
                     creditLines:
                       type: array
                       items:
@@ -21933,13 +21786,6 @@ paths:
                     paidAmount:
                       type: number
                       description: Amount already paid against this transaction, if tracked.
-                    creditAmount:
-                      type: number
-                      description: Sum of all credit lines applied to this invoice.
-                    creditNote:
-                      type: string
-                      nullable: true
-                      description: Note from the first credit line, if any.
                     creditLines:
                       type: array
                       items:
@@ -22055,13 +21901,6 @@ paths:
                     paidAmount:
                       type: number
                       description: Amount already paid against this transaction, if tracked.
-                    creditAmount:
-                      type: number
-                      description: Sum of all credit lines applied to this invoice.
-                    creditNote:
-                      type: string
-                      nullable: true
-                      description: Note from the first credit line, if any.
                     creditLines:
                       type: array
                       items:
@@ -22290,13 +22129,6 @@ paths:
                   paidAmount:
                     type: number
                     description: Amount already paid against this transaction, if tracked.
-                  creditAmount:
-                    type: number
-                    description: Sum of all credit lines applied to this invoice.
-                  creditNote:
-                    type: string
-                    nullable: true
-                    description: Note from the first credit line, if any.
                   creditLines:
                     type: array
                     items:
@@ -22495,13 +22327,6 @@ paths:
                   paidAmount:
                     type: number
                     description: Amount already paid against this transaction, if tracked.
-                  creditAmount:
-                    type: number
-                    description: Sum of all credit lines applied to this invoice.
-                  creditNote:
-                    type: string
-                    nullable: true
-                    description: Note from the first credit line, if any.
                   creditLines:
                     type: array
                     items:
@@ -22740,13 +22565,6 @@ paths:
                   paidAmount:
                     type: number
                     description: Amount already paid against this transaction, if tracked.
-                  creditAmount:
-                    type: number
-                    description: Sum of all credit lines applied to this invoice.
-                  creditNote:
-                    type: string
-                    nullable: true
-                    description: Note from the first credit line, if any.
                   creditLines:
                     type: array
                     items:
@@ -22845,13 +22663,6 @@ paths:
                   paidAmount:
                     type: number
                     description: Amount already paid against this transaction, if tracked.
-                  creditAmount:
-                    type: number
-                    description: Sum of all credit lines applied to this invoice.
-                  creditNote:
-                    type: string
-                    nullable: true
-                    description: Note from the first credit line, if any.
                   creditLines:
                     type: array
                     items:
@@ -23330,13 +23141,6 @@ paths:
                         paidAmount:
                           type: number
                           description: Amount already paid against this transaction, if tracked.
-                        creditAmount:
-                          type: number
-                          description: Sum of all credit lines applied to this invoice.
-                        creditNote:
-                          type: string
-                          nullable: true
-                          description: Note from the first credit line, if any.
                         creditLines:
                           type: array
                           items:
@@ -23474,13 +23278,6 @@ paths:
                         paidAmount:
                           type: number
                           description: Amount already paid against this transaction, if tracked.
-                        creditAmount:
-                          type: number
-                          description: Sum of all credit lines applied to this invoice.
-                        creditNote:
-                          type: string
-                          nullable: true
-                          description: Note from the first credit line, if any.
                         creditLines:
                           type: array
                           items:
@@ -23618,13 +23415,6 @@ paths:
                         paidAmount:
                           type: number
                           description: Amount already paid against this transaction, if tracked.
-                        creditAmount:
-                          type: number
-                          description: Sum of all credit lines applied to this invoice.
-                        creditNote:
-                          type: string
-                          nullable: true
-                          description: Note from the first credit line, if any.
                         creditLines:
                           type: array
                           items:
@@ -23874,13 +23664,6 @@ paths:
                       paidAmount:
                         type: number
                         description: Amount already paid against this transaction, if tracked.
-                      creditAmount:
-                        type: number
-                        description: Sum of all credit lines applied to this invoice.
-                      creditNote:
-                        type: string
-                        nullable: true
-                        description: Note from the first credit line, if any.
                       creditLines:
                         type: array
                         items:
@@ -24030,13 +23813,6 @@ paths:
                         paidAmount:
                           type: number
                           description: Amount already paid against this transaction, if tracked.
-                        creditAmount:
-                          type: number
-                          description: Sum of all credit lines applied to this invoice.
-                        creditNote:
-                          type: string
-                          nullable: true
-                          description: Note from the first credit line, if any.
                         creditLines:
                           type: array
                           items:
@@ -24229,13 +24005,6 @@ paths:
                         paidAmount:
                           type: number
                           description: Amount already paid against this transaction, if tracked.
-                        creditAmount:
-                          type: number
-                          description: Sum of all credit lines applied to this invoice.
-                        creditNote:
-                          type: string
-                          nullable: true
-                          description: Note from the first credit line, if any.
                         creditLines:
                           type: array
                           items:
@@ -24349,13 +24118,6 @@ paths:
                       paidAmount:
                         type: number
                         description: Amount already paid against this transaction, if tracked.
-                      creditAmount:
-                        type: number
-                        description: Sum of all credit lines applied to this invoice.
-                      creditNote:
-                        type: string
-                        nullable: true
-                        description: Note from the first credit line, if any.
                       creditLines:
                         type: array
                         items:
@@ -24470,13 +24232,6 @@ paths:
                         paidAmount:
                           type: number
                           description: Amount already paid against this transaction, if tracked.
-                        creditAmount:
-                          type: number
-                          description: Sum of all credit lines applied to this invoice.
-                        creditNote:
-                          type: string
-                          nullable: true
-                          description: Note from the first credit line, if any.
                         creditLines:
                           type: array
                           items:
