@@ -1695,6 +1695,26 @@ components:
         paidAmount:
           type: number
           description: Amount already paid against this transaction, if tracked.
+        creditAmount:
+          type: number
+          description: Sum of all credit lines applied to this invoice.
+        creditNote:
+          type: string
+          nullable: true
+          description: Note from the first credit line, if any.
+        creditLines:
+          type: array
+          items:
+            type: object
+            properties:
+              amount:
+                type: number
+              note:
+                type: string
+                nullable: true
+            required:
+              - amount
+          description: Individual credit lines applied to this invoice after VAT.
         dueDate:
           type: string
           nullable: true
@@ -1767,6 +1787,26 @@ components:
               paidAmount:
                 type: number
                 description: Amount already paid against this transaction, if tracked.
+              creditAmount:
+                type: number
+                description: Sum of all credit lines applied to this invoice.
+              creditNote:
+                type: string
+                nullable: true
+                description: Note from the first credit line, if any.
+              creditLines:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    amount:
+                      type: number
+                    note:
+                      type: string
+                      nullable: true
+                  required:
+                    - amount
+                description: Individual credit lines applied to this invoice after VAT.
               dueDate:
                 type: string
                 nullable: true
@@ -19050,6 +19090,26 @@ paths:
                         paidAmount:
                           type: number
                           description: Amount already paid against this transaction, if tracked.
+                        creditAmount:
+                          type: number
+                          description: Sum of all credit lines applied to this invoice.
+                        creditNote:
+                          type: string
+                          nullable: true
+                          description: Note from the first credit line, if any.
+                        creditLines:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              amount:
+                                type: number
+                              note:
+                                type: string
+                                nullable: true
+                            required:
+                              - amount
+                          description: Individual credit lines applied to this invoice after VAT.
                         dueDate:
                           type: string
                           nullable: true
@@ -19316,6 +19376,26 @@ paths:
                   paidAmount:
                     type: number
                     description: Amount already paid against this transaction, if tracked.
+                  creditAmount:
+                    type: number
+                    description: Sum of all credit lines applied to this invoice.
+                  creditNote:
+                    type: string
+                    nullable: true
+                    description: Note from the first credit line, if any.
+                  creditLines:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        amount:
+                          type: number
+                        note:
+                          type: string
+                          nullable: true
+                      required:
+                        - amount
+                    description: Individual credit lines applied to this invoice after VAT.
                   dueDate:
                     type: string
                     nullable: true
@@ -19404,6 +19484,26 @@ paths:
                   paidAmount:
                     type: number
                     description: Amount already paid against this transaction, if tracked.
+                  creditAmount:
+                    type: number
+                    description: Sum of all credit lines applied to this invoice.
+                  creditNote:
+                    type: string
+                    nullable: true
+                    description: Note from the first credit line, if any.
+                  creditLines:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        amount:
+                          type: number
+                        note:
+                          type: string
+                          nullable: true
+                      required:
+                        - amount
+                    description: Individual credit lines applied to this invoice after VAT.
                   dueDate:
                     type: string
                     nullable: true
@@ -19622,6 +19722,26 @@ paths:
                   paidAmount:
                     type: number
                     description: Amount already paid against this transaction, if tracked.
+                  creditAmount:
+                    type: number
+                    description: Sum of all credit lines applied to this invoice.
+                  creditNote:
+                    type: string
+                    nullable: true
+                    description: Note from the first credit line, if any.
+                  creditLines:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        amount:
+                          type: number
+                        note:
+                          type: string
+                          nullable: true
+                      required:
+                        - amount
+                    description: Individual credit lines applied to this invoice after VAT.
                   dueDate:
                     type: string
                     nullable: true
@@ -19746,6 +19866,26 @@ paths:
                         paidAmount:
                           type: number
                           description: Amount already paid against this transaction, if tracked.
+                        creditAmount:
+                          type: number
+                          description: Sum of all credit lines applied to this invoice.
+                        creditNote:
+                          type: string
+                          nullable: true
+                          description: Note from the first credit line, if any.
+                        creditLines:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              amount:
+                                type: number
+                              note:
+                                type: string
+                                nullable: true
+                            required:
+                              - amount
+                          description: Individual credit lines applied to this invoice after VAT.
                         dueDate:
                           type: string
                           nullable: true
@@ -20000,6 +20140,26 @@ paths:
                   paidAmount:
                     type: number
                     description: Amount already paid against this transaction, if tracked.
+                  creditAmount:
+                    type: number
+                    description: Sum of all credit lines applied to this invoice.
+                  creditNote:
+                    type: string
+                    nullable: true
+                    description: Note from the first credit line, if any.
+                  creditLines:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        amount:
+                          type: number
+                        note:
+                          type: string
+                          nullable: true
+                      required:
+                        - amount
+                    description: Individual credit lines applied to this invoice after VAT.
                   dueDate:
                     type: string
                     nullable: true
@@ -20110,6 +20270,26 @@ paths:
                         paidAmount:
                           type: number
                           description: Amount already paid against this transaction, if tracked.
+                        creditAmount:
+                          type: number
+                          description: Sum of all credit lines applied to this invoice.
+                        creditNote:
+                          type: string
+                          nullable: true
+                          description: Note from the first credit line, if any.
+                        creditLines:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              amount:
+                                type: number
+                              note:
+                                type: string
+                                nullable: true
+                            required:
+                              - amount
+                          description: Individual credit lines applied to this invoice after VAT.
                         dueDate:
                           type: string
                           nullable: true
@@ -20221,6 +20401,26 @@ paths:
                   paidAmount:
                     type: number
                     description: Amount already paid against this transaction, if tracked.
+                  creditAmount:
+                    type: number
+                    description: Sum of all credit lines applied to this invoice.
+                  creditNote:
+                    type: string
+                    nullable: true
+                    description: Note from the first credit line, if any.
+                  creditLines:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        amount:
+                          type: number
+                        note:
+                          type: string
+                          nullable: true
+                      required:
+                        - amount
+                    description: Individual credit lines applied to this invoice after VAT.
                   dueDate:
                     type: string
                     nullable: true
@@ -20334,6 +20534,26 @@ paths:
                   paidAmount:
                     type: number
                     description: Amount already paid against this transaction, if tracked.
+                  creditAmount:
+                    type: number
+                    description: Sum of all credit lines applied to this invoice.
+                  creditNote:
+                    type: string
+                    nullable: true
+                    description: Note from the first credit line, if any.
+                  creditLines:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        amount:
+                          type: number
+                        note:
+                          type: string
+                          nullable: true
+                      required:
+                        - amount
+                    description: Individual credit lines applied to this invoice after VAT.
                   dueDate:
                     type: string
                     nullable: true
@@ -20452,6 +20672,26 @@ paths:
                   paidAmount:
                     type: number
                     description: Amount already paid against this transaction, if tracked.
+                  creditAmount:
+                    type: number
+                    description: Sum of all credit lines applied to this invoice.
+                  creditNote:
+                    type: string
+                    nullable: true
+                    description: Note from the first credit line, if any.
+                  creditLines:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        amount:
+                          type: number
+                        note:
+                          type: string
+                          nullable: true
+                      required:
+                        - amount
+                    description: Individual credit lines applied to this invoice after VAT.
                   dueDate:
                     type: string
                     nullable: true
@@ -20626,6 +20866,26 @@ paths:
                   paidAmount:
                     type: number
                     description: Amount already paid against this transaction, if tracked.
+                  creditAmount:
+                    type: number
+                    description: Sum of all credit lines applied to this invoice.
+                  creditNote:
+                    type: string
+                    nullable: true
+                    description: Note from the first credit line, if any.
+                  creditLines:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        amount:
+                          type: number
+                        note:
+                          type: string
+                          nullable: true
+                      required:
+                        - amount
+                    description: Individual credit lines applied to this invoice after VAT.
                   dueDate:
                     type: string
                     nullable: true
@@ -20721,6 +20981,26 @@ paths:
                   paidAmount:
                     type: number
                     description: Amount already paid against this transaction, if tracked.
+                  creditAmount:
+                    type: number
+                    description: Sum of all credit lines applied to this invoice.
+                  creditNote:
+                    type: string
+                    nullable: true
+                    description: Note from the first credit line, if any.
+                  creditLines:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        amount:
+                          type: number
+                        note:
+                          type: string
+                          nullable: true
+                      required:
+                        - amount
+                    description: Individual credit lines applied to this invoice after VAT.
                   dueDate:
                     type: string
                     nullable: true
@@ -20806,6 +21086,26 @@ paths:
                   paidAmount:
                     type: number
                     description: Amount already paid against this transaction, if tracked.
+                  creditAmount:
+                    type: number
+                    description: Sum of all credit lines applied to this invoice.
+                  creditNote:
+                    type: string
+                    nullable: true
+                    description: Note from the first credit line, if any.
+                  creditLines:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        amount:
+                          type: number
+                        note:
+                          type: string
+                          nullable: true
+                      required:
+                        - amount
+                    description: Individual credit lines applied to this invoice after VAT.
                   dueDate:
                     type: string
                     nullable: true
@@ -20896,6 +21196,26 @@ paths:
                     paidAmount:
                       type: number
                       description: Amount already paid against this transaction, if tracked.
+                    creditAmount:
+                      type: number
+                      description: Sum of all credit lines applied to this invoice.
+                    creditNote:
+                      type: string
+                      nullable: true
+                      description: Note from the first credit line, if any.
+                    creditLines:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          amount:
+                            type: number
+                          note:
+                            type: string
+                            nullable: true
+                        required:
+                          - amount
+                      description: Individual credit lines applied to this invoice after VAT.
                     dueDate:
                       type: string
                       nullable: true
@@ -21043,6 +21363,26 @@ paths:
                         paidAmount:
                           type: number
                           description: Amount already paid against this transaction, if tracked.
+                        creditAmount:
+                          type: number
+                          description: Sum of all credit lines applied to this invoice.
+                        creditNote:
+                          type: string
+                          nullable: true
+                          description: Note from the first credit line, if any.
+                        creditLines:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              amount:
+                                type: number
+                              note:
+                                type: string
+                                nullable: true
+                            required:
+                              - amount
+                          description: Individual credit lines applied to this invoice after VAT.
                         dueDate:
                           type: string
                           nullable: true
@@ -21157,6 +21497,26 @@ paths:
                     paidAmount:
                       type: number
                       description: Amount already paid against this transaction, if tracked.
+                    creditAmount:
+                      type: number
+                      description: Sum of all credit lines applied to this invoice.
+                    creditNote:
+                      type: string
+                      nullable: true
+                      description: Note from the first credit line, if any.
+                    creditLines:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          amount:
+                            type: number
+                          note:
+                            type: string
+                            nullable: true
+                        required:
+                          - amount
+                      description: Individual credit lines applied to this invoice after VAT.
                     dueDate:
                       type: string
                       nullable: true
@@ -21246,6 +21606,26 @@ paths:
                     paidAmount:
                       type: number
                       description: Amount already paid against this transaction, if tracked.
+                    creditAmount:
+                      type: number
+                      description: Sum of all credit lines applied to this invoice.
+                    creditNote:
+                      type: string
+                      nullable: true
+                      description: Note from the first credit line, if any.
+                    creditLines:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          amount:
+                            type: number
+                          note:
+                            type: string
+                            nullable: true
+                        required:
+                          - amount
+                      description: Individual credit lines applied to this invoice after VAT.
                     dueDate:
                       type: string
                       nullable: true
@@ -21334,6 +21714,26 @@ paths:
                   paidAmount:
                     type: number
                     description: Amount already paid against this transaction, if tracked.
+                  creditAmount:
+                    type: number
+                    description: Sum of all credit lines applied to this invoice.
+                  creditNote:
+                    type: string
+                    nullable: true
+                    description: Note from the first credit line, if any.
+                  creditLines:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        amount:
+                          type: number
+                        note:
+                          type: string
+                          nullable: true
+                      required:
+                        - amount
+                    description: Individual credit lines applied to this invoice after VAT.
                   dueDate:
                     type: string
                     nullable: true
@@ -21433,6 +21833,26 @@ paths:
                     paidAmount:
                       type: number
                       description: Amount already paid against this transaction, if tracked.
+                    creditAmount:
+                      type: number
+                      description: Sum of all credit lines applied to this invoice.
+                    creditNote:
+                      type: string
+                      nullable: true
+                      description: Note from the first credit line, if any.
+                    creditLines:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          amount:
+                            type: number
+                          note:
+                            type: string
+                            nullable: true
+                        required:
+                          - amount
+                      description: Individual credit lines applied to this invoice after VAT.
                     dueDate:
                       type: string
                       nullable: true
@@ -21513,6 +21933,26 @@ paths:
                     paidAmount:
                       type: number
                       description: Amount already paid against this transaction, if tracked.
+                    creditAmount:
+                      type: number
+                      description: Sum of all credit lines applied to this invoice.
+                    creditNote:
+                      type: string
+                      nullable: true
+                      description: Note from the first credit line, if any.
+                    creditLines:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          amount:
+                            type: number
+                          note:
+                            type: string
+                            nullable: true
+                        required:
+                          - amount
+                      description: Individual credit lines applied to this invoice after VAT.
                     dueDate:
                       type: string
                       nullable: true
@@ -21615,6 +22055,26 @@ paths:
                     paidAmount:
                       type: number
                       description: Amount already paid against this transaction, if tracked.
+                    creditAmount:
+                      type: number
+                      description: Sum of all credit lines applied to this invoice.
+                    creditNote:
+                      type: string
+                      nullable: true
+                      description: Note from the first credit line, if any.
+                    creditLines:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          amount:
+                            type: number
+                          note:
+                            type: string
+                            nullable: true
+                        required:
+                          - amount
+                      description: Individual credit lines applied to this invoice after VAT.
                     dueDate:
                       type: string
                       nullable: true
@@ -21830,6 +22290,26 @@ paths:
                   paidAmount:
                     type: number
                     description: Amount already paid against this transaction, if tracked.
+                  creditAmount:
+                    type: number
+                    description: Sum of all credit lines applied to this invoice.
+                  creditNote:
+                    type: string
+                    nullable: true
+                    description: Note from the first credit line, if any.
+                  creditLines:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        amount:
+                          type: number
+                        note:
+                          type: string
+                          nullable: true
+                      required:
+                        - amount
+                    description: Individual credit lines applied to this invoice after VAT.
                   dueDate:
                     type: string
                     nullable: true
@@ -22015,6 +22495,26 @@ paths:
                   paidAmount:
                     type: number
                     description: Amount already paid against this transaction, if tracked.
+                  creditAmount:
+                    type: number
+                    description: Sum of all credit lines applied to this invoice.
+                  creditNote:
+                    type: string
+                    nullable: true
+                    description: Note from the first credit line, if any.
+                  creditLines:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        amount:
+                          type: number
+                        note:
+                          type: string
+                          nullable: true
+                      required:
+                        - amount
+                    description: Individual credit lines applied to this invoice after VAT.
                   dueDate:
                     type: string
                     nullable: true
@@ -22240,6 +22740,26 @@ paths:
                   paidAmount:
                     type: number
                     description: Amount already paid against this transaction, if tracked.
+                  creditAmount:
+                    type: number
+                    description: Sum of all credit lines applied to this invoice.
+                  creditNote:
+                    type: string
+                    nullable: true
+                    description: Note from the first credit line, if any.
+                  creditLines:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        amount:
+                          type: number
+                        note:
+                          type: string
+                          nullable: true
+                      required:
+                        - amount
+                    description: Individual credit lines applied to this invoice after VAT.
                   dueDate:
                     type: string
                     nullable: true
@@ -22325,6 +22845,26 @@ paths:
                   paidAmount:
                     type: number
                     description: Amount already paid against this transaction, if tracked.
+                  creditAmount:
+                    type: number
+                    description: Sum of all credit lines applied to this invoice.
+                  creditNote:
+                    type: string
+                    nullable: true
+                    description: Note from the first credit line, if any.
+                  creditLines:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        amount:
+                          type: number
+                        note:
+                          type: string
+                          nullable: true
+                      required:
+                        - amount
+                    description: Individual credit lines applied to this invoice after VAT.
                   dueDate:
                     type: string
                     nullable: true
@@ -22790,6 +23330,26 @@ paths:
                         paidAmount:
                           type: number
                           description: Amount already paid against this transaction, if tracked.
+                        creditAmount:
+                          type: number
+                          description: Sum of all credit lines applied to this invoice.
+                        creditNote:
+                          type: string
+                          nullable: true
+                          description: Note from the first credit line, if any.
+                        creditLines:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              amount:
+                                type: number
+                              note:
+                                type: string
+                                nullable: true
+                            required:
+                              - amount
+                          description: Individual credit lines applied to this invoice after VAT.
                         dueDate:
                           type: string
                           nullable: true
@@ -22914,6 +23474,26 @@ paths:
                         paidAmount:
                           type: number
                           description: Amount already paid against this transaction, if tracked.
+                        creditAmount:
+                          type: number
+                          description: Sum of all credit lines applied to this invoice.
+                        creditNote:
+                          type: string
+                          nullable: true
+                          description: Note from the first credit line, if any.
+                        creditLines:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              amount:
+                                type: number
+                              note:
+                                type: string
+                                nullable: true
+                            required:
+                              - amount
+                          description: Individual credit lines applied to this invoice after VAT.
                         dueDate:
                           type: string
                           nullable: true
@@ -23038,6 +23618,26 @@ paths:
                         paidAmount:
                           type: number
                           description: Amount already paid against this transaction, if tracked.
+                        creditAmount:
+                          type: number
+                          description: Sum of all credit lines applied to this invoice.
+                        creditNote:
+                          type: string
+                          nullable: true
+                          description: Note from the first credit line, if any.
+                        creditLines:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              amount:
+                                type: number
+                              note:
+                                type: string
+                                nullable: true
+                            required:
+                              - amount
+                          description: Individual credit lines applied to this invoice after VAT.
                         dueDate:
                           type: string
                           nullable: true
@@ -23274,6 +23874,26 @@ paths:
                       paidAmount:
                         type: number
                         description: Amount already paid against this transaction, if tracked.
+                      creditAmount:
+                        type: number
+                        description: Sum of all credit lines applied to this invoice.
+                      creditNote:
+                        type: string
+                        nullable: true
+                        description: Note from the first credit line, if any.
+                      creditLines:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            amount:
+                              type: number
+                            note:
+                              type: string
+                              nullable: true
+                          required:
+                            - amount
+                        description: Individual credit lines applied to this invoice after VAT.
                       dueDate:
                         type: string
                         nullable: true
@@ -23410,6 +24030,26 @@ paths:
                         paidAmount:
                           type: number
                           description: Amount already paid against this transaction, if tracked.
+                        creditAmount:
+                          type: number
+                          description: Sum of all credit lines applied to this invoice.
+                        creditNote:
+                          type: string
+                          nullable: true
+                          description: Note from the first credit line, if any.
+                        creditLines:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              amount:
+                                type: number
+                              note:
+                                type: string
+                                nullable: true
+                            required:
+                              - amount
+                          description: Individual credit lines applied to this invoice after VAT.
                         dueDate:
                           type: string
                           nullable: true
@@ -23589,6 +24229,26 @@ paths:
                         paidAmount:
                           type: number
                           description: Amount already paid against this transaction, if tracked.
+                        creditAmount:
+                          type: number
+                          description: Sum of all credit lines applied to this invoice.
+                        creditNote:
+                          type: string
+                          nullable: true
+                          description: Note from the first credit line, if any.
+                        creditLines:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              amount:
+                                type: number
+                              note:
+                                type: string
+                                nullable: true
+                            required:
+                              - amount
+                          description: Individual credit lines applied to this invoice after VAT.
                         dueDate:
                           type: string
                           nullable: true
@@ -23689,6 +24349,26 @@ paths:
                       paidAmount:
                         type: number
                         description: Amount already paid against this transaction, if tracked.
+                      creditAmount:
+                        type: number
+                        description: Sum of all credit lines applied to this invoice.
+                      creditNote:
+                        type: string
+                        nullable: true
+                        description: Note from the first credit line, if any.
+                      creditLines:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            amount:
+                              type: number
+                            note:
+                              type: string
+                              nullable: true
+                          required:
+                            - amount
+                        description: Individual credit lines applied to this invoice after VAT.
                       dueDate:
                         type: string
                         nullable: true
@@ -23790,6 +24470,26 @@ paths:
                         paidAmount:
                           type: number
                           description: Amount already paid against this transaction, if tracked.
+                        creditAmount:
+                          type: number
+                          description: Sum of all credit lines applied to this invoice.
+                        creditNote:
+                          type: string
+                          nullable: true
+                          description: Note from the first credit line, if any.
+                        creditLines:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              amount:
+                                type: number
+                              note:
+                                type: string
+                                nullable: true
+                            required:
+                              - amount
+                          description: Individual credit lines applied to this invoice after VAT.
                         dueDate:
                           type: string
                           nullable: true
