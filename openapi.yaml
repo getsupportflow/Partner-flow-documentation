@@ -23958,6 +23958,44 @@ paths:
                   - companyId
                   - name
                   - status
+    delete:
+      summary: Soft-delete service (by-id)
+      description: Soft-deletes a service (sets deletedAt + status INACTIVE). Reversible via restore.
+      tags:
+        - Service
+      parameters:
+        - schema:
+            type: string
+            format: uuid
+          required: true
+          name: id
+          in: path
+      responses:
+        "200":
+          description: Service soft-deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    enum:
+                      - true
+                    description: Indicates success
+                  data:
+                    type: object
+                    properties:
+                      success:
+                        type: boolean
+                      deletedServiceId:
+                        type: string
+                    required:
+                      - success
+                      - deletedServiceId
+                required:
+                  - success
+                  - data
   /service/{id}/activate:
     post:
       summary: Activate service
