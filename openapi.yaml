@@ -108,7 +108,7 @@ components:
           type: string
         sortOrder:
           type: string
-          enum: &a9
+          enum: &a10
             - asc
             - desc
           default: desc
@@ -307,7 +307,7 @@ components:
           default: createdAt
         sortOrder:
           type: string
-          enum: &a22
+          enum: &a23
             - asc
             - desc
           default: desc
@@ -882,7 +882,7 @@ components:
           maxLength: 20
         category:
           type: string
-          enum: &a23
+          enum: &a24
             - ELECTRONICS
             - MECHANICAL
             - SOFTWARE
@@ -1735,7 +1735,7 @@ components:
           description: Lifecycle status of the transaction.
         recipientType:
           type: string
-          enum: &a24
+          enum: &a25
             - CUSTOMER
             - COMPANY
           description: Recipient type for this transaction.
@@ -2103,7 +2103,7 @@ components:
       properties:
         type:
           type: string
-          enum: &a25
+          enum: &a26
             - estimate
             - invoice
             - purchase-order
@@ -2332,6 +2332,111 @@ components:
       required:
         - data
       description: Non‑paginated list response containing payments associated with a billing document.
+    RequestPaymentInput:
+      type: object
+      properties:
+        amount:
+          type: number
+          minimum: 0
+          exclusiveMinimum: true
+          description: Amount to request; defaults to the full outstanding balance. Must be 0 < amount ≤ outstanding.
+      description: Input for requesting a customer payment against a transaction.
+    PaymentRequestDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique payment request identifier.
+        amount:
+          type: number
+          description: Requested amount in the transaction currency.
+        currencySymbol:
+          type: string
+          description: Currency symbol for display (e.g. £).
+        customerEmail:
+          type: string
+          description: Email address the request was sent to.
+        status:
+          type: string
+          enum: &a7
+            - PENDING
+            - PAID
+            - CANCELLED
+            - EXPIRED
+          description: Lifecycle status of the request.
+        createdAt:
+          type: string
+          nullable: true
+          description: When the request was created.
+        paidAt:
+          type: string
+          nullable: true
+          description: When the request was paid, if it has been.
+      required:
+        - id
+        - amount
+        - currencySymbol
+        - customerEmail
+        - status
+        - createdAt
+        - paidAt
+      description: A request for a customer to pay an outstanding transaction balance via a Stripe link.
+    TransactionPaymentRequestsDto:
+      type: object
+      properties:
+        requests:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+                description: Unique payment request identifier.
+              amount:
+                type: number
+                description: Requested amount in the transaction currency.
+              currencySymbol:
+                type: string
+                description: Currency symbol for display (e.g. £).
+              customerEmail:
+                type: string
+                description: Email address the request was sent to.
+              status:
+                type: string
+                enum: *a7
+                description: Lifecycle status of the request.
+              createdAt:
+                type: string
+                nullable: true
+                description: When the request was created.
+              paidAt:
+                type: string
+                nullable: true
+                description: When the request was paid, if it has been.
+            required:
+              - id
+              - amount
+              - currencySymbol
+              - customerEmail
+              - status
+              - createdAt
+              - paidAt
+            description: A request for a customer to pay an outstanding transaction balance via a Stripe link.
+          description: Existing payment requests for the transaction, newest first.
+        stripeConnected:
+          type: boolean
+          description: Whether the tenant has connected Stripe (button is otherwise disabled).
+        customerEmail:
+          type: string
+          nullable: true
+          description: The resolved customer email, or null when the customer has no email on file.
+      required:
+        - requests
+        - stripeConnected
+        - customerEmail
+      description: Payment requests + request-button eligibility for a transaction.
     AggregatedSolutionsPreviewInput:
       type: object
       properties:
@@ -2389,7 +2494,7 @@ components:
       properties:
         recipientType:
           type: string
-          enum: &a26
+          enum: &a27
             - CUSTOMER
             - COMPANY
           description: Whether the recipient is a customer or another company.
@@ -2416,7 +2521,7 @@ components:
           format: uuid
         status:
           type: string
-          enum: &a27
+          enum: &a28
             - ACTIVE
             - INACTIVE
           default: ACTIVE
@@ -2448,7 +2553,7 @@ components:
           maxLength: 500
         status:
           type: string
-          enum: &a28
+          enum: &a29
             - ACTIVE
             - INACTIVE
         flow:
@@ -3256,7 +3361,7 @@ components:
       properties:
         status:
           type: string
-          enum: &a29
+          enum: &a30
             - ACTIVE
             - INACTIVE
             - PENDING
@@ -3274,7 +3379,7 @@ components:
           description: Array of service IDs to update
         status:
           type: string
-          enum: &a30
+          enum: &a31
             - ACTIVE
             - INACTIVE
             - PENDING
@@ -3632,7 +3737,7 @@ components:
           description: Field to sort by, e.g. createdAt or updatedAt
         sortOrder:
           type: string
-          enum: &a31
+          enum: &a32
             - asc
             - desc
           default: desc
@@ -3987,6 +4092,12 @@ components:
           type: string
           minLength: 1
           description: API name of the media field on the service form that these files belong to
+        attachToRecord:
+          type: string
+          enum: &a33
+            - "true"
+            - "false"
+          description: When "true", the uploaded media is appended to the record field and persisted immediately. Omit for staging flows (e.g. the transition dialog) that persist the media themselves on submit.
       required:
         - serviceName
         - recordId
@@ -4015,7 +4126,7 @@ components:
           description: File size in bytes
         type:
           type: string
-          enum: &a7
+          enum: &a8
             - photo
             - video
             - unknown
@@ -4031,6 +4142,106 @@ components:
         - type
         - uploadedAt
       description: Single media object associated with a service record field.
+    ServiceRecordMediaSetInput:
+      type: object
+      properties:
+        recordId:
+          type: string
+          minLength: 1
+          description: Service record ID that owns the media field
+        fieldApiName:
+          type: string
+          minLength: 1
+          description: API name of the MEDIA field to replace
+        media:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: Client-generated media identifier within the response
+              url:
+                type: string
+                format: uri
+                description: Publicly accessible URL for the uploaded media
+              cloudFrontUrl:
+                type: string
+                nullable: true
+                format: uri
+                description: Optional CloudFront CDN URL when configured
+              name:
+                type: string
+                description: Original filename of the uploaded media
+              size:
+                type: number
+                description: File size in bytes
+              type:
+                type: string
+                enum: *a8
+                description: Media type classification based on file MIME type
+              uploadedAt:
+                type: string
+                description: ISO timestamp when the media metadata object was created
+            required:
+              - id
+              - url
+              - name
+              - size
+              - type
+              - uploadedAt
+            description: Single media object associated with a service record field.
+          description: Complete media array to persist. An empty array clears the field.
+      required:
+        - recordId
+        - fieldApiName
+        - media
+      description: Replaces the stored media array for a single MEDIA field on a service record.
+    ServiceRecordMediaSetResponse:
+      type: object
+      properties:
+        fieldMedia:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: Client-generated media identifier within the response
+              url:
+                type: string
+                format: uri
+                description: Publicly accessible URL for the uploaded media
+              cloudFrontUrl:
+                type: string
+                nullable: true
+                format: uri
+                description: Optional CloudFront CDN URL when configured
+              name:
+                type: string
+                description: Original filename of the uploaded media
+              size:
+                type: number
+                description: File size in bytes
+              type:
+                type: string
+                enum: *a8
+                description: Media type classification based on file MIME type
+              uploadedAt:
+                type: string
+                description: ISO timestamp when the media metadata object was created
+            required:
+              - id
+              - url
+              - name
+              - size
+              - type
+              - uploadedAt
+            description: Single media object associated with a service record field.
+          description: The media array now persisted on the field
+      required:
+        - fieldMedia
+      description: Response body for the service-record media replacement endpoint.
     ServiceRecordMediaUploadResponse:
       type: object
       properties:
@@ -4059,7 +4270,7 @@ components:
                 description: File size in bytes
               type:
                 type: string
-                enum: *a7
+                enum: *a8
                 description: Media type classification based on file MIME type
               uploadedAt:
                 type: string
@@ -4073,6 +4284,45 @@ components:
               - uploadedAt
             description: Single media object associated with a service record field.
           description: Uploaded media items created for the service record
+        fieldMedia:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: Client-generated media identifier within the response
+              url:
+                type: string
+                format: uri
+                description: Publicly accessible URL for the uploaded media
+              cloudFrontUrl:
+                type: string
+                nullable: true
+                format: uri
+                description: Optional CloudFront CDN URL when configured
+              name:
+                type: string
+                description: Original filename of the uploaded media
+              size:
+                type: number
+                description: File size in bytes
+              type:
+                type: string
+                enum: *a8
+                description: Media type classification based on file MIME type
+              uploadedAt:
+                type: string
+                description: ISO timestamp when the media metadata object was created
+            required:
+              - id
+              - url
+              - name
+              - size
+              - type
+              - uploadedAt
+            description: Single media object associated with a service record field.
+          description: Full persisted media array for the field, returned only when "attachToRecord" was set. Clients should treat this as authoritative and replace their local state with it.
       required:
         - media
       description: Response body for the service-record media upload endpoint.
@@ -4132,7 +4382,7 @@ components:
           description: Field to sort by (e.g. createdAt, name)
         sortOrder:
           type: string
-          enum: &a32
+          enum: &a34
             - asc
             - desc
           default: desc
@@ -4204,7 +4454,7 @@ components:
           description: API name of the target service
         relationshipType:
           type: string
-          enum: &a8
+          enum: &a9
             - source
             - target
           description: Direction of the relationship relative to the current record
@@ -4255,7 +4505,7 @@ components:
             description: API name of the target service
           relationshipType:
             type: string
-            enum: *a8
+            enum: *a9
             description: Direction of the relationship relative to the current record
           createdAt:
             type: string
@@ -4633,7 +4883,7 @@ components:
       properties:
         type:
           type: string
-          enum: &a35
+          enum: &a37
             - DELIVERY
             - COLLECTION
           description: Shipment type, either 'DELIVERY' (to customer) or 'COLLECTION' (from customer).
@@ -4663,7 +4913,7 @@ components:
           description: Optional service record ID that this shipment is associated with. Empty string is treated as unset.
         courierProvider:
           type: string
-          enum: &a36
+          enum: &a38
             - DPD
             - ROYAL_MAIL
             - PARCELFORCE
@@ -5108,7 +5358,7 @@ components:
           type: string
         sortOrder:
           type: string
-          enum: *a9
+          enum: *a10
           default: desc
         search:
           type: string
@@ -6909,7 +7159,7 @@ components:
               - methodId
               - quantity
             description: Single logistics method selection used when syncing shipments for a transaction.
-          default: &a33 []
+          default: &a35 []
           description: Selections for collection shipments to create.
         deliverySelections:
           type: array
@@ -6935,7 +7185,7 @@ components:
               - methodId
               - quantity
             description: Single logistics method selection used when syncing shipments for a transaction.
-          default: &a34 []
+          default: &a36 []
           description: Selections for delivery shipments to create.
       required:
         - transactionId
@@ -6968,7 +7218,7 @@ components:
           description: Field to sort by, e.g. createdAt or updatedAt.
         sortOrder:
           type: string
-          enum: &a37
+          enum: &a39
             - asc
             - desc
           default: desc
@@ -7321,7 +7571,7 @@ components:
           type: string
         sortOrder:
           type: string
-          enum: *a9
+          enum: *a10
           default: desc
         search:
           type: string
@@ -7573,7 +7823,7 @@ components:
           description: Filter workspace items to a specific assigned user
         priorityLevel:
           type: string
-          enum: &a10
+          enum: &a11
             - CRITICAL
             - HIGH
             - MEDIUM
@@ -7582,7 +7832,7 @@ components:
           description: Filter workspace items to a single priority level
         showCompleted:
           type: string
-          enum: &a38
+          enum: &a40
             - "true"
             - "false"
           description: "Whether to include fully completed workspace items (default: false)"
@@ -7635,7 +7885,7 @@ components:
           properties:
             level:
               type: string
-              enum: *a10
+              enum: *a11
               description: Calculated priority bucket
             score:
               type: number
@@ -7675,7 +7925,7 @@ components:
       properties:
         level:
           type: string
-          enum: *a10
+          enum: *a11
           description: Calculated priority bucket
         score:
           type: number
@@ -7740,7 +7990,7 @@ components:
                 properties:
                   level:
                     type: string
-                    enum: *a10
+                    enum: *a11
                     description: Calculated priority bucket
                   score:
                     type: number
@@ -7832,7 +8082,7 @@ components:
           maxLength: 15
         role:
           type: string
-          enum: &a11
+          enum: &a12
             - ADMIN
             - SUPPORT
             - ACCOUNTS
@@ -7859,7 +8109,7 @@ components:
           maxLength: 15
         role:
           type: string
-          enum: *a11
+          enum: *a12
         isActive:
           type: boolean
     UserDto:
@@ -8094,7 +8344,7 @@ components:
           type: string
         sortOrder:
           type: string
-          enum: *a9
+          enum: *a10
           default: desc
         search:
           type: string
@@ -8316,7 +8566,7 @@ components:
           minimum: 0
         status:
           type: string
-          enum: &a40
+          enum: &a42
             - ACTIVE
             - INACTIVE
     SolutionDto:
@@ -8353,7 +8603,7 @@ components:
       properties:
         includeDeleted:
           type: string
-          enum: &a39
+          enum: &a41
             - "true"
             - "false"
           description: Include soft-deleted solutions
@@ -8557,14 +8807,14 @@ components:
         - serviceId
     InventoryProductStatus:
       type: string
-      enum: &a12
+      enum: &a13
         - DRAFT
         - PUBLISHED
         - INACTIVE
       description: Publication status of a product in the inventory catalogue
     InventoryStockLevelFilter:
       type: string
-      enum: &a13
+      enum: &a14
         - IN_STOCK
         - LOW_STOCK
         - OUT_OF_STOCK
@@ -8604,7 +8854,7 @@ components:
           description: Optional category or family label used for grouping and filters
         status:
           type: string
-          enum: *a12
+          enum: *a13
           default: DRAFT
           description: Initial publication status
         minStockLevel:
@@ -8648,7 +8898,7 @@ components:
           description: Updated base price
         status:
           type: string
-          enum: *a12
+          enum: *a13
           description: Updated publication status
         minStockLevel:
           type: integer
@@ -8814,7 +9064,7 @@ components:
           type: string
         sortOrder:
           type: string
-          enum: *a9
+          enum: *a10
           default: desc
         search:
           type: string
@@ -8839,7 +9089,7 @@ components:
           description: Free‑text search against product name, SKU and description
         status:
           type: string
-          enum: *a12
+          enum: *a13
           description: Filter products by publication status
         supplierId:
           type: string
@@ -8850,7 +9100,7 @@ components:
           description: Filter products by category label
         stockLevel:
           type: string
-          enum: *a13
+          enum: *a14
           description: Filter by computed stock level bucket
         priceMin:
           type: number
@@ -8887,7 +9137,7 @@ components:
       properties:
         status:
           type: string
-          enum: *a12
+          enum: *a13
           description: Publication status to filter by
       required:
         - status
@@ -8949,7 +9199,7 @@ components:
           description: IDs of products whose status should be updated
         status:
           type: string
-          enum: *a12
+          enum: *a13
           description: New status applied to all provided products
       required:
         - productIds
@@ -9059,7 +9309,7 @@ components:
           type: string
         sortOrder:
           type: string
-          enum: *a9
+          enum: *a10
           default: desc
         partnerCompanyId:
           type: string
@@ -9187,7 +9437,7 @@ components:
           type: string
         sortOrder:
           type: string
-          enum: *a9
+          enum: *a10
           default: desc
       description: Query parameters for GET /business/inventory/distributor-products (page, limit, sort)
     CreateDistributorProductInput:
@@ -9533,7 +9783,7 @@ components:
           format: uuid
         type:
           type: string
-          enum: &a41
+          enum: &a43
             - EMAIL
             - SMS
             - NOTIFICATION
@@ -9547,7 +9797,7 @@ components:
           minLength: 1
         status:
           type: string
-          enum: &a42
+          enum: &a44
             - DRAFT
             - SCHEDULED
             - SENT
@@ -9591,7 +9841,7 @@ components:
           format: uuid
         type:
           type: string
-          enum: &a43
+          enum: &a45
             - EMAIL
             - SMS
             - NOTIFICATION
@@ -9604,7 +9854,7 @@ components:
           minLength: 1
         status:
           type: string
-          enum: &a44
+          enum: &a46
             - DRAFT
             - SCHEDULED
             - SENT
@@ -9760,7 +10010,7 @@ components:
       properties:
         status:
           type: string
-          enum: &a14
+          enum: &a15
             - DRAFT
             - SCHEDULED
             - SENT
@@ -9781,7 +10031,7 @@ components:
           description: List of communication IDs to update
         status:
           type: string
-          enum: *a14
+          enum: *a15
           description: New status to apply to all specified communications
       required:
         - communicationIds
@@ -10027,13 +10277,13 @@ components:
           description: Filter by template category
         isSystem:
           type: string
-          enum: &a45
+          enum: &a47
             - "true"
             - "false"
           description: Filter by system template flag
         isActive:
           type: string
-          enum: &a46
+          enum: &a48
             - "true"
             - "false"
           description: Filter by active status
@@ -10050,11 +10300,12 @@ components:
           description: Template display name
         category:
           type: string
-          enum: &a15
+          enum: &a16
             - SYSTEM_COLLECTION_REQUEST
             - SYSTEM_DELIVERY_CONFIRMATION
             - SYSTEM_ESTIMATE
             - SYSTEM_INVOICE
+            - SYSTEM_PAYMENT_REQUEST
             - CUSTOM
           description: Template category
         subjectTemplate:
@@ -10083,7 +10334,7 @@ components:
           description: Template display name
         category:
           type: string
-          enum: *a15
+          enum: *a16
           description: Template category
         subjectTemplate:
           type: string
@@ -10422,7 +10673,7 @@ components:
               description: Optional sender identity ID
             toType:
               type: string
-              enum: &a47
+              enum: &a49
                 - customer
                 - internal
                 - custom
@@ -10853,7 +11104,7 @@ components:
           description: Field to sort results by
         sortOrder:
           type: string
-          enum: &a48
+          enum: &a50
             - asc
             - desc
           description: Sort direction
@@ -11060,7 +11311,7 @@ components:
           description: Same as id; explicit for invitation actions
         relationshipType:
           type: string
-          enum: &a16
+          enum: &a17
             - INVITER
             - INVITEE
           description: Whether the session company invited or was invited
@@ -11155,7 +11406,7 @@ components:
                 description: Same as id; explicit for invitation actions
               relationshipType:
                 type: string
-                enum: *a16
+                enum: *a17
                 description: Whether the session company invited or was invited
             required:
               - id
@@ -11276,7 +11527,7 @@ components:
       properties:
         activeOnly:
           type: string
-          enum: &a49
+          enum: &a51
             - "true"
             - "false"
           description: If false, includes inactive locations; default true
@@ -12053,7 +12304,7 @@ components:
       properties:
         companyType:
           type: string
-          enum: &a50
+          enum: &a52
             - SERVICE_FULFILLER
             - SERVICE_CREATOR
           description: Type of company being registered
@@ -12202,7 +12453,7 @@ components:
           description: Unique identifier of the subscription record.
         plan:
           type: string
-          enum: &a51
+          enum: &a53
             - BASIC
             - STANDARD
             - ENTERPRISE
@@ -12238,14 +12489,14 @@ components:
       properties:
         plan:
           type: string
-          enum: &a52
+          enum: &a54
             - BASIC
             - STANDARD
             - ENTERPRISE
           description: Target subscription plan tier to switch to.
         status:
           type: string
-          enum: &a53
+          enum: &a55
             - TRIAL
             - ACTIVE
             - PAST_DUE
@@ -12425,7 +12676,7 @@ components:
       properties:
         includeDeleted:
           type: string
-          enum: &a54
+          enum: &a56
             - "true"
             - "false"
           description: Include soft-deleted forms
@@ -12446,7 +12697,7 @@ components:
           description: Field to sort by (e.g. name, createdAt)
         sortOrder:
           type: string
-          enum: &a55
+          enum: &a57
             - asc
             - desc
           description: Sort direction
@@ -12464,7 +12715,7 @@ components:
           description: Optional description
         status:
           type: string
-          enum: &a56
+          enum: &a58
             - ACTIVE
             - INACTIVE
             - DRAFT
@@ -12842,7 +13093,7 @@ components:
           description: Filter by service ID
         company:
           type: string
-          enum: &a57
+          enum: &a59
             - "true"
           description: If true, return all company nodes
     CreateDocumentationNodeInput:
@@ -13056,7 +13307,7 @@ components:
           format: email
         type:
           type: string
-          enum: &a58
+          enum: &a60
             - TENANT
             - SYSTEM
         isDefault:
@@ -13085,7 +13336,7 @@ components:
           format: email
         type:
           type: string
-          enum: &a59
+          enum: &a61
             - TENANT
             - SYSTEM
         isDefault:
@@ -13113,7 +13364,7 @@ components:
           type: string
         type:
           type: string
-          enum: &a17
+          enum: &a18
             - TENANT
             - SYSTEM
         isDefault:
@@ -13165,7 +13416,7 @@ components:
                 type: string
               type:
                 type: string
-                enum: *a17
+                enum: *a18
               isDefault:
                 type: boolean
               isVerified:
@@ -13307,7 +13558,7 @@ components:
       properties:
         includeDeleted:
           type: string
-          enum: &a60
+          enum: &a62
             - "true"
             - "false"
           description: Include soft-deleted items
@@ -13640,7 +13891,7 @@ components:
       properties:
         includeDeleted:
           type: string
-          enum: &a61
+          enum: &a63
             - "true"
             - "false"
           description: Include soft-deleted custom fields
@@ -13657,7 +13908,7 @@ components:
           maxLength: 200
         type:
           type: string
-          enum: &a18
+          enum: &a19
             - STRING
             - NUMBER
             - DATE
@@ -13689,7 +13940,7 @@ components:
           maxLength: 200
         type:
           type: string
-          enum: *a18
+          enum: *a19
         required:
           type: boolean
         options:
@@ -13811,7 +14062,7 @@ components:
       properties:
         category:
           type: string
-          enum: &a19
+          enum: &a20
             - auth
             - transaction
             - billing
@@ -13820,7 +14071,7 @@ components:
           description: Filter by category
         isActive:
           type: string
-          enum: &a62
+          enum: &a64
             - "true"
             - "false"
           description: Filter by active status
@@ -13842,7 +14093,7 @@ components:
           description: Human-readable template name
         category:
           type: string
-          enum: *a19
+          enum: *a20
           description: Template category
         subjectTemplate:
           type: string
@@ -13881,7 +14132,7 @@ components:
           description: Human-readable template name
         category:
           type: string
-          enum: *a19
+          enum: *a20
           description: Template category
         subjectTemplate:
           type: string
@@ -15456,7 +15707,7 @@ components:
             type: number
           tone:
             type: string
-            enum: &a65
+            enum: &a67
               - neutral
               - success
               - warning
@@ -16043,7 +16294,7 @@ components:
                 description: Human-readable recommendation detail
               priority:
                 type: string
-                enum: &a66
+                enum: &a68
                   - low
                   - medium
                   - high
@@ -16070,7 +16321,7 @@ components:
                 description: Alert details and remediation guidance
               severity:
                 type: string
-                enum: &a67
+                enum: &a69
                   - low
                   - medium
                   - high
@@ -16125,7 +16376,7 @@ components:
           description: Required ISO8601 end date (inclusive) for the reporting window
         groupBy:
           type: string
-          enum: &a20
+          enum: &a21
             - day
             - week
             - month
@@ -16168,7 +16419,7 @@ components:
               description: Required ISO8601 end date (inclusive) for the reporting window
             groupBy:
               type: string
-              enum: *a20
+              enum: *a21
               default: month
               description: Aggregation grain for charts and time-series (defaults to month)
           required:
@@ -16225,7 +16476,7 @@ components:
       properties:
         status:
           type: string
-          enum: &a70
+          enum: &a72
             - healthy
             - unhealthy
         timestamp:
@@ -16309,7 +16560,7 @@ components:
           description: Identifier of the deleted connection record (matches the supplied connectionId)
         type:
           type: string
-          enum: &a68
+          enum: &a70
             - integration
             - auth_account
           description: "Storage type of the removed connection: 'integration' for IntegrationConnection rows, 'auth_account' for legacy AuthAccount-based Gmail connections."
@@ -16336,7 +16587,7 @@ components:
           description: Size of the uploaded file in bytes
         category:
           type: string
-          enum: &a21
+          enum: &a22
             - PROFILE
             - LOGO
             - DOCUMENT
@@ -16379,7 +16630,7 @@ components:
               description: Internal storage key for the uploaded file, used by backend services
             category:
               type: string
-              enum: *a21
+              enum: *a22
               description: Category under which the file was stored
             uploadedAt:
               type: string
@@ -16676,7 +16927,7 @@ components:
           description: Optional DPD account number used for identification and billing
         action:
           type: string
-          enum: &a69
+          enum: &a71
             - verify
           description: When set to 'verify', the endpoint only verifies the credentials and does not persist them. Any other value (or omission) results in saving/updating the credentials.
       required:
@@ -17229,7 +17480,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a22
+            enum: *a23
             default: desc
           required: false
           name: sortOrder
@@ -18427,7 +18678,7 @@ paths:
                   maxLength: 20
                 category:
                   type: string
-                  enum: *a23
+                  enum: *a24
                   default: OTHER
                 address:
                   type: object
@@ -19267,7 +19518,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a9
+            enum: *a10
             default: desc
           required: false
           name: sortOrder
@@ -19412,7 +19663,7 @@ paths:
                   description: Lifecycle status of the transaction.
                 recipientType:
                   type: string
-                  enum: *a24
+                  enum: *a25
                   description: Recipient type for this transaction.
                 recipientId:
                   type: string
@@ -20011,7 +20262,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a9
+            enum: *a10
             default: desc
           required: false
           name: sortOrder
@@ -20555,6 +20806,218 @@ paths:
                 required:
                   - data
                 description: Non‑paginated list response containing payments associated with a billing document.
+  /billing/transactions/{id}/request-payment:
+    post:
+      summary: Request payment from the customer
+      description: Create a payment request for an outstanding transaction balance and email the customer a durable Stripe Checkout link. Independent of the transaction stage machine. Requires the tenant to have connected Stripe and the customer to have an email on file.
+      tags:
+        - Billing
+      parameters:
+        - schema:
+            type: string
+            format: uuid
+          required: true
+          name: id
+          in: path
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: number
+                  minimum: 0
+                  exclusiveMinimum: true
+                  description: Amount to request; defaults to the full outstanding balance. Must be 0 < amount ≤ outstanding.
+              description: Input for requesting a customer payment against a transaction.
+      responses:
+        "200":
+          description: The created payment request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    description: Unique payment request identifier.
+                  amount:
+                    type: number
+                    description: Requested amount in the transaction currency.
+                  currencySymbol:
+                    type: string
+                    description: Currency symbol for display (e.g. £).
+                  customerEmail:
+                    type: string
+                    description: Email address the request was sent to.
+                  status:
+                    type: string
+                    enum: *a7
+                    description: Lifecycle status of the request.
+                  createdAt:
+                    type: string
+                    nullable: true
+                    description: When the request was created.
+                  paidAt:
+                    type: string
+                    nullable: true
+                    description: When the request was paid, if it has been.
+                required:
+                  - id
+                  - amount
+                  - currencySymbol
+                  - customerEmail
+                  - status
+                  - createdAt
+                  - paidAt
+                description: A request for a customer to pay an outstanding transaction balance via a Stripe link.
+  /billing/transactions/{id}/payment-requests:
+    get:
+      summary: List transaction payment requests
+      description: List the payment requests raised against a transaction, plus request-button eligibility (whether Stripe is connected and the resolved customer email).
+      tags:
+        - Billing
+      parameters:
+        - schema:
+            type: string
+            format: uuid
+          required: true
+          name: id
+          in: path
+      responses:
+        "200":
+          description: Payment requests and eligibility for the transaction.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  requests:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: Unique payment request identifier.
+                        amount:
+                          type: number
+                          description: Requested amount in the transaction currency.
+                        currencySymbol:
+                          type: string
+                          description: Currency symbol for display (e.g. £).
+                        customerEmail:
+                          type: string
+                          description: Email address the request was sent to.
+                        status:
+                          type: string
+                          enum: *a7
+                          description: Lifecycle status of the request.
+                        createdAt:
+                          type: string
+                          nullable: true
+                          description: When the request was created.
+                        paidAt:
+                          type: string
+                          nullable: true
+                          description: When the request was paid, if it has been.
+                      required:
+                        - id
+                        - amount
+                        - currencySymbol
+                        - customerEmail
+                        - status
+                        - createdAt
+                        - paidAt
+                      description: A request for a customer to pay an outstanding transaction balance via a Stripe link.
+                    description: Existing payment requests for the transaction, newest first.
+                  stripeConnected:
+                    type: boolean
+                    description: Whether the tenant has connected Stripe (button is otherwise disabled).
+                  customerEmail:
+                    type: string
+                    nullable: true
+                    description: The resolved customer email, or null when the customer has no email on file.
+                required:
+                  - requests
+                  - stripeConnected
+                  - customerEmail
+                description: Payment requests + request-button eligibility for a transaction.
+  /billing/payment-requests/{id}/cancel:
+    post:
+      summary: Cancel a payment request
+      description: Cancel a pending payment request. A no-op on an already-resolved request.
+      tags:
+        - Billing
+      parameters:
+        - schema:
+            type: string
+            format: uuid
+          required: true
+          name: id
+          in: path
+      responses:
+        "200":
+          description: The updated payment request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    description: Unique payment request identifier.
+                  amount:
+                    type: number
+                    description: Requested amount in the transaction currency.
+                  currencySymbol:
+                    type: string
+                    description: Currency symbol for display (e.g. £).
+                  customerEmail:
+                    type: string
+                    description: Email address the request was sent to.
+                  status:
+                    type: string
+                    enum: *a7
+                    description: Lifecycle status of the request.
+                  createdAt:
+                    type: string
+                    nullable: true
+                    description: When the request was created.
+                  paidAt:
+                    type: string
+                    nullable: true
+                    description: When the request was paid, if it has been.
+                required:
+                  - id
+                  - amount
+                  - currencySymbol
+                  - customerEmail
+                  - status
+                  - createdAt
+                  - paidAt
+                description: A request for a customer to pay an outstanding transaction balance via a Stripe link.
+  /billing/pay/{token}:
+    get:
+      summary: Redirect a customer to Stripe Checkout (public)
+      description: Public, unauthenticated durable pay link emailed to the customer. Resolves the unguessable token to a freshly-minted Stripe Checkout Session and 303-redirects to it (or to a public status page when the request is already paid / cancelled / expired). Because Checkout Sessions expire within 24h, a fresh session is minted on each click.
+      tags:
+        - Billing
+      parameters:
+        - schema:
+            type: string
+            description: Unguessable payment-request token from the emailed link.
+          required: true
+          description: Unguessable payment-request token from the emailed link.
+          name: token
+          in: path
+      responses:
+        "303":
+          description: Redirect to Stripe Checkout, or to a public payment status page.
   /billing/transactions/{id}/approve:
     post:
       summary: Approve transaction (customer portal)
@@ -22534,7 +22997,7 @@ paths:
       parameters:
         - schema:
             type: string
-            enum: *a25
+            enum: *a26
             description: "Which billing document type to aggregate statistics for: 'estimate' (transactions behaving as quotes), 'invoice' or 'purchase-order'."
           required: true
           description: "Which billing document type to aggregate statistics for: 'estimate' (transactions behaving as quotes), 'invoice' or 'purchase-order'."
@@ -23429,7 +23892,7 @@ paths:
               properties:
                 recipientType:
                   type: string
-                  enum: *a26
+                  enum: *a27
                   description: Whether the recipient is a customer or another company.
                 recipientId:
                   type: string
@@ -23490,7 +23953,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a9
+            enum: *a10
             default: desc
           required: false
           name: sortOrder
@@ -23588,7 +24051,7 @@ paths:
                   format: uuid
                 status:
                   type: string
-                  enum: *a27
+                  enum: *a28
                   default: ACTIVE
                 flow:
                   nullable: true
@@ -23738,7 +24201,7 @@ paths:
                   maxLength: 500
                 status:
                   type: string
-                  enum: *a28
+                  enum: *a29
                 flow:
                   nullable: true
                 properties:
@@ -23824,7 +24287,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a9
+            enum: *a10
             default: desc
           required: false
           name: sortOrder
@@ -24311,7 +24774,7 @@ paths:
               properties:
                 status:
                   type: string
-                  enum: *a29
+                  enum: *a30
                   description: New service status
               required:
                 - status
@@ -24515,7 +24978,7 @@ paths:
                   description: Array of service IDs to update
                 status:
                   type: string
-                  enum: *a30
+                  enum: *a31
                   description: Target status for all services
               required:
                 - serviceIds
@@ -26183,7 +26646,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a31
+            enum: *a32
             default: desc
             description: Sort direction for the list
           required: false
@@ -26525,7 +26988,7 @@ paths:
                       description: API name of the target service
                     relationshipType:
                       type: string
-                      enum: *a8
+                      enum: *a9
                       description: Direction of the relationship relative to the current record
                     createdAt:
                       type: string
@@ -26868,6 +27331,10 @@ paths:
                   type: string
                   minLength: 1
                   description: API name of the media field on the service form that these files belong to
+                attachToRecord:
+                  type: string
+                  enum: *a33
+                  description: When "true", the uploaded media is appended to the record field and persisted immediately. Omit for staging flows (e.g. the transition dialog) that persist the media themselves on submit.
               required:
                 - serviceName
                 - recordId
@@ -26906,7 +27373,7 @@ paths:
                           description: File size in bytes
                         type:
                           type: string
-                          enum: *a7
+                          enum: *a8
                           description: Media type classification based on file MIME type
                         uploadedAt:
                           type: string
@@ -26920,11 +27387,168 @@ paths:
                         - uploadedAt
                       description: Single media object associated with a service record field.
                     description: Uploaded media items created for the service record
+                  fieldMedia:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          description: Client-generated media identifier within the response
+                        url:
+                          type: string
+                          format: uri
+                          description: Publicly accessible URL for the uploaded media
+                        cloudFrontUrl:
+                          type: string
+                          nullable: true
+                          format: uri
+                          description: Optional CloudFront CDN URL when configured
+                        name:
+                          type: string
+                          description: Original filename of the uploaded media
+                        size:
+                          type: number
+                          description: File size in bytes
+                        type:
+                          type: string
+                          enum: *a8
+                          description: Media type classification based on file MIME type
+                        uploadedAt:
+                          type: string
+                          description: ISO timestamp when the media metadata object was created
+                      required:
+                        - id
+                        - url
+                        - name
+                        - size
+                        - type
+                        - uploadedAt
+                      description: Single media object associated with a service record field.
+                    description: Full persisted media array for the field, returned only when "attachToRecord" was set. Clients should treat this as authoritative and replace their local state with it.
                 required:
                   - media
                 description: Response body for the service-record media upload endpoint.
         "400":
           description: Validation error (missing files, invalid type/size, or missing metadata)
+  /service-records/media/set:
+    post:
+      summary: Replace service-record media field
+      description: Replace the stored media array for a single MEDIA field on a service record. Used when media is added or removed outside the record edit/save cycle, so the change is persisted immediately.
+      tags:
+        - Service Records
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                recordId:
+                  type: string
+                  minLength: 1
+                  description: Service record ID that owns the media field
+                fieldApiName:
+                  type: string
+                  minLength: 1
+                  description: API name of the MEDIA field to replace
+                media:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: Client-generated media identifier within the response
+                      url:
+                        type: string
+                        format: uri
+                        description: Publicly accessible URL for the uploaded media
+                      cloudFrontUrl:
+                        type: string
+                        nullable: true
+                        format: uri
+                        description: Optional CloudFront CDN URL when configured
+                      name:
+                        type: string
+                        description: Original filename of the uploaded media
+                      size:
+                        type: number
+                        description: File size in bytes
+                      type:
+                        type: string
+                        enum: *a8
+                        description: Media type classification based on file MIME type
+                      uploadedAt:
+                        type: string
+                        description: ISO timestamp when the media metadata object was created
+                    required:
+                      - id
+                      - url
+                      - name
+                      - size
+                      - type
+                      - uploadedAt
+                    description: Single media object associated with a service record field.
+                  description: Complete media array to persist. An empty array clears the field.
+              required:
+                - recordId
+                - fieldApiName
+                - media
+              description: Replaces the stored media array for a single MEDIA field on a service record.
+      responses:
+        "200":
+          description: Media array persisted on the field
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  fieldMedia:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          description: Client-generated media identifier within the response
+                        url:
+                          type: string
+                          format: uri
+                          description: Publicly accessible URL for the uploaded media
+                        cloudFrontUrl:
+                          type: string
+                          nullable: true
+                          format: uri
+                          description: Optional CloudFront CDN URL when configured
+                        name:
+                          type: string
+                          description: Original filename of the uploaded media
+                        size:
+                          type: number
+                          description: File size in bytes
+                        type:
+                          type: string
+                          enum: *a8
+                          description: Media type classification based on file MIME type
+                        uploadedAt:
+                          type: string
+                          description: ISO timestamp when the media metadata object was created
+                      required:
+                        - id
+                        - url
+                        - name
+                        - size
+                        - type
+                        - uploadedAt
+                      description: Single media object associated with a service record field.
+                    description: The media array now persisted on the field
+                required:
+                  - fieldMedia
+                description: Response body for the service-record media replacement endpoint.
+        "400":
+          description: Validation error (invalid media payload)
+        "404":
+          description: Service record not found or not writable by the current company
   /service-records/handle-invoice-paid:
     post:
       summary: Handle invoice paid
@@ -27071,7 +27695,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a32
+            enum: *a34
             default: desc
             description: Sort direction
           required: false
@@ -27216,7 +27840,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a9
+            enum: *a10
             default: desc
           required: false
           name: sortOrder
@@ -27696,7 +28320,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a9
+            enum: *a10
             default: desc
           required: false
           name: sortOrder
@@ -29288,7 +29912,7 @@ paths:
                       - methodId
                       - quantity
                     description: Single logistics method selection used when syncing shipments for a transaction.
-                  default: *a33
+                  default: *a35
                   description: Selections for collection shipments to create.
                 deliverySelections:
                   type: array
@@ -29314,7 +29938,7 @@ paths:
                       - methodId
                       - quantity
                     description: Single logistics method selection used when syncing shipments for a transaction.
-                  default: *a34
+                  default: *a36
                   description: Selections for delivery shipments to create.
               required:
                 - transactionId
@@ -29348,7 +29972,7 @@ paths:
               properties:
                 type:
                   type: string
-                  enum: *a35
+                  enum: *a37
                   description: Shipment type, either 'DELIVERY' (to customer) or 'COLLECTION' (from customer).
                 senderAddressId:
                   type: string
@@ -29376,7 +30000,7 @@ paths:
                   description: Optional service record ID that this shipment is associated with. Empty string is treated as unset.
                 courierProvider:
                   type: string
-                  enum: *a36
+                  enum: *a38
                   description: Courier provider to use for this shipment, if already known.
                 expectedDeliveryDate:
                   anyOf:
@@ -30255,7 +30879,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a37
+            enum: *a39
             default: desc
             description: Sort direction for the records list.
           required: false
@@ -30491,7 +31115,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a9
+            enum: *a10
             default: desc
           required: false
           name: sortOrder
@@ -31077,7 +31701,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a10
+            enum: *a11
             description: Filter workspace items to a single priority level
           required: false
           description: Filter workspace items to a single priority level
@@ -31085,7 +31709,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a38
+            enum: *a40
             description: "Whether to include fully completed workspace items (default: false)"
           required: false
           description: "Whether to include fully completed workspace items (default: false)"
@@ -31149,7 +31773,7 @@ paths:
                           properties:
                             level:
                               type: string
-                              enum: *a10
+                              enum: *a11
                               description: Calculated priority bucket
                             score:
                               type: number
@@ -31619,7 +32243,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a9
+            enum: *a10
             default: desc
           required: false
           name: sortOrder
@@ -31730,7 +32354,7 @@ paths:
                   maxLength: 15
                 role:
                   type: string
-                  enum: *a11
+                  enum: *a12
                   default: SUPPORT
               required:
                 - email
@@ -31869,7 +32493,7 @@ paths:
                   maxLength: 15
                 role:
                   type: string
-                  enum: *a11
+                  enum: *a12
                 isActive:
                   type: boolean
       responses:
@@ -32491,7 +33115,7 @@ paths:
       parameters:
         - schema:
             type: string
-            enum: *a39
+            enum: *a41
             description: Include soft-deleted solutions
           required: false
           description: Include soft-deleted solutions
@@ -32723,7 +33347,7 @@ paths:
                   minimum: 0
                 status:
                   type: string
-                  enum: *a40
+                  enum: *a42
       responses:
         "200":
           description: Solution updated
@@ -33217,7 +33841,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a9
+            enum: *a10
             default: desc
           required: false
           name: sortOrder
@@ -33358,7 +33982,7 @@ paths:
                   description: Optional category or family label used for grouping and filters
                 status:
                   type: string
-                  enum: *a12
+                  enum: *a13
                   default: DRAFT
                   description: Initial publication status
                 minStockLevel:
@@ -33550,7 +34174,7 @@ paths:
                   description: Updated base price
                 status:
                   type: string
-                  enum: *a12
+                  enum: *a13
                   description: Updated publication status
                 minStockLevel:
                   type: integer
@@ -33678,7 +34302,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a12
+            enum: *a13
             description: Filter products by publication status
           required: false
           description: Filter products by publication status
@@ -33701,7 +34325,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a13
+            enum: *a14
             description: Filter by computed stock level bucket
           required: false
           description: Filter by computed stock level bucket
@@ -34141,7 +34765,7 @@ paths:
       parameters:
         - schema:
             type: string
-            enum: *a12
+            enum: *a13
             description: Publication status to filter by
           required: true
           description: Publication status to filter by
@@ -34606,7 +35230,7 @@ paths:
       parameters:
         - schema:
             type: string
-            enum: *a12
+            enum: *a13
             description: Publication status of a product in the inventory catalogue
           required: false
           description: Publication status of a product in the inventory catalogue
@@ -34776,7 +35400,7 @@ paths:
                   description: IDs of products whose status should be updated
                 status:
                   type: string
-                  enum: *a12
+                  enum: *a13
                   description: New status applied to all provided products
               required:
                 - productIds
@@ -35158,7 +35782,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a9
+            enum: *a10
             default: desc
           required: false
           name: sortOrder
@@ -35610,7 +36234,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a9
+            enum: *a10
             default: desc
           required: false
           name: sortOrder
@@ -36318,7 +36942,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a9
+            enum: *a10
             default: desc
           required: false
           name: sortOrder
@@ -36414,7 +37038,7 @@ paths:
                   format: uuid
                 type:
                   type: string
-                  enum: *a41
+                  enum: *a43
                   default: EMAIL
                 subject:
                   type: string
@@ -36425,7 +37049,7 @@ paths:
                   minLength: 1
                 status:
                   type: string
-                  enum: *a42
+                  enum: *a44
                   default: DRAFT
                 scheduledAt:
                   anyOf:
@@ -36590,7 +37214,7 @@ paths:
                   format: uuid
                 type:
                   type: string
-                  enum: *a43
+                  enum: *a45
                 subject:
                   type: string
                   minLength: 1
@@ -36600,7 +37224,7 @@ paths:
                   minLength: 1
                 status:
                   type: string
-                  enum: *a44
+                  enum: *a46
                 scheduledAt:
                   anyOf:
                     - type: string
@@ -36996,7 +37620,7 @@ paths:
               properties:
                 status:
                   type: string
-                  enum: *a14
+                  enum: *a15
                   description: New status to set on the communication
               required:
                 - status
@@ -37134,7 +37758,7 @@ paths:
                   description: List of communication IDs to update
                 status:
                   type: string
-                  enum: *a14
+                  enum: *a15
                   description: New status to apply to all specified communications
               required:
                 - communicationIds
@@ -37275,7 +37899,7 @@ paths:
       parameters:
         - schema:
             type: string
-            enum: *a14
+            enum: *a15
             description: Communication status to filter by
           required: true
           description: Communication status to filter by
@@ -38214,7 +38838,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a45
+            enum: *a47
             description: Filter by system template flag
           required: false
           description: Filter by system template flag
@@ -38222,7 +38846,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a46
+            enum: *a48
             description: Filter by active status
           required: false
           description: Filter by active status
@@ -38305,7 +38929,7 @@ paths:
                   description: Template display name
                 category:
                   type: string
-                  enum: *a15
+                  enum: *a16
                   description: Template category
                 subjectTemplate:
                   type: string
@@ -38449,7 +39073,7 @@ paths:
                   description: Template display name
                 category:
                   type: string
-                  enum: *a15
+                  enum: *a16
                   description: Template category
                 subjectTemplate:
                   type: string
@@ -38974,7 +39598,7 @@ paths:
                       description: Optional sender identity ID
                     toType:
                       type: string
-                      enum: *a47
+                      enum: *a49
                       description: Recipient type
                     toFieldPath:
                       type: string
@@ -39391,7 +40015,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a48
+            enum: *a50
             description: Sort direction
           required: false
           description: Sort direction
@@ -39500,7 +40124,7 @@ paths:
                           description: Same as id; explicit for invitation actions
                         relationshipType:
                           type: string
-                          enum: *a16
+                          enum: *a17
                           description: Whether the session company invited or was invited
                       required:
                         - id
@@ -40170,7 +40794,7 @@ paths:
       parameters:
         - schema:
             type: string
-            enum: *a49
+            enum: *a51
             description: If false, includes inactive locations; default true
           required: false
           description: If false, includes inactive locations; default true
@@ -41612,7 +42236,7 @@ paths:
               properties:
                 companyType:
                   type: string
-                  enum: *a50
+                  enum: *a52
                   description: Type of company being registered
                 companyDetails:
                   type: object
@@ -41838,7 +42462,7 @@ paths:
                     description: Unique identifier of the subscription record.
                   plan:
                     type: string
-                    enum: *a51
+                    enum: *a53
                     description: Active subscription plan tier.
                   status:
                     type: string
@@ -41879,11 +42503,11 @@ paths:
               properties:
                 plan:
                   type: string
-                  enum: *a52
+                  enum: *a54
                   description: Target subscription plan tier to switch to.
                 status:
                   type: string
-                  enum: *a53
+                  enum: *a55
                   description: Optional new subscription status to set.
                 currentPeriodStart:
                   type: string
@@ -41914,7 +42538,7 @@ paths:
                     description: Unique identifier of the subscription record.
                   plan:
                     type: string
-                    enum: *a51
+                    enum: *a53
                     description: Active subscription plan tier.
                   status:
                     type: string
@@ -42084,7 +42708,7 @@ paths:
                         description: Unique identifier of the subscription record.
                       plan:
                         type: string
-                        enum: *a51
+                        enum: *a53
                         description: Active subscription plan tier.
                       status:
                         type: string
@@ -42299,7 +42923,7 @@ paths:
       parameters:
         - schema:
             type: string
-            enum: *a54
+            enum: *a56
             description: Include soft-deleted forms
           required: false
           description: Include soft-deleted forms
@@ -42338,7 +42962,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a55
+            enum: *a57
             description: Sort direction
           required: false
           description: Sort direction
@@ -42439,7 +43063,7 @@ paths:
                   description: Optional description
                 status:
                   type: string
-                  enum: *a56
+                  enum: *a58
                   description: Initial form status
               required:
                 - name
@@ -43370,7 +43994,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a57
+            enum: *a59
             description: If true, return all company nodes
           required: false
           description: If true, return all company nodes
@@ -43770,7 +44394,7 @@ paths:
                           type: string
                         type:
                           type: string
-                          enum: *a17
+                          enum: *a18
                         isDefault:
                           type: boolean
                         isVerified:
@@ -43824,7 +44448,7 @@ paths:
                   format: email
                 type:
                   type: string
-                  enum: *a58
+                  enum: *a60
                 isDefault:
                   type: boolean
                 gmailIntegrationConnectionId:
@@ -43857,7 +44481,7 @@ paths:
                     type: string
                   type:
                     type: string
-                    enum: *a17
+                    enum: *a18
                   isDefault:
                     type: boolean
                   isVerified:
@@ -43920,7 +44544,7 @@ paths:
                     type: string
                   type:
                     type: string
-                    enum: *a17
+                    enum: *a18
                   isDefault:
                     type: boolean
                   isVerified:
@@ -43979,7 +44603,7 @@ paths:
                   format: email
                 type:
                   type: string
-                  enum: *a59
+                  enum: *a61
                 isDefault:
                   type: boolean
                 isVerified:
@@ -44010,7 +44634,7 @@ paths:
                     type: string
                   type:
                     type: string
-                    enum: *a17
+                    enum: *a18
                   isDefault:
                     type: boolean
                   isVerified:
@@ -44207,7 +44831,7 @@ paths:
       parameters:
         - schema:
             type: string
-            enum: *a60
+            enum: *a62
             description: Include soft-deleted items
           required: false
           description: Include soft-deleted items
@@ -45000,7 +45624,7 @@ paths:
       parameters:
         - schema:
             type: string
-            enum: *a61
+            enum: *a63
             description: Include soft-deleted custom fields
           required: false
           description: Include soft-deleted custom fields
@@ -45078,7 +45702,7 @@ paths:
                   maxLength: 200
                 type:
                   type: string
-                  enum: *a18
+                  enum: *a19
                 required:
                   type: boolean
                   default: false
@@ -45210,7 +45834,7 @@ paths:
                   maxLength: 200
                 type:
                   type: string
-                  enum: *a18
+                  enum: *a19
                 required:
                   type: boolean
                 options:
@@ -45374,7 +45998,7 @@ paths:
       parameters:
         - schema:
             type: string
-            enum: *a19
+            enum: *a20
             description: Filter by category
           required: false
           description: Filter by category
@@ -45382,7 +46006,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a62
+            enum: *a64
             description: Filter by active status
           required: false
           description: Filter by active status
@@ -45489,7 +46113,7 @@ paths:
                   description: Human-readable template name
                 category:
                   type: string
-                  enum: *a19
+                  enum: *a20
                   description: Template category
                 subjectTemplate:
                   type: string
@@ -45682,7 +46306,7 @@ paths:
                   description: Human-readable template name
                 category:
                   type: string
-                  enum: *a19
+                  enum: *a20
                   description: Template category
                 subjectTemplate:
                   type: string
@@ -48337,7 +48961,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: &a63
+            enum: &a65
               - day
               - week
               - month
@@ -48346,7 +48970,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: &a64
+            enum: &a66
               - previous
               - none
           required: false
@@ -48445,13 +49069,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a63
+            enum: *a65
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a64
+            enum: *a66
           required: false
           name: compare
           in: query
@@ -48509,13 +49133,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a63
+            enum: *a65
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a64
+            enum: *a66
           required: false
           name: compare
           in: query
@@ -48564,13 +49188,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a63
+            enum: *a65
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a64
+            enum: *a66
           required: false
           name: compare
           in: query
@@ -48619,13 +49243,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a63
+            enum: *a65
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a64
+            enum: *a66
           required: false
           name: compare
           in: query
@@ -48674,13 +49298,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a63
+            enum: *a65
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a64
+            enum: *a66
           required: false
           name: compare
           in: query
@@ -48729,13 +49353,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a63
+            enum: *a65
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a64
+            enum: *a66
           required: false
           name: compare
           in: query
@@ -48791,13 +49415,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a63
+            enum: *a65
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a64
+            enum: *a66
           required: false
           name: compare
           in: query
@@ -48919,13 +49543,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a63
+            enum: *a65
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a64
+            enum: *a66
           required: false
           name: compare
           in: query
@@ -48980,13 +49604,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a63
+            enum: *a65
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a64
+            enum: *a66
           required: false
           name: compare
           in: query
@@ -49045,13 +49669,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a63
+            enum: *a65
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a64
+            enum: *a66
           required: false
           name: compare
           in: query
@@ -49107,13 +49731,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a63
+            enum: *a65
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a64
+            enum: *a66
           required: false
           name: compare
           in: query
@@ -49171,13 +49795,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a63
+            enum: *a65
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a64
+            enum: *a66
           required: false
           name: compare
           in: query
@@ -49199,7 +49823,7 @@ paths:
                       type: number
                     tone:
                       type: string
-                      enum: *a65
+                      enum: *a67
                   required:
                     - key
                     - label
@@ -49567,7 +50191,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a20
+            enum: *a21
             default: month
             description: Aggregation grain for charts and time-series (defaults to month)
           required: false
@@ -49610,7 +50234,7 @@ paths:
                         description: Required ISO8601 end date (inclusive) for the reporting window
                       groupBy:
                         type: string
-                        enum: *a20
+                        enum: *a21
                         default: month
                         description: Aggregation grain for charts and time-series (defaults to month)
                     required:
@@ -49880,7 +50504,7 @@ paths:
                           description: Human-readable recommendation detail
                         priority:
                           type: string
-                          enum: *a66
+                          enum: *a68
                           description: Priority level for this recommendation
                       required:
                         - type
@@ -49904,7 +50528,7 @@ paths:
                           description: Alert details and remediation guidance
                         severity:
                           type: string
-                          enum: *a67
+                          enum: *a69
                           description: Severity level for this alert
                       required:
                         - type
@@ -50247,7 +50871,7 @@ paths:
                     description: Identifier of the deleted connection record (matches the supplied connectionId)
                   type:
                     type: string
-                    enum: *a68
+                    enum: *a70
                     description: "Storage type of the removed connection: 'integration' for IntegrationConnection rows, 'auth_account' for legacy AuthAccount-based Gmail connections."
                 required:
                   - success
@@ -50285,7 +50909,7 @@ paths:
                   description: Size of the uploaded file in bytes
                 category:
                   type: string
-                  enum: *a21
+                  enum: *a22
                   default: OTHER
                   description: High-level category used to organise uploaded files
                 fileData:
@@ -50327,7 +50951,7 @@ paths:
                         description: Internal storage key for the uploaded file, used by backend services
                       category:
                         type: string
-                        enum: *a21
+                        enum: *a22
                         description: Category under which the file was stored
                       uploadedAt:
                         type: string
@@ -50899,7 +51523,7 @@ paths:
                   description: Optional DPD account number used for identification and billing
                 action:
                   type: string
-                  enum: *a69
+                  enum: *a71
                   description: When set to 'verify', the endpoint only verifies the credentials and does not persist them. Any other value (or omission) results in saving/updating the credentials.
               required:
                 - apiKey
@@ -51390,7 +52014,7 @@ paths:
                 properties:
                   status:
                     type: string
-                    enum: *a70
+                    enum: *a72
                   timestamp:
                     type: string
                   uptime:
@@ -51436,7 +52060,7 @@ paths:
                 properties:
                   status:
                     type: string
-                    enum: *a70
+                    enum: *a72
                   timestamp:
                     type: string
                   uptime:
