@@ -49,6 +49,10 @@ tags:
     description: Partner invitations and relationships
   - name: Locations
     description: Company locations (warehouses, offices)
+  - name: Retailers
+    description: Shops that sold customers their items
+  - name: Retailer Portal
+    description: Read-only endpoints for an authenticated retailer
   - name: Audit
     description: Audit logs and activity
   - name: Company
@@ -108,7 +112,7 @@ components:
           type: string
         sortOrder:
           type: string
-          enum: &a10
+          enum: &a11
             - asc
             - desc
           default: desc
@@ -307,7 +311,7 @@ components:
           default: createdAt
         sortOrder:
           type: string
-          enum: &a23
+          enum: &a25
             - asc
             - desc
           default: desc
@@ -631,8 +635,11 @@ components:
         source:
           type: string
           maxLength: 50
-        isInternal:
-          type: boolean
+        visibility:
+          type: string
+          enum: &a26
+            - INTERNAL
+            - RETAILER_SHARED
       required:
         - body
     ListNotesQuery:
@@ -670,14 +677,21 @@ components:
           nullable: true
         body:
           type: string
-        isInternal:
-          type: boolean
+        visibility:
+          type: string
+          enum: &a2
+            - INTERNAL
+            - RETAILER_SHARED
         createdAt:
           type: string
           nullable: true
         updatedAt:
           type: string
           nullable: true
+        authorRetailerId:
+          type: string
+          nullable: true
+          format: uuid
         author:
           type: object
           nullable: true
@@ -695,11 +709,35 @@ components:
               type: string
           required:
             - id
+        authorRetailer:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: string
+              format: uuid
+            name:
+              type: string
+          required:
+            - id
+            - name
+        company:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: string
+              format: uuid
+            name:
+              type: string
+          required:
+            - id
+            - name
       required:
         - id
         - companyId
         - body
-        - isInternal
+        - visibility
         - createdAt
         - updatedAt
     NoteListResponse:
@@ -733,14 +771,19 @@ components:
                 nullable: true
               body:
                 type: string
-              isInternal:
-                type: boolean
+              visibility:
+                type: string
+                enum: *a2
               createdAt:
                 type: string
                 nullable: true
               updatedAt:
                 type: string
                 nullable: true
+              authorRetailerId:
+                type: string
+                nullable: true
+                format: uuid
               author:
                 type: object
                 nullable: true
@@ -758,11 +801,35 @@ components:
                     type: string
                 required:
                   - id
+              authorRetailer:
+                type: object
+                nullable: true
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                required:
+                  - id
+                  - name
+              company:
+                type: object
+                nullable: true
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                required:
+                  - id
+                  - name
             required:
               - id
               - companyId
               - body
-              - isInternal
+              - visibility
               - createdAt
               - updatedAt
       required:
@@ -882,7 +949,7 @@ components:
           maxLength: 20
         category:
           type: string
-          enum: &a24
+          enum: &a27
             - ELECTRONICS
             - MECHANICAL
             - SOFTWARE
@@ -933,7 +1000,7 @@ components:
           maxLength: 20
         category:
           type: string
-          enum: &a2
+          enum: &a3
             - ELECTRONICS
             - MECHANICAL
             - SOFTWARE
@@ -941,7 +1008,7 @@ components:
             - OTHER
         status:
           type: string
-          enum: &a3
+          enum: &a4
             - ACTIVE
             - INACTIVE
             - SUSPENDED
@@ -1097,10 +1164,10 @@ components:
               maxLength: 20
             category:
               type: string
-              enum: *a2
+              enum: *a3
             status:
               type: string
-              enum: *a3
+              enum: *a4
             notes:
               type: string
               maxLength: 1000
@@ -1362,7 +1429,7 @@ components:
       properties:
         type:
           type: string
-          enum: &a4
+          enum: &a5
             - SERVICE_ITEM
             - PRODUCT
             - SOLUTION
@@ -1433,7 +1500,7 @@ components:
           description: Optional human‑friendly reference number for the estimate.
         recipientType:
           type: string
-          enum: &a5
+          enum: &a6
             - CUSTOMER
             - COMPANY
           description: Whether the recipient of this estimate is a customer or another company.
@@ -1496,7 +1563,7 @@ components:
             properties:
               type:
                 type: string
-                enum: *a4
+                enum: *a5
                 description: Classification of the line item (service work, product, solution bundle or logistics).
               description:
                 type: string
@@ -1572,7 +1639,7 @@ components:
           description: Optional human‑friendly reference number for the estimate.
         recipientType:
           type: string
-          enum: *a5
+          enum: *a6
           description: Whether the recipient of this estimate is a customer or another company.
         recipientId:
           type: string
@@ -1633,7 +1700,7 @@ components:
             properties:
               type:
                 type: string
-                enum: *a4
+                enum: *a5
                 description: Classification of the line item (service work, product, solution bundle or logistics).
               description:
                 type: string
@@ -1703,6 +1770,11 @@ components:
             type: string
             format: uuid
           description: Optional list of service record IDs for multi‑record invoices; when provided, line items may be aggregated from solutions.
+        serviceRecordFields:
+          type: array
+          items:
+            type: string
+          description: Optional ordered list of service-record field API names to render as a per-record detail table on the invoice PDF. Array order is column order; omit or send an empty array for no table.
       required:
         - recipientType
         - recipientId
@@ -1723,7 +1795,7 @@ components:
           description: Optional human-friendly reference; generated server-side when omitted.
         status:
           type: string
-          enum: &a6
+          enum: &a7
             - DRAFT
             - PENDING
             - APPROVED
@@ -1735,7 +1807,7 @@ components:
           description: Lifecycle status of the transaction.
         recipientType:
           type: string
-          enum: &a25
+          enum: &a28
             - CUSTOMER
             - COMPANY
           description: Recipient type for this transaction.
@@ -1805,7 +1877,7 @@ components:
             properties:
               type:
                 type: string
-                enum: *a4
+                enum: *a5
                 description: Classification of the line item (service work, product, solution bundle or logistics).
               description:
                 type: string
@@ -1886,7 +1958,7 @@ components:
       properties:
         status:
           type: string
-          enum: *a6
+          enum: *a7
           description: New status for the transaction, if being updated.
         dueDate:
           anyOf:
@@ -2103,7 +2175,7 @@ components:
       properties:
         type:
           type: string
-          enum: &a26
+          enum: &a30
             - estimate
             - invoice
             - purchase-order
@@ -2359,7 +2431,7 @@ components:
           description: Email address the request was sent to.
         status:
           type: string
-          enum: &a7
+          enum: &a8
             - PENDING
             - PAID
             - CANCELLED
@@ -2405,7 +2477,7 @@ components:
                 description: Email address the request was sent to.
               status:
                 type: string
-                enum: *a7
+                enum: *a8
                 description: Lifecycle status of the request.
               createdAt:
                 type: string
@@ -2431,11 +2503,26 @@ components:
         customerEmail:
           type: string
           nullable: true
-          description: The resolved customer email, or null when the customer has no email on file.
+          description: The resolved customer email (from the transaction recipient or linked service record customer), independent of payability; null only when the customer genuinely has no email on file.
+        requestable:
+          type: boolean
+          description: Whether a payment can be requested right now — the single source of truth for the button state.
+        reason:
+          type: string
+          nullable: true
+          enum: &a29
+            - NOT_APPROVED
+            - NOTHING_DUE
+            - STRIPE_NOT_CONNECTED
+            - NO_EMAIL
+            - NOT_AVAILABLE
+          description: Why a payment cannot be requested, or null when requestable. Drives the disabled tooltip.
       required:
         - requests
         - stripeConnected
         - customerEmail
+        - requestable
+        - reason
       description: Payment requests + request-button eligibility for a transaction.
     AggregatedSolutionsPreviewInput:
       type: object
@@ -2494,7 +2581,7 @@ components:
       properties:
         recipientType:
           type: string
-          enum: &a27
+          enum: &a31
             - CUSTOMER
             - COMPANY
           description: Whether the recipient is a customer or another company.
@@ -2521,7 +2608,7 @@ components:
           format: uuid
         status:
           type: string
-          enum: &a28
+          enum: &a32
             - ACTIVE
             - INACTIVE
           default: ACTIVE
@@ -2553,7 +2640,7 @@ components:
           maxLength: 500
         status:
           type: string
-          enum: &a29
+          enum: &a33
             - ACTIVE
             - INACTIVE
         flow:
@@ -2880,6 +2967,14 @@ components:
           required:
             - type
             - fieldPath
+        - type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - retailer
+          required:
+            - type
       description: Who a notification is sent to
     NotificationRule:
       type: object
@@ -2929,6 +3024,34 @@ components:
               required:
                 - enabled
                 - templateId
+            slack:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+                target:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                      enum:
+                        - channel
+                        - user
+                    channelId:
+                      type: string
+                    channelName:
+                      type: string
+                    userId:
+                      type: string
+                    userName:
+                      type: string
+                  required:
+                    - type
+                messageTemplate:
+                  type: string
+              required:
+                - enabled
+                - target
       required:
         - id
         - name
@@ -3153,6 +3276,20 @@ components:
                   type: boolean
                 orderImportInitialStage:
                   type: string
+        communication:
+          type: object
+          properties:
+            email:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+                domainId:
+                  type: string
+                localPart:
+                  type: string
+              required:
+                - enabled
         lifecycleNotifications:
           type: object
           properties:
@@ -3168,6 +3305,10 @@ components:
               type: array
               items:
                 $ref: "#/components/schemas/NotificationRule"
+        retailerIds:
+          type: array
+          items:
+            type: string
       required:
         - serviceUsage
       description: Structured service configuration properties
@@ -3361,7 +3502,7 @@ components:
       properties:
         status:
           type: string
-          enum: &a30
+          enum: &a34
             - ACTIVE
             - INACTIVE
             - PENDING
@@ -3379,7 +3520,7 @@ components:
           description: Array of service IDs to update
         status:
           type: string
-          enum: &a31
+          enum: &a35
             - ACTIVE
             - INACTIVE
             - PENDING
@@ -3737,7 +3878,7 @@ components:
           description: Field to sort by, e.g. createdAt or updatedAt
         sortOrder:
           type: string
-          enum: &a32
+          enum: &a36
             - asc
             - desc
           default: desc
@@ -4094,7 +4235,7 @@ components:
           description: API name of the media field on the service form that these files belong to
         attachToRecord:
           type: string
-          enum: &a33
+          enum: &a37
             - "true"
             - "false"
           description: When "true", the uploaded media is appended to the record field and persisted immediately. Omit for staging flows (e.g. the transition dialog) that persist the media themselves on submit.
@@ -4126,11 +4267,12 @@ components:
           description: File size in bytes
         type:
           type: string
-          enum: &a8
+          enum: &a9
             - photo
             - video
+            - document
             - unknown
-          description: Media type classification based on file MIME type
+          description: Media type classification based on file MIME type ("document" = PDF)
         uploadedAt:
           type: string
           description: ISO timestamp when the media metadata object was created
@@ -4178,8 +4320,8 @@ components:
                 description: File size in bytes
               type:
                 type: string
-                enum: *a8
-                description: Media type classification based on file MIME type
+                enum: *a9
+                description: Media type classification based on file MIME type ("document" = PDF)
               uploadedAt:
                 type: string
                 description: ISO timestamp when the media metadata object was created
@@ -4225,8 +4367,8 @@ components:
                 description: File size in bytes
               type:
                 type: string
-                enum: *a8
-                description: Media type classification based on file MIME type
+                enum: *a9
+                description: Media type classification based on file MIME type ("document" = PDF)
               uploadedAt:
                 type: string
                 description: ISO timestamp when the media metadata object was created
@@ -4270,8 +4412,8 @@ components:
                 description: File size in bytes
               type:
                 type: string
-                enum: *a8
-                description: Media type classification based on file MIME type
+                enum: *a9
+                description: Media type classification based on file MIME type ("document" = PDF)
               uploadedAt:
                 type: string
                 description: ISO timestamp when the media metadata object was created
@@ -4309,8 +4451,8 @@ components:
                 description: File size in bytes
               type:
                 type: string
-                enum: *a8
-                description: Media type classification based on file MIME type
+                enum: *a9
+                description: Media type classification based on file MIME type ("document" = PDF)
               uploadedAt:
                 type: string
                 description: ISO timestamp when the media metadata object was created
@@ -4382,7 +4524,7 @@ components:
           description: Field to sort by (e.g. createdAt, name)
         sortOrder:
           type: string
-          enum: &a34
+          enum: &a38
             - asc
             - desc
           default: desc
@@ -4454,7 +4596,7 @@ components:
           description: API name of the target service
         relationshipType:
           type: string
-          enum: &a9
+          enum: &a10
             - source
             - target
           description: Direction of the relationship relative to the current record
@@ -4505,7 +4647,7 @@ components:
             description: API name of the target service
           relationshipType:
             type: string
-            enum: *a9
+            enum: *a10
             description: Direction of the relationship relative to the current record
           createdAt:
             type: string
@@ -4794,6 +4936,50 @@ components:
       type: object
       properties: {}
       description: Empty success payload for automation trigger operations. Clients should rely on HTTP status codes and error responses to detect failures.
+    SetServiceRecordRetailerInput:
+      type: object
+      properties:
+        recordId:
+          type: string
+          format: uuid
+        retailerId:
+          type: string
+          nullable: true
+          format: uuid
+      required:
+        - recordId
+        - retailerId
+      additionalProperties: false
+    SetServiceRecordRetailerResponse:
+      type: object
+      properties:
+        retailerId:
+          type: string
+          nullable: true
+          format: uuid
+      required:
+        - retailerId
+    GrantedRetailerListResponse:
+      type: object
+      properties:
+        retailers:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              name:
+                type: string
+              email:
+                type: string
+            required:
+              - id
+              - name
+              - email
+      required:
+        - retailers
     CreateShipmentInput:
       type: object
       properties:
@@ -4883,7 +5069,7 @@ components:
       properties:
         type:
           type: string
-          enum: &a37
+          enum: &a41
             - DELIVERY
             - COLLECTION
           description: Shipment type, either 'DELIVERY' (to customer) or 'COLLECTION' (from customer).
@@ -4913,7 +5099,7 @@ components:
           description: Optional service record ID that this shipment is associated with. Empty string is treated as unset.
         courierProvider:
           type: string
-          enum: &a38
+          enum: &a42
             - DPD
             - ROYAL_MAIL
             - PARCELFORCE
@@ -5358,7 +5544,7 @@ components:
           type: string
         sortOrder:
           type: string
-          enum: *a10
+          enum: *a11
           default: desc
         search:
           type: string
@@ -7159,7 +7345,7 @@ components:
               - methodId
               - quantity
             description: Single logistics method selection used when syncing shipments for a transaction.
-          default: &a35 []
+          default: &a39 []
           description: Selections for collection shipments to create.
         deliverySelections:
           type: array
@@ -7185,7 +7371,7 @@ components:
               - methodId
               - quantity
             description: Single logistics method selection used when syncing shipments for a transaction.
-          default: &a36 []
+          default: &a40 []
           description: Selections for delivery shipments to create.
       required:
         - transactionId
@@ -7218,7 +7404,7 @@ components:
           description: Field to sort by, e.g. createdAt or updatedAt.
         sortOrder:
           type: string
-          enum: &a39
+          enum: &a43
             - asc
             - desc
           default: desc
@@ -7571,7 +7757,7 @@ components:
           type: string
         sortOrder:
           type: string
-          enum: *a10
+          enum: *a11
           default: desc
         search:
           type: string
@@ -7823,7 +8009,7 @@ components:
           description: Filter workspace items to a specific assigned user
         priorityLevel:
           type: string
-          enum: &a11
+          enum: &a12
             - CRITICAL
             - HIGH
             - MEDIUM
@@ -7832,7 +8018,7 @@ components:
           description: Filter workspace items to a single priority level
         showCompleted:
           type: string
-          enum: &a40
+          enum: &a44
             - "true"
             - "false"
           description: "Whether to include fully completed workspace items (default: false)"
@@ -7885,7 +8071,7 @@ components:
           properties:
             level:
               type: string
-              enum: *a11
+              enum: *a12
               description: Calculated priority bucket
             score:
               type: number
@@ -7925,7 +8111,7 @@ components:
       properties:
         level:
           type: string
-          enum: *a11
+          enum: *a12
           description: Calculated priority bucket
         score:
           type: number
@@ -7990,7 +8176,7 @@ components:
                 properties:
                   level:
                     type: string
-                    enum: *a11
+                    enum: *a12
                     description: Calculated priority bucket
                   score:
                     type: number
@@ -8082,7 +8268,7 @@ components:
           maxLength: 15
         role:
           type: string
-          enum: &a12
+          enum: &a13
             - ADMIN
             - SUPPORT
             - ACCOUNTS
@@ -8109,7 +8295,7 @@ components:
           maxLength: 15
         role:
           type: string
-          enum: *a12
+          enum: *a13
         isActive:
           type: boolean
     UserDto:
@@ -8344,7 +8530,7 @@ components:
           type: string
         sortOrder:
           type: string
-          enum: *a10
+          enum: *a11
           default: desc
         search:
           type: string
@@ -8546,6 +8732,21 @@ components:
         serviceItemId:
           type: string
           format: uuid
+        category:
+          type: string
+          enum: &a14
+            - REPAIR
+            - CLEAN
+            - OTHER
+          description: "Classification: repair / clean / other"
+        repairType:
+          type: string
+          maxLength: 100
+          description: Repair type (free-text; relevant for REPAIR solutions)
+        variant:
+          type: string
+          maxLength: 50
+          description: Variant label, e.g. "Normal" or "Express"
       required:
         - name
     UpdateSolutionInput:
@@ -8566,9 +8767,21 @@ components:
           minimum: 0
         status:
           type: string
-          enum: &a42
+          enum: &a46
             - ACTIVE
             - INACTIVE
+        category:
+          type: string
+          enum: *a14
+          description: "Classification: repair / clean / other"
+        repairType:
+          type: string
+          maxLength: 100
+          description: Repair type (free-text; relevant for REPAIR solutions)
+        variant:
+          type: string
+          maxLength: 50
+          description: Variant label, e.g. "Normal" or "Express"
     SolutionDto:
       type: object
       properties:
@@ -8588,6 +8801,19 @@ components:
           nullable: true
         status:
           type: string
+        category:
+          type: string
+          nullable: true
+          enum: *a14
+          description: "Classification: repair / clean / other"
+        repairType:
+          type: string
+          nullable: true
+          description: Repair type (free-text)
+        variant:
+          type: string
+          nullable: true
+          description: Variant label
         createdAt:
           type: string
           nullable: true
@@ -8603,7 +8829,7 @@ components:
       properties:
         includeDeleted:
           type: string
-          enum: &a41
+          enum: &a45
             - "true"
             - "false"
           description: Include soft-deleted solutions
@@ -8643,6 +8869,19 @@ components:
                 nullable: true
               status:
                 type: string
+              category:
+                type: string
+                nullable: true
+                enum: *a14
+                description: "Classification: repair / clean / other"
+              repairType:
+                type: string
+                nullable: true
+                description: Repair type (free-text)
+              variant:
+                type: string
+                nullable: true
+                description: Variant label
               createdAt:
                 type: string
                 nullable: true
@@ -8754,6 +8993,10 @@ components:
           type: string
           format: uuid
           description: Service the item belongs to
+        price:
+          type: number
+          minimum: 0
+          description: Per-item price override for this solution on this service item (null → falls back to the solution price)
       required:
         - serviceItemId
         - solutionId
@@ -8777,6 +9020,30 @@ components:
         - serviceItemId
         - solutionId
         - serviceId
+    SetSolutionPriceForServiceItemInput:
+      type: object
+      properties:
+        serviceItemId:
+          type: string
+          format: uuid
+          description: Service item the solution is linked to
+        solutionId:
+          type: string
+          format: uuid
+          description: Linked solution to set the per-item price for
+        serviceId:
+          type: string
+          format: uuid
+          description: Service the item belongs to
+        price:
+          type: number
+          minimum: 0
+          description: Per-item price for this solution on this service item
+      required:
+        - serviceItemId
+        - solutionId
+        - serviceId
+        - price
     ServiceItemSolutionLinkDto:
       type: object
       properties:
@@ -8805,16 +9072,102 @@ components:
         - serviceItemId
         - solutionId
         - serviceId
+    ServiceItemSolutionDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        companyId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        sku:
+          type: string
+          nullable: true
+        status:
+          type: string
+        category:
+          type: string
+          nullable: true
+          enum: *a14
+          description: "Classification: repair / clean / other"
+        repairType:
+          type: string
+          nullable: true
+          description: Repair type (free-text)
+        variant:
+          type: string
+          nullable: true
+          description: Variant label
+        createdAt:
+          type: string
+          nullable: true
+        updatedAt:
+          type: string
+          nullable: true
+        price:
+          type: number
+          nullable: true
+          description: The solution's own default price
+        itemPrice:
+          type: number
+          nullable: true
+          description: Per-item price override for this solution on this service item (null → use the solution price)
+      required:
+        - id
+        - companyId
+        - name
+    ServiceItemPricesForSolutionQuery:
+      type: object
+      properties:
+        solutionId:
+          type: string
+          format: uuid
+          description: Solution to list per-service-item prices for
+      required:
+        - solutionId
+    ServiceItemPriceForSolutionDto:
+      type: object
+      properties:
+        serviceItemId:
+          type: string
+          format: uuid
+          description: Linked service item ID
+        serviceItemName:
+          type: string
+          description: Service item (make/model) name
+        serviceId:
+          type: string
+          format: uuid
+          description: Service the item belongs to
+        itemPrice:
+          type: number
+          nullable: true
+          description: Per-item price override on this link (null → falls back to the solution price)
+        defaultPrice:
+          type: number
+          description: The solution's own default price
+      required:
+        - serviceItemId
+        - serviceItemName
+        - serviceId
+        - itemPrice
+        - defaultPrice
     InventoryProductStatus:
       type: string
-      enum: &a13
+      enum: &a15
         - DRAFT
         - PUBLISHED
         - INACTIVE
       description: Publication status of a product in the inventory catalogue
     InventoryStockLevelFilter:
       type: string
-      enum: &a14
+      enum: &a16
         - IN_STOCK
         - LOW_STOCK
         - OUT_OF_STOCK
@@ -8854,7 +9207,7 @@ components:
           description: Optional category or family label used for grouping and filters
         status:
           type: string
-          enum: *a13
+          enum: *a15
           default: DRAFT
           description: Initial publication status
         minStockLevel:
@@ -8898,7 +9251,7 @@ components:
           description: Updated base price
         status:
           type: string
-          enum: *a13
+          enum: *a15
           description: Updated publication status
         minStockLevel:
           type: integer
@@ -9064,7 +9417,7 @@ components:
           type: string
         sortOrder:
           type: string
-          enum: *a10
+          enum: *a11
           default: desc
         search:
           type: string
@@ -9089,7 +9442,7 @@ components:
           description: Free‑text search against product name, SKU and description
         status:
           type: string
-          enum: *a13
+          enum: *a15
           description: Filter products by publication status
         supplierId:
           type: string
@@ -9100,7 +9453,7 @@ components:
           description: Filter products by category label
         stockLevel:
           type: string
-          enum: *a14
+          enum: *a16
           description: Filter by computed stock level bucket
         priceMin:
           type: number
@@ -9137,7 +9490,7 @@ components:
       properties:
         status:
           type: string
-          enum: *a13
+          enum: *a15
           description: Publication status to filter by
       required:
         - status
@@ -9199,7 +9552,7 @@ components:
           description: IDs of products whose status should be updated
         status:
           type: string
-          enum: *a13
+          enum: *a15
           description: New status applied to all provided products
       required:
         - productIds
@@ -9309,7 +9662,7 @@ components:
           type: string
         sortOrder:
           type: string
-          enum: *a10
+          enum: *a11
           default: desc
         partnerCompanyId:
           type: string
@@ -9437,7 +9790,7 @@ components:
           type: string
         sortOrder:
           type: string
-          enum: *a10
+          enum: *a11
           default: desc
       description: Query parameters for GET /business/inventory/distributor-products (page, limit, sort)
     CreateDistributorProductInput:
@@ -9783,7 +10136,7 @@ components:
           format: uuid
         type:
           type: string
-          enum: &a43
+          enum: &a47
             - EMAIL
             - SMS
             - NOTIFICATION
@@ -9797,7 +10150,7 @@ components:
           minLength: 1
         status:
           type: string
-          enum: &a44
+          enum: &a48
             - DRAFT
             - SCHEDULED
             - SENT
@@ -9841,7 +10194,7 @@ components:
           format: uuid
         type:
           type: string
-          enum: &a45
+          enum: &a49
             - EMAIL
             - SMS
             - NOTIFICATION
@@ -9854,7 +10207,7 @@ components:
           minLength: 1
         status:
           type: string
-          enum: &a46
+          enum: &a50
             - DRAFT
             - SCHEDULED
             - SENT
@@ -10010,7 +10363,7 @@ components:
       properties:
         status:
           type: string
-          enum: &a15
+          enum: &a17
             - DRAFT
             - SCHEDULED
             - SENT
@@ -10031,7 +10384,7 @@ components:
           description: List of communication IDs to update
         status:
           type: string
-          enum: *a15
+          enum: *a17
           description: New status to apply to all specified communications
       required:
         - communicationIds
@@ -10277,13 +10630,13 @@ components:
           description: Filter by template category
         isSystem:
           type: string
-          enum: &a47
+          enum: &a51
             - "true"
             - "false"
           description: Filter by system template flag
         isActive:
           type: string
-          enum: &a48
+          enum: &a52
             - "true"
             - "false"
           description: Filter by active status
@@ -10300,7 +10653,7 @@ components:
           description: Template display name
         category:
           type: string
-          enum: &a16
+          enum: &a18
             - SYSTEM_COLLECTION_REQUEST
             - SYSTEM_DELIVERY_CONFIRMATION
             - SYSTEM_ESTIMATE
@@ -10334,7 +10687,7 @@ components:
           description: Template display name
         category:
           type: string
-          enum: *a16
+          enum: *a18
           description: Template category
         subjectTemplate:
           type: string
@@ -10673,7 +11026,7 @@ components:
               description: Optional sender identity ID
             toType:
               type: string
-              enum: &a49
+              enum: &a53
                 - customer
                 - internal
                 - custom
@@ -11104,7 +11457,7 @@ components:
           description: Field to sort results by
         sortOrder:
           type: string
-          enum: &a50
+          enum: &a54
             - asc
             - desc
           description: Sort direction
@@ -11311,7 +11664,7 @@ components:
           description: Same as id; explicit for invitation actions
         relationshipType:
           type: string
-          enum: &a17
+          enum: &a19
             - INVITER
             - INVITEE
           description: Whether the session company invited or was invited
@@ -11406,7 +11759,7 @@ components:
                 description: Same as id; explicit for invitation actions
               relationshipType:
                 type: string
-                enum: *a17
+                enum: *a19
                 description: Whether the session company invited or was invited
             required:
               - id
@@ -11527,7 +11880,7 @@ components:
       properties:
         activeOnly:
           type: string
-          enum: &a51
+          enum: &a55
             - "true"
             - "false"
           description: If false, includes inactive locations; default true
@@ -11771,6 +12124,653 @@ components:
       required:
         - success
         - data
+    CreateRetailerInput:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+          nullable: true
+          maxLength: 20
+        address:
+          type: object
+          properties:
+            street:
+              type: string
+              minLength: 1
+            street2:
+              type: string
+              nullable: true
+            city:
+              type: string
+              minLength: 1
+            postcode:
+              type: string
+              minLength: 1
+            state:
+              type: string
+              nullable: true
+            country:
+              type: string
+              minLength: 1
+          required:
+            - street
+            - city
+            - postcode
+            - country
+      required:
+        - name
+        - email
+    UpdateRetailerInput:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+          nullable: true
+          maxLength: 20
+        status:
+          type: string
+          enum: &a57
+            - ACTIVE
+            - INACTIVE
+        address:
+          type: object
+          properties:
+            street:
+              type: string
+              minLength: 1
+            street2:
+              type: string
+              nullable: true
+            city:
+              type: string
+              minLength: 1
+            postcode:
+              type: string
+              minLength: 1
+            state:
+              type: string
+              nullable: true
+            country:
+              type: string
+              minLength: 1
+          required:
+            - street
+            - city
+            - postcode
+            - country
+    ListRetailersQuery:
+      type: object
+      properties:
+        activeOnly:
+          type: string
+          enum: &a56
+            - "true"
+            - "false"
+          description: If true, only ACTIVE retailers. Default false (all non-deleted).
+        search:
+          type: string
+          maxLength: 200
+          description: Case-insensitive match on name or email
+    RetailerDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        companyId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+          nullable: true
+        status:
+          type: string
+        hasLogin:
+          type: boolean
+        invitePending:
+          type: boolean
+        addressId:
+          type: string
+          nullable: true
+          format: uuid
+        address:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: string
+              format: uuid
+            street:
+              type: string
+            street2:
+              type: string
+              nullable: true
+            city:
+              type: string
+            postcode:
+              type: string
+            state:
+              type: string
+              nullable: true
+            country:
+              type: string
+        createdAt:
+          type: string
+          nullable: true
+        updatedAt:
+          type: string
+          nullable: true
+      required:
+        - id
+        - companyId
+        - name
+        - email
+        - status
+        - hasLogin
+        - invitePending
+        - createdAt
+        - updatedAt
+    RetailerListResponse:
+      type: object
+      properties:
+        retailers:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              companyId:
+                type: string
+                format: uuid
+              name:
+                type: string
+              email:
+                type: string
+              phone:
+                type: string
+                nullable: true
+              status:
+                type: string
+              hasLogin:
+                type: boolean
+              invitePending:
+                type: boolean
+              addressId:
+                type: string
+                nullable: true
+                format: uuid
+              address:
+                type: object
+                nullable: true
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  street:
+                    type: string
+                  street2:
+                    type: string
+                    nullable: true
+                  city:
+                    type: string
+                  postcode:
+                    type: string
+                  state:
+                    type: string
+                    nullable: true
+                  country:
+                    type: string
+              createdAt:
+                type: string
+                nullable: true
+              updatedAt:
+                type: string
+                nullable: true
+            required:
+              - id
+              - companyId
+              - name
+              - email
+              - status
+              - hasLogin
+              - invitePending
+              - createdAt
+              - updatedAt
+      required:
+        - retailers
+    DeleteRetailerResponse:
+      type: object
+      properties:
+        softDeleted:
+          type: boolean
+      required:
+        - softDeleted
+    SendRetailerInviteResponse:
+      type: object
+      properties:
+        email:
+          type: string
+          description: Address the invite was sent to
+        expiresAt:
+          type: string
+          nullable: true
+          description: When the link stops working
+      required:
+        - email
+        - expiresAt
+    RetailerForgotPasswordInput:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        companyApiName:
+          type: string
+          minLength: 1
+      required:
+        - email
+        - companyApiName
+    RetailerForgotPasswordResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+            - true
+      required:
+        - success
+    ValidateRetailerTokenResponse:
+      type: object
+      properties:
+        email:
+          type: string
+        retailerName:
+          type: string
+        companyName:
+          type: string
+        companyApiName:
+          type: string
+        purpose:
+          type: string
+          enum: &a58
+            - invite
+            - reset
+          description: "Drives the page copy: first-time setup vs a reset"
+      required:
+        - email
+        - retailerName
+        - companyName
+        - companyApiName
+        - purpose
+    RetailerSetPasswordInput:
+      type: object
+      properties:
+        token:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          minLength: 8
+      required:
+        - token
+        - password
+    RetailerSetPasswordResponse:
+      type: object
+      properties:
+        email:
+          type: string
+        companyApiName:
+          type: string
+      required:
+        - email
+        - companyApiName
+    RetailerMeDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+          nullable: true
+        address:
+          type: object
+          nullable: true
+          properties:
+            street:
+              type: string
+              nullable: true
+            street2:
+              type: string
+              nullable: true
+            city:
+              type: string
+              nullable: true
+            postcode:
+              type: string
+              nullable: true
+            state:
+              type: string
+              nullable: true
+            country:
+              type: string
+              nullable: true
+        company:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            name:
+              type: string
+            apiName:
+              type: string
+              nullable: true
+          required:
+            - id
+            - name
+      required:
+        - id
+        - name
+        - email
+        - company
+    RetailerServiceRecordDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          nullable: true
+        status:
+          type: string
+        due_date:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          nullable: true
+        customer:
+          type: object
+          nullable: true
+          properties:
+            firstName:
+              type: string
+              nullable: true
+            lastName:
+              type: string
+              nullable: true
+        shipments:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              type:
+                type: string
+              status:
+                type: string
+              scheduledDate:
+                type: string
+                nullable: true
+              courierTrackingNumber:
+                type: string
+                nullable: true
+            required:
+              - id
+              - type
+              - status
+      required:
+        - id
+        - status
+        - createdAt
+        - shipments
+    RetailerServiceRecordListResponse:
+      type: object
+      properties:
+        serviceRecords:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              name:
+                type: string
+                nullable: true
+              status:
+                type: string
+              due_date:
+                type: string
+                nullable: true
+              createdAt:
+                type: string
+                nullable: true
+              customer:
+                type: object
+                nullable: true
+                properties:
+                  firstName:
+                    type: string
+                    nullable: true
+                  lastName:
+                    type: string
+                    nullable: true
+              shipments:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    type:
+                      type: string
+                    status:
+                      type: string
+                    scheduledDate:
+                      type: string
+                      nullable: true
+                    courierTrackingNumber:
+                      type: string
+                      nullable: true
+                  required:
+                    - id
+                    - type
+                    - status
+            required:
+              - id
+              - status
+              - createdAt
+              - shipments
+      required:
+        - serviceRecords
+    RetailerNoteDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        body:
+          type: string
+        createdAt:
+          type: string
+          nullable: true
+        source:
+          type: string
+          nullable: true
+        authorRetailer:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: string
+              format: uuid
+            name:
+              type: string
+          required:
+            - id
+            - name
+        author:
+          type: object
+          nullable: true
+          properties:
+            firstName:
+              type: string
+              nullable: true
+            lastName:
+              type: string
+              nullable: true
+        company:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: string
+              format: uuid
+            name:
+              type: string
+          required:
+            - id
+            - name
+      required:
+        - id
+        - body
+        - createdAt
+    RetailerNoteListResponse:
+      type: object
+      properties:
+        notes:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              body:
+                type: string
+              createdAt:
+                type: string
+                nullable: true
+              source:
+                type: string
+                nullable: true
+              authorRetailer:
+                type: object
+                nullable: true
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                required:
+                  - id
+                  - name
+              author:
+                type: object
+                nullable: true
+                properties:
+                  firstName:
+                    type: string
+                    nullable: true
+                  lastName:
+                    type: string
+                    nullable: true
+              company:
+                type: object
+                nullable: true
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                required:
+                  - id
+                  - name
+            required:
+              - id
+              - body
+              - createdAt
+      required:
+        - notes
+    CreateRetailerNoteInput:
+      type: object
+      properties:
+        body:
+          type: string
+          minLength: 1
+          maxLength: 5000
+      required:
+        - body
+      additionalProperties: false
+    RetailerSelfUpdateInput:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+          nullable: true
+          maxLength: 20
+        address:
+          type: object
+          properties:
+            street:
+              type: string
+              minLength: 1
+            street2:
+              type: string
+              nullable: true
+            city:
+              type: string
+              minLength: 1
+            postcode:
+              type: string
+              minLength: 1
+            state:
+              type: string
+              nullable: true
+            country:
+              type: string
+              minLength: 1
+          required:
+            - street
+            - city
+            - postcode
+            - country
+      additionalProperties: false
     ListAuditLogsQuery:
       type: object
       properties:
@@ -12304,7 +13304,7 @@ components:
       properties:
         companyType:
           type: string
-          enum: &a52
+          enum: &a59
             - SERVICE_FULFILLER
             - SERVICE_CREATOR
           description: Type of company being registered
@@ -12453,7 +13453,7 @@ components:
           description: Unique identifier of the subscription record.
         plan:
           type: string
-          enum: &a53
+          enum: &a60
             - BASIC
             - STANDARD
             - ENTERPRISE
@@ -12489,14 +13489,14 @@ components:
       properties:
         plan:
           type: string
-          enum: &a54
+          enum: &a61
             - BASIC
             - STANDARD
             - ENTERPRISE
           description: Target subscription plan tier to switch to.
         status:
           type: string
-          enum: &a55
+          enum: &a62
             - TRIAL
             - ACTIVE
             - PAST_DUE
@@ -12676,7 +13676,7 @@ components:
       properties:
         includeDeleted:
           type: string
-          enum: &a56
+          enum: &a63
             - "true"
             - "false"
           description: Include soft-deleted forms
@@ -12697,7 +13697,7 @@ components:
           description: Field to sort by (e.g. name, createdAt)
         sortOrder:
           type: string
-          enum: &a57
+          enum: &a64
             - asc
             - desc
           description: Sort direction
@@ -12715,7 +13715,7 @@ components:
           description: Optional description
         status:
           type: string
-          enum: &a58
+          enum: &a65
             - ACTIVE
             - INACTIVE
             - DRAFT
@@ -13093,7 +14093,7 @@ components:
           description: Filter by service ID
         company:
           type: string
-          enum: &a59
+          enum: &a66
             - "true"
           description: If true, return all company nodes
     CreateDocumentationNodeInput:
@@ -13307,7 +14307,7 @@ components:
           format: email
         type:
           type: string
-          enum: &a60
+          enum: &a67
             - TENANT
             - SYSTEM
         isDefault:
@@ -13336,7 +14336,7 @@ components:
           format: email
         type:
           type: string
-          enum: &a61
+          enum: &a68
             - TENANT
             - SYSTEM
         isDefault:
@@ -13364,7 +14364,7 @@ components:
           type: string
         type:
           type: string
-          enum: &a18
+          enum: &a20
             - TENANT
             - SYSTEM
         isDefault:
@@ -13416,7 +14416,7 @@ components:
                 type: string
               type:
                 type: string
-                enum: *a18
+                enum: *a20
               isDefault:
                 type: boolean
               isVerified:
@@ -13558,7 +14558,7 @@ components:
       properties:
         includeDeleted:
           type: string
-          enum: &a62
+          enum: &a69
             - "true"
             - "false"
           description: Include soft-deleted items
@@ -13569,6 +14569,14 @@ components:
           type: string
           minLength: 1
           maxLength: 200
+        brand:
+          type: string
+          nullable: true
+          maxLength: 120
+        model:
+          type: string
+          nullable: true
+          maxLength: 200
         description:
           type: string
           maxLength: 1000
@@ -13578,14 +14586,20 @@ components:
         apiName:
           type: string
           maxLength: 100
-      required:
-        - name
     UpdateServiceItemInput:
       type: object
       properties:
         name:
           type: string
           minLength: 1
+          maxLength: 200
+        brand:
+          type: string
+          nullable: true
+          maxLength: 120
+        model:
+          type: string
+          nullable: true
           maxLength: 200
         description:
           type: string
@@ -13604,6 +14618,12 @@ components:
           format: uuid
         name:
           type: string
+        brand:
+          type: string
+          nullable: true
+        model:
+          type: string
+          nullable: true
         description:
           type: string
           nullable: true
@@ -13640,6 +14660,12 @@ components:
                 format: uuid
               name:
                 type: string
+              brand:
+                type: string
+                nullable: true
+              model:
+                type: string
+                nullable: true
               description:
                 type: string
                 nullable: true
@@ -13891,7 +14917,7 @@ components:
       properties:
         includeDeleted:
           type: string
-          enum: &a63
+          enum: &a70
             - "true"
             - "false"
           description: Include soft-deleted custom fields
@@ -13908,7 +14934,7 @@ components:
           maxLength: 200
         type:
           type: string
-          enum: &a19
+          enum: &a21
             - STRING
             - NUMBER
             - DATE
@@ -13940,7 +14966,7 @@ components:
           maxLength: 200
         type:
           type: string
-          enum: *a19
+          enum: *a21
         required:
           type: boolean
         options:
@@ -14062,7 +15088,7 @@ components:
       properties:
         category:
           type: string
-          enum: &a20
+          enum: &a22
             - auth
             - transaction
             - billing
@@ -14071,7 +15097,7 @@ components:
           description: Filter by category
         isActive:
           type: string
-          enum: &a64
+          enum: &a71
             - "true"
             - "false"
           description: Filter by active status
@@ -14093,7 +15119,7 @@ components:
           description: Human-readable template name
         category:
           type: string
-          enum: *a20
+          enum: *a22
           description: Template category
         subjectTemplate:
           type: string
@@ -14132,7 +15158,7 @@ components:
           description: Human-readable template name
         category:
           type: string
-          enum: *a20
+          enum: *a22
           description: Template category
         subjectTemplate:
           type: string
@@ -15707,7 +16733,7 @@ components:
             type: number
           tone:
             type: string
-            enum: &a67
+            enum: &a74
               - neutral
               - success
               - warning
@@ -15718,6 +16744,56 @@ components:
           - label
           - count
           - tone
+    SlackChannelDto:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        isPrivate:
+          type: boolean
+      required:
+        - id
+        - name
+        - isPrivate
+    SlackUserDto:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        realName:
+          type: string
+      required:
+        - id
+        - name
+        - realName
+    SlackStatusDto:
+      type: object
+      properties:
+        isConnected:
+          type: boolean
+        teamName:
+          type: string
+        newRecordChannelId:
+          type: string
+        supportChannelId:
+          type: string
+      required:
+        - isConnected
+    SaveSlackPreferencesInput:
+      type: object
+      properties:
+        newRecordChannelId:
+          type: string
+        newRecordChannelName:
+          type: string
+        supportChannelId:
+          type: string
+        supportChannelName:
+          type: string
     AnalyticsDateRangeQuery:
       type: object
       properties:
@@ -16294,7 +17370,7 @@ components:
                 description: Human-readable recommendation detail
               priority:
                 type: string
-                enum: &a68
+                enum: &a75
                   - low
                   - medium
                   - high
@@ -16321,7 +17397,7 @@ components:
                 description: Alert details and remediation guidance
               severity:
                 type: string
-                enum: &a69
+                enum: &a76
                   - low
                   - medium
                   - high
@@ -16376,7 +17452,7 @@ components:
           description: Required ISO8601 end date (inclusive) for the reporting window
         groupBy:
           type: string
-          enum: &a21
+          enum: &a23
             - day
             - week
             - month
@@ -16419,7 +17495,7 @@ components:
               description: Required ISO8601 end date (inclusive) for the reporting window
             groupBy:
               type: string
-              enum: *a21
+              enum: *a23
               default: month
               description: Aggregation grain for charts and time-series (defaults to month)
           required:
@@ -16476,7 +17552,7 @@ components:
       properties:
         status:
           type: string
-          enum: &a72
+          enum: &a79
             - healthy
             - unhealthy
         timestamp:
@@ -16560,7 +17636,7 @@ components:
           description: Identifier of the deleted connection record (matches the supplied connectionId)
         type:
           type: string
-          enum: &a70
+          enum: &a77
             - integration
             - auth_account
           description: "Storage type of the removed connection: 'integration' for IntegrationConnection rows, 'auth_account' for legacy AuthAccount-based Gmail connections."
@@ -16587,7 +17663,7 @@ components:
           description: Size of the uploaded file in bytes
         category:
           type: string
-          enum: &a22
+          enum: &a24
             - PROFILE
             - LOGO
             - DOCUMENT
@@ -16630,7 +17706,7 @@ components:
               description: Internal storage key for the uploaded file, used by backend services
             category:
               type: string
-              enum: *a22
+              enum: *a24
               description: Category under which the file was stored
             uploadedAt:
               type: string
@@ -16927,7 +18003,7 @@ components:
           description: Optional DPD account number used for identification and billing
         action:
           type: string
-          enum: &a71
+          enum: &a78
             - verify
           description: When set to 'verify', the endpoint only verifies the credentials and does not persist them. Any other value (or omission) results in saving/updating the credentials.
       required:
@@ -17448,6 +18524,14 @@ components:
         - label
         - color
       description: A system stage registry definition
+    SlackChannelsResponse:
+      type: array
+      items:
+        $ref: "#/components/schemas/SlackChannelDto"
+    SlackUsersResponse:
+      type: array
+      items:
+        $ref: "#/components/schemas/SlackUserDto"
   parameters: {}
 paths:
   /customers:
@@ -17480,7 +18564,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a23
+            enum: *a25
             default: desc
           required: false
           name: sortOrder
@@ -18375,14 +19459,19 @@ paths:
                           nullable: true
                         body:
                           type: string
-                        isInternal:
-                          type: boolean
+                        visibility:
+                          type: string
+                          enum: *a2
                         createdAt:
                           type: string
                           nullable: true
                         updatedAt:
                           type: string
                           nullable: true
+                        authorRetailerId:
+                          type: string
+                          nullable: true
+                          format: uuid
                         author:
                           type: object
                           nullable: true
@@ -18400,11 +19489,35 @@ paths:
                               type: string
                           required:
                             - id
+                        authorRetailer:
+                          type: object
+                          nullable: true
+                          properties:
+                            id:
+                              type: string
+                              format: uuid
+                            name:
+                              type: string
+                          required:
+                            - id
+                            - name
+                        company:
+                          type: object
+                          nullable: true
+                          properties:
+                            id:
+                              type: string
+                              format: uuid
+                            name:
+                              type: string
+                          required:
+                            - id
+                            - name
                       required:
                         - id
                         - companyId
                         - body
-                        - isInternal
+                        - visibility
                         - createdAt
                         - updatedAt
                 required:
@@ -18433,8 +19546,9 @@ paths:
                 source:
                   type: string
                   maxLength: 50
-                isInternal:
-                  type: boolean
+                visibility:
+                  type: string
+                  enum: *a26
               required:
                 - body
       responses:
@@ -18468,14 +19582,19 @@ paths:
                     nullable: true
                   body:
                     type: string
-                  isInternal:
-                    type: boolean
+                  visibility:
+                    type: string
+                    enum: *a2
                   createdAt:
                     type: string
                     nullable: true
                   updatedAt:
                     type: string
                     nullable: true
+                  authorRetailerId:
+                    type: string
+                    nullable: true
+                    format: uuid
                   author:
                     type: object
                     nullable: true
@@ -18493,11 +19612,35 @@ paths:
                         type: string
                     required:
                       - id
+                  authorRetailer:
+                    type: object
+                    nullable: true
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      name:
+                        type: string
+                    required:
+                      - id
+                      - name
+                  company:
+                    type: object
+                    nullable: true
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      name:
+                        type: string
+                    required:
+                      - id
+                      - name
                 required:
                   - id
                   - companyId
                   - body
-                  - isInternal
+                  - visibility
                   - createdAt
                   - updatedAt
   /integrations/customer-record-lookup:
@@ -18678,7 +19821,7 @@ paths:
                   maxLength: 20
                 category:
                   type: string
-                  enum: *a24
+                  enum: *a27
                   default: OTHER
                 address:
                   type: object
@@ -18830,10 +19973,10 @@ paths:
                   maxLength: 20
                 category:
                   type: string
-                  enum: *a2
+                  enum: *a3
                 status:
                   type: string
-                  enum: *a3
+                  enum: *a4
                 notes:
                   type: string
                   maxLength: 1000
@@ -19194,10 +20337,10 @@ paths:
                       maxLength: 20
                     category:
                       type: string
-                      enum: *a2
+                      enum: *a3
                     status:
                       type: string
-                      enum: *a3
+                      enum: *a4
                     notes:
                       type: string
                       maxLength: 1000
@@ -19518,7 +20661,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a10
+            enum: *a11
             default: desc
           required: false
           name: sortOrder
@@ -19659,11 +20802,11 @@ paths:
                   description: Optional human-friendly reference; generated server-side when omitted.
                 status:
                   type: string
-                  enum: *a6
+                  enum: *a7
                   description: Lifecycle status of the transaction.
                 recipientType:
                   type: string
-                  enum: *a25
+                  enum: *a28
                   description: Recipient type for this transaction.
                 recipientId:
                   type: string
@@ -19731,7 +20874,7 @@ paths:
                     properties:
                       type:
                         type: string
-                        enum: *a4
+                        enum: *a5
                         description: Classification of the line item (service work, product, solution bundle or logistics).
                       description:
                         type: string
@@ -20010,7 +21153,7 @@ paths:
                   description: Optional human‑friendly reference number for the estimate.
                 recipientType:
                   type: string
-                  enum: *a5
+                  enum: *a6
                   description: Whether the recipient of this estimate is a customer or another company.
                 recipientId:
                   type: string
@@ -20071,7 +21214,7 @@ paths:
                     properties:
                       type:
                         type: string
-                        enum: *a4
+                        enum: *a5
                         description: Classification of the line item (service work, product, solution bundle or logistics).
                       description:
                         type: string
@@ -20141,6 +21284,11 @@ paths:
                     type: string
                     format: uuid
                   description: Optional list of service record IDs for multi‑record invoices; when provided, line items may be aggregated from solutions.
+                serviceRecordFields:
+                  type: array
+                  items:
+                    type: string
+                  description: Optional ordered list of service-record field API names to render as a per-record detail table on the invoice PDF. Array order is column order; omit or send an empty array for no table.
               required:
                 - recipientType
                 - recipientId
@@ -20262,7 +21410,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a10
+            enum: *a11
             default: desc
           required: false
           name: sortOrder
@@ -20501,7 +21649,7 @@ paths:
               properties:
                 status:
                   type: string
-                  enum: *a6
+                  enum: *a7
                   description: New status for the transaction, if being updated.
                 dueDate:
                   anyOf:
@@ -20854,7 +22002,7 @@ paths:
                     description: Email address the request was sent to.
                   status:
                     type: string
-                    enum: *a7
+                    enum: *a8
                     description: Lifecycle status of the request.
                   createdAt:
                     type: string
@@ -20914,7 +22062,7 @@ paths:
                           description: Email address the request was sent to.
                         status:
                           type: string
-                          enum: *a7
+                          enum: *a8
                           description: Lifecycle status of the request.
                         createdAt:
                           type: string
@@ -20940,11 +22088,21 @@ paths:
                   customerEmail:
                     type: string
                     nullable: true
-                    description: The resolved customer email, or null when the customer has no email on file.
+                    description: The resolved customer email (from the transaction recipient or linked service record customer), independent of payability; null only when the customer genuinely has no email on file.
+                  requestable:
+                    type: boolean
+                    description: Whether a payment can be requested right now — the single source of truth for the button state.
+                  reason:
+                    type: string
+                    nullable: true
+                    enum: *a29
+                    description: Why a payment cannot be requested, or null when requestable. Drives the disabled tooltip.
                 required:
                   - requests
                   - stripeConnected
                   - customerEmail
+                  - requestable
+                  - reason
                 description: Payment requests + request-button eligibility for a transaction.
   /billing/payment-requests/{id}/cancel:
     post:
@@ -20982,7 +22140,7 @@ paths:
                     description: Email address the request was sent to.
                   status:
                     type: string
-                    enum: *a7
+                    enum: *a8
                     description: Lifecycle status of the request.
                   createdAt:
                     type: string
@@ -22997,7 +24155,7 @@ paths:
       parameters:
         - schema:
             type: string
-            enum: *a26
+            enum: *a30
             description: "Which billing document type to aggregate statistics for: 'estimate' (transactions behaving as quotes), 'invoice' or 'purchase-order'."
           required: true
           description: "Which billing document type to aggregate statistics for: 'estimate' (transactions behaving as quotes), 'invoice' or 'purchase-order'."
@@ -23892,7 +25050,7 @@ paths:
               properties:
                 recipientType:
                   type: string
-                  enum: *a27
+                  enum: *a31
                   description: Whether the recipient is a customer or another company.
                 recipientId:
                   type: string
@@ -23953,7 +25111,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a10
+            enum: *a11
             default: desc
           required: false
           name: sortOrder
@@ -24051,7 +25209,7 @@ paths:
                   format: uuid
                 status:
                   type: string
-                  enum: *a28
+                  enum: *a32
                   default: ACTIVE
                 flow:
                   nullable: true
@@ -24201,7 +25359,7 @@ paths:
                   maxLength: 500
                 status:
                   type: string
-                  enum: *a29
+                  enum: *a33
                 flow:
                   nullable: true
                 properties:
@@ -24287,7 +25445,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a10
+            enum: *a11
             default: desc
           required: false
           name: sortOrder
@@ -24774,7 +25932,7 @@ paths:
               properties:
                 status:
                   type: string
-                  enum: *a30
+                  enum: *a34
                   description: New service status
               required:
                 - status
@@ -24978,7 +26136,7 @@ paths:
                   description: Array of service IDs to update
                 status:
                   type: string
-                  enum: *a31
+                  enum: *a35
                   description: Target status for all services
               required:
                 - serviceIds
@@ -26646,7 +27804,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a32
+            enum: *a36
             default: desc
             description: Sort direction for the list
           required: false
@@ -26988,7 +28146,7 @@ paths:
                       description: API name of the target service
                     relationshipType:
                       type: string
-                      enum: *a9
+                      enum: *a10
                       description: Direction of the relationship relative to the current record
                     createdAt:
                       type: string
@@ -27310,7 +28468,7 @@ paths:
   /service-records/media/upload:
     post:
       summary: Upload service-record media
-      description: Upload one or more media files (photos/videos) for a service record. The HTTP endpoint accepts multipart/form-data with files under the "files" field; this schema documents the non-file fields (serviceName, recordId, fieldApiName).
+      description: Upload one or more media files (photos/videos/PDF documents) for a service record. The HTTP endpoint accepts multipart/form-data with files under the "files" field; this schema documents the non-file fields (serviceName, recordId, fieldApiName).
       tags:
         - Service Records
       requestBody:
@@ -27333,7 +28491,7 @@ paths:
                   description: API name of the media field on the service form that these files belong to
                 attachToRecord:
                   type: string
-                  enum: *a33
+                  enum: *a37
                   description: When "true", the uploaded media is appended to the record field and persisted immediately. Omit for staging flows (e.g. the transition dialog) that persist the media themselves on submit.
               required:
                 - serviceName
@@ -27373,8 +28531,8 @@ paths:
                           description: File size in bytes
                         type:
                           type: string
-                          enum: *a8
-                          description: Media type classification based on file MIME type
+                          enum: *a9
+                          description: Media type classification based on file MIME type ("document" = PDF)
                         uploadedAt:
                           type: string
                           description: ISO timestamp when the media metadata object was created
@@ -27412,8 +28570,8 @@ paths:
                           description: File size in bytes
                         type:
                           type: string
-                          enum: *a8
-                          description: Media type classification based on file MIME type
+                          enum: *a9
+                          description: Media type classification based on file MIME type ("document" = PDF)
                         uploadedAt:
                           type: string
                           description: ISO timestamp when the media metadata object was created
@@ -27476,8 +28634,8 @@ paths:
                         description: File size in bytes
                       type:
                         type: string
-                        enum: *a8
-                        description: Media type classification based on file MIME type
+                        enum: *a9
+                        description: Media type classification based on file MIME type ("document" = PDF)
                       uploadedAt:
                         type: string
                         description: ISO timestamp when the media metadata object was created
@@ -27528,8 +28686,8 @@ paths:
                           description: File size in bytes
                         type:
                           type: string
-                          enum: *a8
-                          description: Media type classification based on file MIME type
+                          enum: *a9
+                          description: Media type classification based on file MIME type ("document" = PDF)
                         uploadedAt:
                           type: string
                           description: ISO timestamp when the media metadata object was created
@@ -27695,7 +28853,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a34
+            enum: *a38
             default: desc
             description: Sort direction
           required: false
@@ -27840,7 +28998,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a10
+            enum: *a11
             default: desc
           required: false
           name: sortOrder
@@ -28291,6 +29449,90 @@ paths:
           description: Service-record service item removed successfully
         "403":
           description: Forbidden (no access to this service record or item)
+  /service-records/retailer:
+    put:
+      summary: Link or unlink a record's retailer
+      description: "Sets the shop associated with this record; `retailerId: null` unlinks. Owner-only — an assigned fulfiller reads the retailer but cannot change it. The retailer must be granted on the record's service, or the request is rejected."
+      tags:
+        - Service Records
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                recordId:
+                  type: string
+                  format: uuid
+                retailerId:
+                  type: string
+                  nullable: true
+                  format: uuid
+              required:
+                - recordId
+                - retailerId
+              additionalProperties: false
+      responses:
+        "200":
+          description: Retailer linked or unlinked
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  retailerId:
+                    type: string
+                    nullable: true
+                    format: uuid
+                required:
+                  - retailerId
+        "400":
+          description: That retailer is not enabled for this service
+        "403":
+          description: Only the owning company can change the retailer
+        "404":
+          description: Service record or retailer not found
+  /service-records/granted-retailers:
+    get:
+      summary: List the retailers a service grants
+      description: The shops enabled for a service, for the staff picker. Ids that no longer resolve (deleted or deactivated retailers) simply drop out.
+      tags:
+        - Service Records
+      parameters:
+        - schema:
+            type: string
+            format: uuid
+          required: true
+          name: serviceId
+          in: query
+      responses:
+        "200":
+          description: Granted retailers
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  retailers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                        email:
+                          type: string
+                      required:
+                        - id
+                        - name
+                        - email
+                required:
+                  - retailers
+        "400":
+          description: serviceId is required
   /shipping/shipments:
     get:
       summary: List shipments
@@ -28320,7 +29562,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a10
+            enum: *a11
             default: desc
           required: false
           name: sortOrder
@@ -29912,7 +31154,7 @@ paths:
                       - methodId
                       - quantity
                     description: Single logistics method selection used when syncing shipments for a transaction.
-                  default: *a35
+                  default: *a39
                   description: Selections for collection shipments to create.
                 deliverySelections:
                   type: array
@@ -29938,7 +31180,7 @@ paths:
                       - methodId
                       - quantity
                     description: Single logistics method selection used when syncing shipments for a transaction.
-                  default: *a36
+                  default: *a40
                   description: Selections for delivery shipments to create.
               required:
                 - transactionId
@@ -29972,7 +31214,7 @@ paths:
               properties:
                 type:
                   type: string
-                  enum: *a37
+                  enum: *a41
                   description: Shipment type, either 'DELIVERY' (to customer) or 'COLLECTION' (from customer).
                 senderAddressId:
                   type: string
@@ -30000,7 +31242,7 @@ paths:
                   description: Optional service record ID that this shipment is associated with. Empty string is treated as unset.
                 courierProvider:
                   type: string
-                  enum: *a38
+                  enum: *a42
                   description: Courier provider to use for this shipment, if already known.
                 expectedDeliveryDate:
                   anyOf:
@@ -30879,7 +32121,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a39
+            enum: *a43
             default: desc
             description: Sort direction for the records list.
           required: false
@@ -31115,7 +32357,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a10
+            enum: *a11
             default: desc
           required: false
           name: sortOrder
@@ -31701,7 +32943,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a11
+            enum: *a12
             description: Filter workspace items to a single priority level
           required: false
           description: Filter workspace items to a single priority level
@@ -31709,7 +32951,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a40
+            enum: *a44
             description: "Whether to include fully completed workspace items (default: false)"
           required: false
           description: "Whether to include fully completed workspace items (default: false)"
@@ -31773,7 +33015,7 @@ paths:
                           properties:
                             level:
                               type: string
-                              enum: *a11
+                              enum: *a12
                               description: Calculated priority bucket
                             score:
                               type: number
@@ -32243,7 +33485,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a10
+            enum: *a11
             default: desc
           required: false
           name: sortOrder
@@ -32354,7 +33596,7 @@ paths:
                   maxLength: 15
                 role:
                   type: string
-                  enum: *a12
+                  enum: *a13
                   default: SUPPORT
               required:
                 - email
@@ -32493,7 +33735,7 @@ paths:
                   maxLength: 15
                 role:
                   type: string
-                  enum: *a12
+                  enum: *a13
                 isActive:
                   type: boolean
       responses:
@@ -33115,7 +34357,7 @@ paths:
       parameters:
         - schema:
             type: string
-            enum: *a41
+            enum: *a45
             description: Include soft-deleted solutions
           required: false
           description: Include soft-deleted solutions
@@ -33174,6 +34416,19 @@ paths:
                           nullable: true
                         status:
                           type: string
+                        category:
+                          type: string
+                          nullable: true
+                          enum: *a14
+                          description: "Classification: repair / clean / other"
+                        repairType:
+                          type: string
+                          nullable: true
+                          description: Repair type (free-text)
+                        variant:
+                          type: string
+                          nullable: true
+                          description: Variant label
                         createdAt:
                           type: string
                           nullable: true
@@ -33231,6 +34486,18 @@ paths:
                 serviceItemId:
                   type: string
                   format: uuid
+                category:
+                  type: string
+                  enum: *a14
+                  description: "Classification: repair / clean / other"
+                repairType:
+                  type: string
+                  maxLength: 100
+                  description: Repair type (free-text; relevant for REPAIR solutions)
+                variant:
+                  type: string
+                  maxLength: 50
+                  description: Variant label, e.g. "Normal" or "Express"
               required:
                 - name
       responses:
@@ -33257,6 +34524,19 @@ paths:
                     nullable: true
                   status:
                     type: string
+                  category:
+                    type: string
+                    nullable: true
+                    enum: *a14
+                    description: "Classification: repair / clean / other"
+                  repairType:
+                    type: string
+                    nullable: true
+                    description: Repair type (free-text)
+                  variant:
+                    type: string
+                    nullable: true
+                    description: Variant label
                   createdAt:
                     type: string
                     nullable: true
@@ -33304,6 +34584,19 @@ paths:
                     nullable: true
                   status:
                     type: string
+                  category:
+                    type: string
+                    nullable: true
+                    enum: *a14
+                    description: "Classification: repair / clean / other"
+                  repairType:
+                    type: string
+                    nullable: true
+                    description: Repair type (free-text)
+                  variant:
+                    type: string
+                    nullable: true
+                    description: Variant label
                   createdAt:
                     type: string
                     nullable: true
@@ -33347,7 +34640,19 @@ paths:
                   minimum: 0
                 status:
                   type: string
-                  enum: *a42
+                  enum: *a46
+                category:
+                  type: string
+                  enum: *a14
+                  description: "Classification: repair / clean / other"
+                repairType:
+                  type: string
+                  maxLength: 100
+                  description: Repair type (free-text; relevant for REPAIR solutions)
+                variant:
+                  type: string
+                  maxLength: 50
+                  description: Variant label, e.g. "Normal" or "Express"
       responses:
         "200":
           description: Solution updated
@@ -33372,6 +34677,19 @@ paths:
                     nullable: true
                   status:
                     type: string
+                  category:
+                    type: string
+                    nullable: true
+                    enum: *a14
+                    description: "Classification: repair / clean / other"
+                  repairType:
+                    type: string
+                    nullable: true
+                    description: Repair type (free-text)
+                  variant:
+                    type: string
+                    nullable: true
+                    description: Variant label
                   createdAt:
                     type: string
                     nullable: true
@@ -33439,6 +34757,19 @@ paths:
                           nullable: true
                         status:
                           type: string
+                        category:
+                          type: string
+                          nullable: true
+                          enum: *a14
+                          description: "Classification: repair / clean / other"
+                        repairType:
+                          type: string
+                          nullable: true
+                          description: Repair type (free-text)
+                        variant:
+                          type: string
+                          nullable: true
+                          description: Variant label
                         createdAt:
                           type: string
                           nullable: true
@@ -33526,6 +34857,19 @@ paths:
                           nullable: true
                         status:
                           type: string
+                        category:
+                          type: string
+                          nullable: true
+                          enum: *a14
+                          description: "Classification: repair / clean / other"
+                        repairType:
+                          type: string
+                          nullable: true
+                          description: Repair type (free-text)
+                        variant:
+                          type: string
+                          nullable: true
+                          description: Variant label
                         createdAt:
                           type: string
                           nullable: true
@@ -33559,7 +34903,7 @@ paths:
   /solutions/for-service-item:
     get:
       summary: List solutions for a service item
-      description: Returns solutions linked to a specific service item within a service
+      description: Returns solutions linked to a specific service item within a service, each with its per-item price override (`itemPrice`)
       tags:
         - Solutions
       parameters:
@@ -33585,59 +34929,57 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: string
-                          format: uuid
-                        companyId:
-                          type: string
-                          format: uuid
-                        name:
-                          type: string
-                        description:
-                          type: string
-                          nullable: true
-                        sku:
-                          type: string
-                          nullable: true
-                        status:
-                          type: string
-                        createdAt:
-                          type: string
-                          nullable: true
-                        updatedAt:
-                          type: string
-                          nullable: true
-                      required:
-                        - id
-                        - companyId
-                        - name
-                    description: Array of solution objects
-                  pagination:
-                    type: object
-                    properties:
-                      page:
-                        type: number
-                      limit:
-                        type: number
-                      total:
-                        type: number
-                      totalPages:
-                        type: number
-                    required:
-                      - page
-                      - limit
-                      - total
-                      - totalPages
-                    description: Pagination metadata
-                required:
-                  - data
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    companyId:
+                      type: string
+                      format: uuid
+                    name:
+                      type: string
+                    description:
+                      type: string
+                      nullable: true
+                    sku:
+                      type: string
+                      nullable: true
+                    status:
+                      type: string
+                    category:
+                      type: string
+                      nullable: true
+                      enum: *a14
+                      description: "Classification: repair / clean / other"
+                    repairType:
+                      type: string
+                      nullable: true
+                      description: Repair type (free-text)
+                    variant:
+                      type: string
+                      nullable: true
+                      description: Variant label
+                    createdAt:
+                      type: string
+                      nullable: true
+                    updatedAt:
+                      type: string
+                      nullable: true
+                    price:
+                      type: number
+                      nullable: true
+                      description: The solution's own default price
+                    itemPrice:
+                      type: number
+                      nullable: true
+                      description: Per-item price override for this solution on this service item (null → use the solution price)
+                  required:
+                    - id
+                    - companyId
+                    - name
   /solutions/for-service-record:
     get:
       summary: List solutions for a service record
@@ -33690,6 +35032,19 @@ paths:
                           nullable: true
                         status:
                           type: string
+                        category:
+                          type: string
+                          nullable: true
+                          enum: *a14
+                          description: "Classification: repair / clean / other"
+                        repairType:
+                          type: string
+                          nullable: true
+                          description: Repair type (free-text)
+                        variant:
+                          type: string
+                          nullable: true
+                          description: Variant label
                         createdAt:
                           type: string
                           nullable: true
@@ -33720,6 +35075,55 @@ paths:
                     description: Pagination metadata
                 required:
                   - data
+  /solutions/item-prices:
+    get:
+      summary: List per-service-item prices for a solution
+      description: Returns every service item the solution is linked to, each with the per-item price override (`itemPrice`) and the solution default (`defaultPrice`)
+      tags:
+        - Solutions
+      parameters:
+        - schema:
+            type: string
+            format: uuid
+            description: Solution to list per-service-item prices for
+          required: true
+          description: Solution to list per-service-item prices for
+          name: solutionId
+          in: query
+      responses:
+        "200":
+          description: List of per-service-item prices for the solution
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    serviceItemId:
+                      type: string
+                      format: uuid
+                      description: Linked service item ID
+                    serviceItemName:
+                      type: string
+                      description: Service item (make/model) name
+                    serviceId:
+                      type: string
+                      format: uuid
+                      description: Service the item belongs to
+                    itemPrice:
+                      type: number
+                      nullable: true
+                      description: Per-item price override on this link (null → falls back to the solution price)
+                    defaultPrice:
+                      type: number
+                      description: The solution's own default price
+                  required:
+                    - serviceItemId
+                    - serviceItemName
+                    - serviceId
+                    - itemPrice
+                    - defaultPrice
   /solutions/link-service-item:
     post:
       summary: Link solution to service item
@@ -33744,6 +35148,10 @@ paths:
                   type: string
                   format: uuid
                   description: Service the item belongs to
+                price:
+                  type: number
+                  minimum: 0
+                  description: Per-item price override for this solution on this service item (null → falls back to the solution price)
               required:
                 - serviceItemId
                 - solutionId
@@ -33812,6 +35220,94 @@ paths:
       responses:
         "200":
           description: Link removed
+  /solutions/set-service-item-price:
+    post:
+      summary: Set per-item solution price
+      description: Set the per-item price override for a solution already linked to a service item
+      tags:
+        - Solutions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                serviceItemId:
+                  type: string
+                  format: uuid
+                  description: Service item the solution is linked to
+                solutionId:
+                  type: string
+                  format: uuid
+                  description: Linked solution to set the per-item price for
+                serviceId:
+                  type: string
+                  format: uuid
+                  description: Service the item belongs to
+                price:
+                  type: number
+                  minimum: 0
+                  description: Per-item price for this solution on this service item
+              required:
+                - serviceItemId
+                - solutionId
+                - serviceId
+                - price
+      responses:
+        "200":
+          description: Updated service item solution (with itemPrice)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  companyId:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  description:
+                    type: string
+                    nullable: true
+                  sku:
+                    type: string
+                    nullable: true
+                  status:
+                    type: string
+                  category:
+                    type: string
+                    nullable: true
+                    enum: *a14
+                    description: "Classification: repair / clean / other"
+                  repairType:
+                    type: string
+                    nullable: true
+                    description: Repair type (free-text)
+                  variant:
+                    type: string
+                    nullable: true
+                    description: Variant label
+                  createdAt:
+                    type: string
+                    nullable: true
+                  updatedAt:
+                    type: string
+                    nullable: true
+                  price:
+                    type: number
+                    nullable: true
+                    description: The solution's own default price
+                  itemPrice:
+                    type: number
+                    nullable: true
+                    description: Per-item price override for this solution on this service item (null → use the solution price)
+                required:
+                  - id
+                  - companyId
+                  - name
   /inventory/products:
     get:
       summary: List products
@@ -33841,7 +35337,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a10
+            enum: *a11
             default: desc
           required: false
           name: sortOrder
@@ -33982,7 +35478,7 @@ paths:
                   description: Optional category or family label used for grouping and filters
                 status:
                   type: string
-                  enum: *a13
+                  enum: *a15
                   default: DRAFT
                   description: Initial publication status
                 minStockLevel:
@@ -34174,7 +35670,7 @@ paths:
                   description: Updated base price
                 status:
                   type: string
-                  enum: *a13
+                  enum: *a15
                   description: Updated publication status
                 minStockLevel:
                   type: integer
@@ -34302,7 +35798,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a13
+            enum: *a15
             description: Filter products by publication status
           required: false
           description: Filter products by publication status
@@ -34325,7 +35821,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a14
+            enum: *a16
             description: Filter by computed stock level bucket
           required: false
           description: Filter by computed stock level bucket
@@ -34765,7 +36261,7 @@ paths:
       parameters:
         - schema:
             type: string
-            enum: *a13
+            enum: *a15
             description: Publication status to filter by
           required: true
           description: Publication status to filter by
@@ -35230,7 +36726,7 @@ paths:
       parameters:
         - schema:
             type: string
-            enum: *a13
+            enum: *a15
             description: Publication status of a product in the inventory catalogue
           required: false
           description: Publication status of a product in the inventory catalogue
@@ -35400,7 +36896,7 @@ paths:
                   description: IDs of products whose status should be updated
                 status:
                   type: string
-                  enum: *a13
+                  enum: *a15
                   description: New status applied to all provided products
               required:
                 - productIds
@@ -35782,7 +37278,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a10
+            enum: *a11
             default: desc
           required: false
           name: sortOrder
@@ -36234,7 +37730,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a10
+            enum: *a11
             default: desc
           required: false
           name: sortOrder
@@ -36942,7 +38438,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a10
+            enum: *a11
             default: desc
           required: false
           name: sortOrder
@@ -37038,7 +38534,7 @@ paths:
                   format: uuid
                 type:
                   type: string
-                  enum: *a43
+                  enum: *a47
                   default: EMAIL
                 subject:
                   type: string
@@ -37049,7 +38545,7 @@ paths:
                   minLength: 1
                 status:
                   type: string
-                  enum: *a44
+                  enum: *a48
                   default: DRAFT
                 scheduledAt:
                   anyOf:
@@ -37214,7 +38710,7 @@ paths:
                   format: uuid
                 type:
                   type: string
-                  enum: *a45
+                  enum: *a49
                 subject:
                   type: string
                   minLength: 1
@@ -37224,7 +38720,7 @@ paths:
                   minLength: 1
                 status:
                   type: string
-                  enum: *a46
+                  enum: *a50
                 scheduledAt:
                   anyOf:
                     - type: string
@@ -37620,7 +39116,7 @@ paths:
               properties:
                 status:
                   type: string
-                  enum: *a15
+                  enum: *a17
                   description: New status to set on the communication
               required:
                 - status
@@ -37758,7 +39254,7 @@ paths:
                   description: List of communication IDs to update
                 status:
                   type: string
-                  enum: *a15
+                  enum: *a17
                   description: New status to apply to all specified communications
               required:
                 - communicationIds
@@ -37899,7 +39395,7 @@ paths:
       parameters:
         - schema:
             type: string
-            enum: *a15
+            enum: *a17
             description: Communication status to filter by
           required: true
           description: Communication status to filter by
@@ -38822,6 +40318,89 @@ paths:
                 required:
                   - success
                   - data
+  /email-logs:
+    get:
+      summary: List sent emails
+      description: Sent emails linked to a customer and/or service record, newest first. Powers the Correspondence tab.
+      tags:
+        - Email Templates
+      parameters:
+        - schema:
+            type: string
+            description: Only emails linked to this customer
+          required: false
+          description: Only emails linked to this customer
+          name: customerId
+          in: query
+        - schema:
+            type: string
+            description: Only emails linked to this service record
+          required: false
+          description: Only emails linked to this service record
+          name: serviceRecordId
+          in: query
+      responses:
+        "200":
+          description: List of sent emails
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    subject:
+                      type: string
+                    to:
+                      type: string
+                      description: Recipient address
+                    fromEmail:
+                      type: string
+                      description: Tenant sender identity (used as Reply-To)
+                    fromName:
+                      type: string
+                      nullable: true
+                      description: Sender display name, from the payload snapshot
+                    status:
+                      type: string
+                      description: SENT or DELIVERED — failures are not surfaced as correspondence
+                    templateId:
+                      type: string
+                    templateName:
+                      type: string
+                      nullable: true
+                    serviceRecordId:
+                      type: string
+                      nullable: true
+                    customerId:
+                      type: string
+                      nullable: true
+                    bodyHtml:
+                      type: string
+                      nullable: true
+                      description: Body as actually sent; null for emails predating body capture
+                    bodyText:
+                      type: string
+                      nullable: true
+                    sentAt:
+                      type: string
+                      description: ISO timestamp the email was logged
+                  required:
+                    - id
+                    - subject
+                    - to
+                    - fromEmail
+                    - fromName
+                    - status
+                    - templateId
+                    - templateName
+                    - serviceRecordId
+                    - customerId
+                    - bodyHtml
+                    - bodyText
+                    - sentAt
   /email-templates:
     get:
       summary: List email templates
@@ -38838,7 +40417,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a47
+            enum: *a51
             description: Filter by system template flag
           required: false
           description: Filter by system template flag
@@ -38846,7 +40425,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a48
+            enum: *a52
             description: Filter by active status
           required: false
           description: Filter by active status
@@ -38929,7 +40508,7 @@ paths:
                   description: Template display name
                 category:
                   type: string
-                  enum: *a16
+                  enum: *a18
                   description: Template category
                 subjectTemplate:
                   type: string
@@ -39073,7 +40652,7 @@ paths:
                   description: Template display name
                 category:
                   type: string
-                  enum: *a16
+                  enum: *a18
                   description: Template category
                 subjectTemplate:
                   type: string
@@ -39598,7 +41177,7 @@ paths:
                       description: Optional sender identity ID
                     toType:
                       type: string
-                      enum: *a49
+                      enum: *a53
                       description: Recipient type
                     toFieldPath:
                       type: string
@@ -40015,7 +41594,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a50
+            enum: *a54
             description: Sort direction
           required: false
           description: Sort direction
@@ -40124,7 +41703,7 @@ paths:
                           description: Same as id; explicit for invitation actions
                         relationshipType:
                           type: string
-                          enum: *a17
+                          enum: *a19
                           description: Whether the session company invited or was invited
                       required:
                         - id
@@ -40794,7 +42373,7 @@ paths:
       parameters:
         - schema:
             type: string
-            enum: *a51
+            enum: *a55
             description: If false, includes inactive locations; default true
           required: false
           description: If false, includes inactive locations; default true
@@ -41322,6 +42901,1107 @@ paths:
           description: Access denied — location belongs to another company
         "404":
           description: Location not found
+  /retailers:
+    get:
+      summary: List retailers
+      description: List the shops that sold this company's customers their items. Use activeOnly=true for ACTIVE only; search matches name or email.
+      tags:
+        - Retailers
+      parameters:
+        - schema:
+            type: string
+            enum: *a56
+            description: If true, only ACTIVE retailers. Default false (all non-deleted).
+          required: false
+          description: If true, only ACTIVE retailers. Default false (all non-deleted).
+          name: activeOnly
+          in: query
+        - schema:
+            type: string
+            maxLength: 200
+            description: Case-insensitive match on name or email
+          required: false
+          description: Case-insensitive match on name or email
+          name: search
+          in: query
+      responses:
+        "200":
+          description: List of retailers
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  retailers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        companyId:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                        email:
+                          type: string
+                        phone:
+                          type: string
+                          nullable: true
+                        status:
+                          type: string
+                        hasLogin:
+                          type: boolean
+                        invitePending:
+                          type: boolean
+                        addressId:
+                          type: string
+                          nullable: true
+                          format: uuid
+                        address:
+                          type: object
+                          nullable: true
+                          properties:
+                            id:
+                              type: string
+                              format: uuid
+                            street:
+                              type: string
+                            street2:
+                              type: string
+                              nullable: true
+                            city:
+                              type: string
+                            postcode:
+                              type: string
+                            state:
+                              type: string
+                              nullable: true
+                            country:
+                              type: string
+                        createdAt:
+                          type: string
+                          nullable: true
+                        updatedAt:
+                          type: string
+                          nullable: true
+                      required:
+                        - id
+                        - companyId
+                        - name
+                        - email
+                        - status
+                        - hasLogin
+                        - invitePending
+                        - createdAt
+                        - updatedAt
+                required:
+                  - retailers
+    post:
+      summary: Create retailer
+      description: Create a retailer, optionally with an address. The retailer has no password until an invite is consumed, so `hasLogin` is false.
+      tags:
+        - Retailers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                  maxLength: 200
+                email:
+                  type: string
+                  format: email
+                phone:
+                  type: string
+                  nullable: true
+                  maxLength: 20
+                address:
+                  type: object
+                  properties:
+                    street:
+                      type: string
+                      minLength: 1
+                    street2:
+                      type: string
+                      nullable: true
+                    city:
+                      type: string
+                      minLength: 1
+                    postcode:
+                      type: string
+                      minLength: 1
+                    state:
+                      type: string
+                      nullable: true
+                    country:
+                      type: string
+                      minLength: 1
+                  required:
+                    - street
+                    - city
+                    - postcode
+                    - country
+              required:
+                - name
+                - email
+      responses:
+        "201":
+          description: Retailer created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  companyId:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  email:
+                    type: string
+                  phone:
+                    type: string
+                    nullable: true
+                  status:
+                    type: string
+                  hasLogin:
+                    type: boolean
+                  invitePending:
+                    type: boolean
+                  addressId:
+                    type: string
+                    nullable: true
+                    format: uuid
+                  address:
+                    type: object
+                    nullable: true
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      street:
+                        type: string
+                      street2:
+                        type: string
+                        nullable: true
+                      city:
+                        type: string
+                      postcode:
+                        type: string
+                      state:
+                        type: string
+                        nullable: true
+                      country:
+                        type: string
+                  createdAt:
+                    type: string
+                    nullable: true
+                  updatedAt:
+                    type: string
+                    nullable: true
+                required:
+                  - id
+                  - companyId
+                  - name
+                  - email
+                  - status
+                  - hasLogin
+                  - invitePending
+                  - createdAt
+                  - updatedAt
+  /retailers/{retailerId}:
+    get:
+      summary: Get retailer by ID
+      description: Returns a single retailer by ID. 404 if it belongs to another company.
+      tags:
+        - Retailers
+      parameters:
+        - schema:
+            type: string
+            format: uuid
+          required: true
+          name: retailerId
+          in: path
+      responses:
+        "200":
+          description: Retailer details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  companyId:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  email:
+                    type: string
+                  phone:
+                    type: string
+                    nullable: true
+                  status:
+                    type: string
+                  hasLogin:
+                    type: boolean
+                  invitePending:
+                    type: boolean
+                  addressId:
+                    type: string
+                    nullable: true
+                    format: uuid
+                  address:
+                    type: object
+                    nullable: true
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      street:
+                        type: string
+                      street2:
+                        type: string
+                        nullable: true
+                      city:
+                        type: string
+                      postcode:
+                        type: string
+                      state:
+                        type: string
+                        nullable: true
+                      country:
+                        type: string
+                  createdAt:
+                    type: string
+                    nullable: true
+                  updatedAt:
+                    type: string
+                    nullable: true
+                required:
+                  - id
+                  - companyId
+                  - name
+                  - email
+                  - status
+                  - hasLogin
+                  - invitePending
+                  - createdAt
+                  - updatedAt
+        "404":
+          description: Retailer not found
+    put:
+      summary: Update retailer
+      description: "Update a retailer and/or its address. An address change is copy-on-write: a NEW address row is created and the retailer repointed, so historical shipments keep the address they were actually sent to."
+      tags:
+        - Retailers
+      parameters:
+        - schema:
+            type: string
+            format: uuid
+          required: true
+          name: retailerId
+          in: path
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                  maxLength: 200
+                email:
+                  type: string
+                  format: email
+                phone:
+                  type: string
+                  nullable: true
+                  maxLength: 20
+                status:
+                  type: string
+                  enum: *a57
+                address:
+                  type: object
+                  properties:
+                    street:
+                      type: string
+                      minLength: 1
+                    street2:
+                      type: string
+                      nullable: true
+                    city:
+                      type: string
+                      minLength: 1
+                    postcode:
+                      type: string
+                      minLength: 1
+                    state:
+                      type: string
+                      nullable: true
+                    country:
+                      type: string
+                      minLength: 1
+                  required:
+                    - street
+                    - city
+                    - postcode
+                    - country
+      responses:
+        "200":
+          description: Retailer updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  companyId:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  email:
+                    type: string
+                  phone:
+                    type: string
+                    nullable: true
+                  status:
+                    type: string
+                  hasLogin:
+                    type: boolean
+                  invitePending:
+                    type: boolean
+                  addressId:
+                    type: string
+                    nullable: true
+                    format: uuid
+                  address:
+                    type: object
+                    nullable: true
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      street:
+                        type: string
+                      street2:
+                        type: string
+                        nullable: true
+                      city:
+                        type: string
+                      postcode:
+                        type: string
+                      state:
+                        type: string
+                        nullable: true
+                      country:
+                        type: string
+                  createdAt:
+                    type: string
+                    nullable: true
+                  updatedAt:
+                    type: string
+                    nullable: true
+                required:
+                  - id
+                  - companyId
+                  - name
+                  - email
+                  - status
+                  - hasLogin
+                  - invitePending
+                  - createdAt
+                  - updatedAt
+        "404":
+          description: Retailer not found
+    delete:
+      summary: Delete retailer
+      description: Hard-deletes the retailer when nothing references it. When service records or shipments reference it, the row is RETAINED for history and marked deleted + INACTIVE instead. `softDeleted` says which happened. Service grants do not count — they are config, not history.
+      tags:
+        - Retailers
+      parameters:
+        - schema:
+            type: string
+            format: uuid
+          required: true
+          name: retailerId
+          in: path
+      responses:
+        "200":
+          description: Retailer deleted (hard) or retained for history (soft)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  softDeleted:
+                    type: boolean
+                required:
+                  - softDeleted
+        "404":
+          description: Retailer not found
+  /retailers/{retailerId}/invite:
+    post:
+      summary: Invite a retailer to set their password
+      description: Emails the retailer a link to set a password and access the retailer portal. Valid for 7 days. Re-sending revokes any link already outstanding, so exactly one is live at a time. Fails with 400 if the retailer is INACTIVE or if no active template is assigned to the RETAILER_INVITATION notification.
+      tags:
+        - Retailers
+      parameters:
+        - schema:
+            type: string
+            format: uuid
+          required: true
+          name: retailerId
+          in: path
+      responses:
+        "200":
+          description: Invite sent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                    description: Address the invite was sent to
+                  expiresAt:
+                    type: string
+                    nullable: true
+                    description: When the link stops working
+                required:
+                  - email
+                  - expiresAt
+        "400":
+          description: Retailer is inactive, or the email could not be sent
+        "404":
+          description: Retailer not found
+  /auth/retailer/forgot-password:
+    post:
+      summary: Request a retailer password reset (public)
+      description: "Emails a reset link valid for 1 hour. Always returns success regardless of whether the retailer exists, is active, or has ever been invited — an unauthenticated caller must not be able to enumerate accounts. A retailer who has never consumed an invite receives nothing: the invite is how access is granted."
+      tags:
+        - Retailers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                companyApiName:
+                  type: string
+                  minLength: 1
+              required:
+                - email
+                - companyApiName
+      responses:
+        "200":
+          description: Request accepted (says nothing about whether an email was sent)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    enum:
+                      - true
+                required:
+                  - success
+  /auth/retailer/validate-token:
+    get:
+      summary: Validate a retailer invite or reset token (public)
+      description: Resolves a token so the set-password page can greet the retailer and brand itself before any password is typed. 404 for unknown, expired, non-retailer, or deactivated — the page shows one "no longer valid" state for all of them.
+      tags:
+        - Retailers
+      parameters:
+        - schema:
+            type: string
+            minLength: 1
+          required: true
+          name: token
+          in: query
+      responses:
+        "200":
+          description: Token is valid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                  retailerName:
+                    type: string
+                  companyName:
+                    type: string
+                  companyApiName:
+                    type: string
+                  purpose:
+                    type: string
+                    enum: *a58
+                    description: "Drives the page copy: first-time setup vs a reset"
+                required:
+                  - email
+                  - retailerName
+                  - companyName
+                  - companyApiName
+                  - purpose
+        "404":
+          description: Link is no longer valid
+  /auth/retailer/set-password:
+    post:
+      summary: Set a retailer password using an invite or reset token (public)
+      description: Consumes the token (single-use) and writes the password. Returns the email and companyApiName so the caller can sign in immediately with the credentials just chosen.
+      tags:
+        - Retailers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  minLength: 1
+                password:
+                  type: string
+                  minLength: 8
+              required:
+                - token
+                - password
+      responses:
+        "200":
+          description: Password set
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                  companyApiName:
+                    type: string
+                required:
+                  - email
+                  - companyApiName
+        "400":
+          description: Link is invalid or expired, or the password is too short
+  /retailer-portal/me:
+    get:
+      summary: Get the authenticated retailer
+      description: The retailer resolved from the session. Requires a retailer principal; any other principal gets 403.
+      tags:
+        - Retailer Portal
+      responses:
+        "200":
+          description: The retailer
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  email:
+                    type: string
+                  phone:
+                    type: string
+                    nullable: true
+                  address:
+                    type: object
+                    nullable: true
+                    properties:
+                      street:
+                        type: string
+                        nullable: true
+                      street2:
+                        type: string
+                        nullable: true
+                      city:
+                        type: string
+                        nullable: true
+                      postcode:
+                        type: string
+                        nullable: true
+                      state:
+                        type: string
+                        nullable: true
+                      country:
+                        type: string
+                        nullable: true
+                  company:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      name:
+                        type: string
+                      apiName:
+                        type: string
+                        nullable: true
+                    required:
+                      - id
+                      - name
+                required:
+                  - id
+                  - name
+                  - email
+                  - company
+        "403":
+          description: Retailer authentication required
+        "404":
+          description: Retailer not found (deleted or deactivated)
+    patch:
+      summary: Update your own retailer details
+      description: "Change the delivery address, sign-in email or phone. The address is copy-on-write: a NEW address row is created and the retailer repointed, so parcels already sent keep the address they actually went to. A notice is emailed to the PREVIOUS address after any change."
+      tags:
+        - Retailer Portal
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                phone:
+                  type: string
+                  nullable: true
+                  maxLength: 20
+                address:
+                  type: object
+                  properties:
+                    street:
+                      type: string
+                      minLength: 1
+                    street2:
+                      type: string
+                      nullable: true
+                    city:
+                      type: string
+                      minLength: 1
+                    postcode:
+                      type: string
+                      minLength: 1
+                    state:
+                      type: string
+                      nullable: true
+                    country:
+                      type: string
+                      minLength: 1
+                  required:
+                    - street
+                    - city
+                    - postcode
+                    - country
+              additionalProperties: false
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                  email:
+                    type: string
+                  phone:
+                    type: string
+                    nullable: true
+                  address:
+                    type: object
+                    nullable: true
+                    properties:
+                      street:
+                        type: string
+                        nullable: true
+                      street2:
+                        type: string
+                        nullable: true
+                      city:
+                        type: string
+                        nullable: true
+                      postcode:
+                        type: string
+                        nullable: true
+                      state:
+                        type: string
+                        nullable: true
+                      country:
+                        type: string
+                        nullable: true
+                  company:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      name:
+                        type: string
+                      apiName:
+                        type: string
+                        nullable: true
+                    required:
+                      - id
+                      - name
+                required:
+                  - id
+                  - name
+                  - email
+                  - company
+        "400":
+          description: Invalid update
+        "403":
+          description: Retailer authentication required
+        "404":
+          description: Retailer not found
+  /retailer-portal/service-records:
+    get:
+      summary: List the records this retailer may see
+      description: "Records the retailer is currently linked to, OR has ever had a shipment addressed to it. The service grant does NOT widen this: it gates which retailers staff may link, and removing it hides nothing already linked."
+      tags:
+        - Retailer Portal
+      responses:
+        "200":
+          description: Service records
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  serviceRecords:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                          nullable: true
+                        status:
+                          type: string
+                        due_date:
+                          type: string
+                          nullable: true
+                        createdAt:
+                          type: string
+                          nullable: true
+                        customer:
+                          type: object
+                          nullable: true
+                          properties:
+                            firstName:
+                              type: string
+                              nullable: true
+                            lastName:
+                              type: string
+                              nullable: true
+                        shipments:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                                format: uuid
+                              type:
+                                type: string
+                              status:
+                                type: string
+                              scheduledDate:
+                                type: string
+                                nullable: true
+                              courierTrackingNumber:
+                                type: string
+                                nullable: true
+                            required:
+                              - id
+                              - type
+                              - status
+                      required:
+                        - id
+                        - status
+                        - createdAt
+                        - shipments
+                required:
+                  - serviceRecords
+        "403":
+          description: Retailer authentication required
+  /retailer-portal/service-records/{recordId}:
+    get:
+      summary: Get one record this retailer may see
+      description: Deliberately 404s rather than 403s for a record outside the retailer's boundary, so record ids cannot be probed.
+      tags:
+        - Retailer Portal
+      parameters:
+        - schema:
+            type: string
+            format: uuid
+          required: true
+          name: recordId
+          in: path
+      responses:
+        "200":
+          description: The service record
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                    nullable: true
+                  status:
+                    type: string
+                  due_date:
+                    type: string
+                    nullable: true
+                  createdAt:
+                    type: string
+                    nullable: true
+                  customer:
+                    type: object
+                    nullable: true
+                    properties:
+                      firstName:
+                        type: string
+                        nullable: true
+                      lastName:
+                        type: string
+                        nullable: true
+                  shipments:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        type:
+                          type: string
+                        status:
+                          type: string
+                        scheduledDate:
+                          type: string
+                          nullable: true
+                        courierTrackingNumber:
+                          type: string
+                          nullable: true
+                      required:
+                        - id
+                        - type
+                        - status
+                required:
+                  - id
+                  - status
+                  - createdAt
+                  - shipments
+        "403":
+          description: Retailer authentication required
+        "404":
+          description: Not found, or outside this retailer's boundary
+  /retailer-portal/service-records/{recordId}/notes:
+    get:
+      summary: List the notes this retailer may see on a record
+      description: Notes the retailer wrote, plus notes staff explicitly shared with it. Staff-only (INTERNAL) notes are never returned — including every note written before retailers existed. 404s for a record outside the retailer's boundary.
+      tags:
+        - Retailer Portal
+      parameters:
+        - schema:
+            type: string
+            format: uuid
+          required: true
+          name: recordId
+          in: path
+      responses:
+        "200":
+          description: Notes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  notes:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        body:
+                          type: string
+                        createdAt:
+                          type: string
+                          nullable: true
+                        source:
+                          type: string
+                          nullable: true
+                        authorRetailer:
+                          type: object
+                          nullable: true
+                          properties:
+                            id:
+                              type: string
+                              format: uuid
+                            name:
+                              type: string
+                          required:
+                            - id
+                            - name
+                        author:
+                          type: object
+                          nullable: true
+                          properties:
+                            firstName:
+                              type: string
+                              nullable: true
+                            lastName:
+                              type: string
+                              nullable: true
+                        company:
+                          type: object
+                          nullable: true
+                          properties:
+                            id:
+                              type: string
+                              format: uuid
+                            name:
+                              type: string
+                          required:
+                            - id
+                            - name
+                      required:
+                        - id
+                        - body
+                        - createdAt
+                required:
+                  - notes
+        "403":
+          description: Retailer authentication required
+        "404":
+          description: Not found, or outside this retailer's boundary
+    post:
+      summary: Add a note to a record as this retailer
+      description: The retailer's own notes are always visible to it and to staff. The authoring company is resolved from the record, never from the request.
+      tags:
+        - Retailer Portal
+      parameters:
+        - schema:
+            type: string
+            format: uuid
+          required: true
+          name: recordId
+          in: path
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                body:
+                  type: string
+                  minLength: 1
+                  maxLength: 5000
+              required:
+                - body
+              additionalProperties: false
+      responses:
+        "201":
+          description: Note created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  body:
+                    type: string
+                  createdAt:
+                    type: string
+                    nullable: true
+                  source:
+                    type: string
+                    nullable: true
+                  authorRetailer:
+                    type: object
+                    nullable: true
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      name:
+                        type: string
+                    required:
+                      - id
+                      - name
+                  author:
+                    type: object
+                    nullable: true
+                    properties:
+                      firstName:
+                        type: string
+                        nullable: true
+                      lastName:
+                        type: string
+                        nullable: true
+                  company:
+                    type: object
+                    nullable: true
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      name:
+                        type: string
+                    required:
+                      - id
+                      - name
+                required:
+                  - id
+                  - body
+                  - createdAt
+        "400":
+          description: Invalid note
+        "403":
+          description: Retailer authentication required
+        "404":
+          description: Not found, or outside this retailer's boundary
   /audit/logs:
     get:
       summary: List audit logs
@@ -42236,7 +44916,7 @@ paths:
               properties:
                 companyType:
                   type: string
-                  enum: *a52
+                  enum: *a59
                   description: Type of company being registered
                 companyDetails:
                   type: object
@@ -42462,7 +45142,7 @@ paths:
                     description: Unique identifier of the subscription record.
                   plan:
                     type: string
-                    enum: *a53
+                    enum: *a60
                     description: Active subscription plan tier.
                   status:
                     type: string
@@ -42503,11 +45183,11 @@ paths:
               properties:
                 plan:
                   type: string
-                  enum: *a54
+                  enum: *a61
                   description: Target subscription plan tier to switch to.
                 status:
                   type: string
-                  enum: *a55
+                  enum: *a62
                   description: Optional new subscription status to set.
                 currentPeriodStart:
                   type: string
@@ -42538,7 +45218,7 @@ paths:
                     description: Unique identifier of the subscription record.
                   plan:
                     type: string
-                    enum: *a53
+                    enum: *a60
                     description: Active subscription plan tier.
                   status:
                     type: string
@@ -42708,7 +45388,7 @@ paths:
                         description: Unique identifier of the subscription record.
                       plan:
                         type: string
-                        enum: *a53
+                        enum: *a60
                         description: Active subscription plan tier.
                       status:
                         type: string
@@ -42923,7 +45603,7 @@ paths:
       parameters:
         - schema:
             type: string
-            enum: *a56
+            enum: *a63
             description: Include soft-deleted forms
           required: false
           description: Include soft-deleted forms
@@ -42962,7 +45642,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a57
+            enum: *a64
             description: Sort direction
           required: false
           description: Sort direction
@@ -43063,7 +45743,7 @@ paths:
                   description: Optional description
                 status:
                   type: string
-                  enum: *a58
+                  enum: *a65
                   description: Initial form status
               required:
                 - name
@@ -43994,7 +46674,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a59
+            enum: *a66
             description: If true, return all company nodes
           required: false
           description: If true, return all company nodes
@@ -44394,7 +47074,7 @@ paths:
                           type: string
                         type:
                           type: string
-                          enum: *a18
+                          enum: *a20
                         isDefault:
                           type: boolean
                         isVerified:
@@ -44448,7 +47128,7 @@ paths:
                   format: email
                 type:
                   type: string
-                  enum: *a60
+                  enum: *a67
                 isDefault:
                   type: boolean
                 gmailIntegrationConnectionId:
@@ -44481,7 +47161,7 @@ paths:
                     type: string
                   type:
                     type: string
-                    enum: *a18
+                    enum: *a20
                   isDefault:
                     type: boolean
                   isVerified:
@@ -44544,7 +47224,7 @@ paths:
                     type: string
                   type:
                     type: string
-                    enum: *a18
+                    enum: *a20
                   isDefault:
                     type: boolean
                   isVerified:
@@ -44603,7 +47283,7 @@ paths:
                   format: email
                 type:
                   type: string
-                  enum: *a61
+                  enum: *a68
                 isDefault:
                   type: boolean
                 isVerified:
@@ -44634,7 +47314,7 @@ paths:
                     type: string
                   type:
                     type: string
-                    enum: *a18
+                    enum: *a20
                   isDefault:
                     type: boolean
                   isVerified:
@@ -44831,7 +47511,7 @@ paths:
       parameters:
         - schema:
             type: string
-            enum: *a62
+            enum: *a69
             description: Include soft-deleted items
           required: false
           description: Include soft-deleted items
@@ -44858,6 +47538,12 @@ paths:
                           format: uuid
                         name:
                           type: string
+                        brand:
+                          type: string
+                          nullable: true
+                        model:
+                          type: string
+                          nullable: true
                         description:
                           type: string
                           nullable: true
@@ -44895,6 +47581,14 @@ paths:
                   type: string
                   minLength: 1
                   maxLength: 200
+                brand:
+                  type: string
+                  nullable: true
+                  maxLength: 120
+                model:
+                  type: string
+                  nullable: true
+                  maxLength: 200
                 description:
                   type: string
                   maxLength: 1000
@@ -44904,8 +47598,6 @@ paths:
                 apiName:
                   type: string
                   maxLength: 100
-              required:
-                - name
       responses:
         "201":
           description: Service item created
@@ -44922,6 +47614,12 @@ paths:
                     format: uuid
                   name:
                     type: string
+                  brand:
+                    type: string
+                    nullable: true
+                  model:
+                    type: string
+                    nullable: true
                   description:
                     type: string
                     nullable: true
@@ -44978,6 +47676,12 @@ paths:
                           format: uuid
                         name:
                           type: string
+                        brand:
+                          type: string
+                          nullable: true
+                        model:
+                          type: string
+                          nullable: true
                         description:
                           type: string
                           nullable: true
@@ -45029,6 +47733,12 @@ paths:
                     format: uuid
                   name:
                     type: string
+                  brand:
+                    type: string
+                    nullable: true
+                  model:
+                    type: string
+                    nullable: true
                   description:
                     type: string
                     nullable: true
@@ -45071,6 +47781,14 @@ paths:
                   type: string
                   minLength: 1
                   maxLength: 200
+                brand:
+                  type: string
+                  nullable: true
+                  maxLength: 120
+                model:
+                  type: string
+                  nullable: true
+                  maxLength: 200
                 description:
                   type: string
                   maxLength: 1000
@@ -45093,6 +47811,12 @@ paths:
                     format: uuid
                   name:
                     type: string
+                  brand:
+                    type: string
+                    nullable: true
+                  model:
+                    type: string
+                    nullable: true
                   description:
                     type: string
                     nullable: true
@@ -45505,6 +48229,19 @@ paths:
                           nullable: true
                         status:
                           type: string
+                        category:
+                          type: string
+                          nullable: true
+                          enum: *a14
+                          description: "Classification: repair / clean / other"
+                        repairType:
+                          type: string
+                          nullable: true
+                          description: Repair type (free-text)
+                        variant:
+                          type: string
+                          nullable: true
+                          description: Variant label
                         createdAt:
                           type: string
                           nullable: true
@@ -45624,7 +48361,7 @@ paths:
       parameters:
         - schema:
             type: string
-            enum: *a63
+            enum: *a70
             description: Include soft-deleted custom fields
           required: false
           description: Include soft-deleted custom fields
@@ -45702,7 +48439,7 @@ paths:
                   maxLength: 200
                 type:
                   type: string
-                  enum: *a19
+                  enum: *a21
                 required:
                   type: boolean
                   default: false
@@ -45834,7 +48571,7 @@ paths:
                   maxLength: 200
                 type:
                   type: string
-                  enum: *a19
+                  enum: *a21
                 required:
                   type: boolean
                 options:
@@ -45998,7 +48735,7 @@ paths:
       parameters:
         - schema:
             type: string
-            enum: *a20
+            enum: *a22
             description: Filter by category
           required: false
           description: Filter by category
@@ -46006,7 +48743,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a64
+            enum: *a71
             description: Filter by active status
           required: false
           description: Filter by active status
@@ -46113,7 +48850,7 @@ paths:
                   description: Human-readable template name
                 category:
                   type: string
-                  enum: *a20
+                  enum: *a22
                   description: Template category
                 subjectTemplate:
                   type: string
@@ -46306,7 +49043,7 @@ paths:
                   description: Human-readable template name
                 category:
                   type: string
-                  enum: *a20
+                  enum: *a22
                   description: Template category
                 subjectTemplate:
                   type: string
@@ -48961,7 +51698,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: &a65
+            enum: &a72
               - day
               - week
               - month
@@ -48970,7 +51707,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: &a66
+            enum: &a73
               - previous
               - none
           required: false
@@ -49069,13 +51806,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a65
+            enum: *a72
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a66
+            enum: *a73
           required: false
           name: compare
           in: query
@@ -49133,13 +51870,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a65
+            enum: *a72
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a66
+            enum: *a73
           required: false
           name: compare
           in: query
@@ -49188,13 +51925,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a65
+            enum: *a72
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a66
+            enum: *a73
           required: false
           name: compare
           in: query
@@ -49243,13 +51980,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a65
+            enum: *a72
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a66
+            enum: *a73
           required: false
           name: compare
           in: query
@@ -49298,13 +52035,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a65
+            enum: *a72
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a66
+            enum: *a73
           required: false
           name: compare
           in: query
@@ -49353,13 +52090,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a65
+            enum: *a72
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a66
+            enum: *a73
           required: false
           name: compare
           in: query
@@ -49415,13 +52152,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a65
+            enum: *a72
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a66
+            enum: *a73
           required: false
           name: compare
           in: query
@@ -49543,13 +52280,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a65
+            enum: *a72
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a66
+            enum: *a73
           required: false
           name: compare
           in: query
@@ -49604,13 +52341,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a65
+            enum: *a72
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a66
+            enum: *a73
           required: false
           name: compare
           in: query
@@ -49669,13 +52406,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a65
+            enum: *a72
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a66
+            enum: *a73
           required: false
           name: compare
           in: query
@@ -49731,13 +52468,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a65
+            enum: *a72
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a66
+            enum: *a73
           required: false
           name: compare
           in: query
@@ -49795,13 +52532,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a65
+            enum: *a72
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a66
+            enum: *a73
           required: false
           name: compare
           in: query
@@ -49823,12 +52560,71 @@ paths:
                       type: number
                     tone:
                       type: string
-                      enum: *a67
+                      enum: *a74
                   required:
                     - key
                     - label
                     - count
                     - tone
+  /slack/channels:
+    get:
+      summary: List Slack channels
+      description: List channels on the company's connected Slack workspace. Empty when Slack is not connected.
+      tags:
+        - Slack
+      responses:
+        "200":
+          description: Slack channels
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SlackChannelsResponse"
+  /slack/users:
+    get:
+      summary: List Slack users
+      description: List human users on the company's connected Slack workspace. Empty when Slack is not connected.
+      tags:
+        - Slack
+      responses:
+        "200":
+          description: Slack users
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SlackUsersResponse"
+  /slack/status:
+    get:
+      summary: Get Slack connection status
+      description: Whether Slack is connected for the company, plus configured channel preferences.
+      tags:
+        - Slack
+      responses:
+        "200":
+          description: Slack status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SlackStatusDto"
+  /slack/preferences:
+    post:
+      summary: Save Slack channel preferences
+      description: Set the channels that receive new-record and support-escalation messages.
+      tags:
+        - Slack
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SaveSlackPreferencesInput"
+      responses:
+        "200":
+          description: Updated Slack status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SlackStatusDto"
+        "400":
+          description: Slack is not connected
   /analytics/company:
     get:
       summary: Get company analytics
@@ -50191,7 +52987,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a21
+            enum: *a23
             default: month
             description: Aggregation grain for charts and time-series (defaults to month)
           required: false
@@ -50234,7 +53030,7 @@ paths:
                         description: Required ISO8601 end date (inclusive) for the reporting window
                       groupBy:
                         type: string
-                        enum: *a21
+                        enum: *a23
                         default: month
                         description: Aggregation grain for charts and time-series (defaults to month)
                     required:
@@ -50504,7 +53300,7 @@ paths:
                           description: Human-readable recommendation detail
                         priority:
                           type: string
-                          enum: *a68
+                          enum: *a75
                           description: Priority level for this recommendation
                       required:
                         - type
@@ -50528,7 +53324,7 @@ paths:
                           description: Alert details and remediation guidance
                         severity:
                           type: string
-                          enum: *a69
+                          enum: *a76
                           description: Severity level for this alert
                       required:
                         - type
@@ -50871,7 +53667,7 @@ paths:
                     description: Identifier of the deleted connection record (matches the supplied connectionId)
                   type:
                     type: string
-                    enum: *a70
+                    enum: *a77
                     description: "Storage type of the removed connection: 'integration' for IntegrationConnection rows, 'auth_account' for legacy AuthAccount-based Gmail connections."
                 required:
                   - success
@@ -50909,7 +53705,7 @@ paths:
                   description: Size of the uploaded file in bytes
                 category:
                   type: string
-                  enum: *a22
+                  enum: *a24
                   default: OTHER
                   description: High-level category used to organise uploaded files
                 fileData:
@@ -50951,7 +53747,7 @@ paths:
                         description: Internal storage key for the uploaded file, used by backend services
                       category:
                         type: string
-                        enum: *a22
+                        enum: *a24
                         description: Category under which the file was stored
                       uploadedAt:
                         type: string
@@ -51523,7 +54319,7 @@ paths:
                   description: Optional DPD account number used for identification and billing
                 action:
                   type: string
-                  enum: *a71
+                  enum: *a78
                   description: When set to 'verify', the endpoint only verifies the credentials and does not persist them. Any other value (or omission) results in saving/updating the credentials.
               required:
                 - apiKey
@@ -52014,7 +54810,7 @@ paths:
                 properties:
                   status:
                     type: string
-                    enum: *a72
+                    enum: *a79
                   timestamp:
                     type: string
                   uptime:
@@ -52060,7 +54856,7 @@ paths:
                 properties:
                   status:
                     type: string
-                    enum: *a72
+                    enum: *a79
                   timestamp:
                     type: string
                   uptime:
