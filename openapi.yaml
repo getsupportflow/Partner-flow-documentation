@@ -11884,6 +11884,10 @@ components:
             - "true"
             - "false"
           description: If false, includes inactive locations; default true
+        serviceRecordId:
+          type: string
+          format: uuid
+          description: Return the locations of the company FULFILLING this record (its assignee, or the caller when unassigned) instead of the caller's own. Requires read access to the record.
     LocationDto:
       type: object
       properties:
@@ -42367,7 +42371,7 @@ paths:
   /locations:
     get:
       summary: List locations
-      description: List company locations (warehouses, offices). Use activeOnly=false to include inactive.
+      description: List company locations (warehouses, offices). Use activeOnly=false to include inactive. Pass serviceRecordId to get the locations of the company fulfilling that record (its assignee, or the caller when unassigned) — the caller must be able to read the record.
       tags:
         - Locations
       parameters:
@@ -42378,6 +42382,14 @@ paths:
           required: false
           description: If false, includes inactive locations; default true
           name: activeOnly
+          in: query
+        - schema:
+            type: string
+            format: uuid
+            description: Return the locations of the company FULFILLING this record (its assignee, or the caller when unassigned) instead of the caller's own. Requires read access to the record.
+          required: false
+          description: Return the locations of the company FULFILLING this record (its assignee, or the caller when unassigned) instead of the caller's own. Requires read access to the record.
+          name: serviceRecordId
           in: query
       responses:
         "200":
@@ -42444,6 +42456,8 @@ paths:
                         - addressId
                 required:
                   - data
+        "404":
+          description: Service record not found or not readable by the caller
     post:
       summary: Create location
       description: Create a new location with address
