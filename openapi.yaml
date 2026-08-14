@@ -3276,6 +3276,13 @@ components:
                   type: boolean
                 orderImportInitialStage:
                   type: string
+            website:
+              type: object
+              properties:
+                orderImportInitialStage:
+                  type: string
+                orderCancelStage:
+                  type: string
         communication:
           type: object
           properties:
