@@ -16755,6 +16755,147 @@ components:
           - label
           - count
           - tone
+    DashboardContributions:
+      type: object
+      properties:
+        total:
+          type: number
+        previous:
+          type: number
+          nullable: true
+        trend:
+          type: array
+          items:
+            type: object
+            properties:
+              label:
+                type: string
+              value:
+                type: number
+            required:
+              - label
+              - value
+        trendPrevious:
+          type: array
+          items:
+            type: object
+            properties:
+              label:
+                type: string
+              value:
+                type: number
+            required:
+              - label
+              - value
+        byCategory:
+          type: array
+          items:
+            type: object
+            properties:
+              key:
+                type: string
+              label:
+                type: string
+              count:
+                type: number
+            required:
+              - key
+              - label
+              - count
+        contributors:
+          type: array
+          items:
+            type: object
+            properties:
+              userId:
+                type: string
+              name:
+                type: string
+              email:
+                type: string
+              count:
+                type: number
+            required:
+              - userId
+              - name
+              - email
+              - count
+        byService:
+          type: array
+          items:
+            type: object
+            properties:
+              serviceId:
+                type: string
+                nullable: true
+              serviceName:
+                type: string
+              count:
+                type: number
+            required:
+              - serviceId
+              - serviceName
+              - count
+        feed:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              createdAt:
+                type: string
+              userId:
+                type: string
+                nullable: true
+              userName:
+                type: string
+                nullable: true
+              action:
+                type: string
+              entityType:
+                type: string
+              entityId:
+                type: string
+              entityName:
+                type: string
+                nullable: true
+              serviceName:
+                type: string
+                nullable: true
+              category:
+                type: string
+              metadata:
+                nullable: true
+              oldValues:
+                nullable: true
+              newValues:
+                nullable: true
+              changedFields:
+                type: array
+                items:
+                  type: string
+            required:
+              - id
+              - createdAt
+              - userId
+              - userName
+              - action
+              - entityType
+              - entityId
+              - entityName
+              - serviceName
+              - category
+              - changedFields
+      required:
+        - total
+        - previous
+        - trend
+        - trendPrevious
+        - byCategory
+        - contributors
+        - byService
+        - feed
     SlackChannelDto:
       type: object
       properties:
@@ -52587,6 +52728,202 @@ paths:
                     - label
                     - count
                     - tone
+  /simple-dashboard/contributions:
+    get:
+      summary: Contributions by person (audit-derived)
+      tags:
+        - Dashboard
+      parameters:
+        - schema:
+            type: string
+          required: false
+          name: serviceId
+          in: query
+        - schema:
+            type: string
+          required: false
+          name: ownerCompanyId
+          in: query
+        - schema:
+            type: string
+          required: false
+          name: startDate
+          in: query
+        - schema:
+            type: string
+          required: false
+          name: endDate
+          in: query
+        - schema:
+            type: string
+            enum: *a72
+          required: false
+          name: granularity
+          in: query
+        - schema:
+            type: string
+            enum: *a73
+          required: false
+          name: compare
+          in: query
+        - schema:
+            type: string
+          required: false
+          name: userId
+          in: query
+        - schema:
+            type: number
+            minimum: 1
+            maximum: 50
+          required: false
+          name: feedLimit
+          in: query
+      responses:
+        "200":
+          description: Contributions by person (audit-derived)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: number
+                  previous:
+                    type: number
+                    nullable: true
+                  trend:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        label:
+                          type: string
+                        value:
+                          type: number
+                      required:
+                        - label
+                        - value
+                  trendPrevious:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        label:
+                          type: string
+                        value:
+                          type: number
+                      required:
+                        - label
+                        - value
+                  byCategory:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                        label:
+                          type: string
+                        count:
+                          type: number
+                      required:
+                        - key
+                        - label
+                        - count
+                  contributors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        userId:
+                          type: string
+                        name:
+                          type: string
+                        email:
+                          type: string
+                        count:
+                          type: number
+                      required:
+                        - userId
+                        - name
+                        - email
+                        - count
+                  byService:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        serviceId:
+                          type: string
+                          nullable: true
+                        serviceName:
+                          type: string
+                        count:
+                          type: number
+                      required:
+                        - serviceId
+                        - serviceName
+                        - count
+                  feed:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        createdAt:
+                          type: string
+                        userId:
+                          type: string
+                          nullable: true
+                        userName:
+                          type: string
+                          nullable: true
+                        action:
+                          type: string
+                        entityType:
+                          type: string
+                        entityId:
+                          type: string
+                        entityName:
+                          type: string
+                          nullable: true
+                        serviceName:
+                          type: string
+                          nullable: true
+                        category:
+                          type: string
+                        metadata:
+                          nullable: true
+                        oldValues:
+                          nullable: true
+                        newValues:
+                          nullable: true
+                        changedFields:
+                          type: array
+                          items:
+                            type: string
+                      required:
+                        - id
+                        - createdAt
+                        - userId
+                        - userName
+                        - action
+                        - entityType
+                        - entityId
+                        - entityName
+                        - serviceName
+                        - category
+                        - changedFields
+                required:
+                  - total
+                  - previous
+                  - trend
+                  - trendPrevious
+                  - byCategory
+                  - contributors
+                  - byService
+                  - feed
   /slack/channels:
     get:
       summary: List Slack channels
