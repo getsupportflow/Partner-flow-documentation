@@ -5076,7 +5076,7 @@ components:
       properties:
         type:
           type: string
-          enum: &a41
+          enum: &a42
             - DELIVERY
             - COLLECTION
           description: Shipment type, either 'DELIVERY' (to customer) or 'COLLECTION' (from customer).
@@ -5106,7 +5106,7 @@ components:
           description: Optional service record ID that this shipment is associated with. Empty string is treated as unset.
         courierProvider:
           type: string
-          enum: &a42
+          enum: &a43
             - DPD
             - ROYAL_MAIL
             - PARCELFORCE
@@ -5287,6 +5287,18 @@ components:
           type: string
           nullable: true
           description: Reason the shipment failed, when status is FAILED.
+        dpdNetworkCode:
+          type: string
+          nullable: true
+          description: DPD network actually booked (e.g. 2^11). Null when not booked with DPD.
+        dpdServiceName:
+          type: string
+          nullable: true
+          description: DPD's name for the booked service (e.g. "Two day Parcel").
+        dpdNextDayUnavailable:
+          type: boolean
+          nullable: true
+          description: True when DPD offered no Next Day service for the route, so Two Day was booked instead.
         collectionDate:
           type: string
           nullable: true
@@ -5439,6 +5451,18 @@ components:
                 type: string
                 nullable: true
                 description: Reason the shipment failed, when status is FAILED.
+              dpdNetworkCode:
+                type: string
+                nullable: true
+                description: DPD network actually booked (e.g. 2^11). Null when not booked with DPD.
+              dpdServiceName:
+                type: string
+                nullable: true
+                description: DPD's name for the booked service (e.g. "Two day Parcel").
+              dpdNextDayUnavailable:
+                type: boolean
+                nullable: true
+                description: True when DPD offered no Next Day service for the route, so Two Day was booked instead.
               collectionDate:
                 type: string
                 nullable: true
@@ -5819,6 +5843,18 @@ components:
                 type: string
                 nullable: true
                 description: Reason the shipment failed, when status is FAILED.
+              dpdNetworkCode:
+                type: string
+                nullable: true
+                description: DPD network actually booked (e.g. 2^11). Null when not booked with DPD.
+              dpdServiceName:
+                type: string
+                nullable: true
+                description: DPD's name for the booked service (e.g. "Two day Parcel").
+              dpdNextDayUnavailable:
+                type: boolean
+                nullable: true
+                description: True when DPD offered no Next Day service for the route, so Two Day was booked instead.
               collectionDate:
                 type: string
                 nullable: true
@@ -5969,6 +6005,18 @@ components:
                 type: string
                 nullable: true
                 description: Reason the shipment failed, when status is FAILED.
+              dpdNetworkCode:
+                type: string
+                nullable: true
+                description: DPD network actually booked (e.g. 2^11). Null when not booked with DPD.
+              dpdServiceName:
+                type: string
+                nullable: true
+                description: DPD's name for the booked service (e.g. "Two day Parcel").
+              dpdNextDayUnavailable:
+                type: boolean
+                nullable: true
+                description: True when DPD offered no Next Day service for the route, so Two Day was booked instead.
               collectionDate:
                 type: string
                 nullable: true
@@ -6119,6 +6167,18 @@ components:
                 type: string
                 nullable: true
                 description: Reason the shipment failed, when status is FAILED.
+              dpdNetworkCode:
+                type: string
+                nullable: true
+                description: DPD network actually booked (e.g. 2^11). Null when not booked with DPD.
+              dpdServiceName:
+                type: string
+                nullable: true
+                description: DPD's name for the booked service (e.g. "Two day Parcel").
+              dpdNextDayUnavailable:
+                type: boolean
+                nullable: true
+                description: True when DPD offered no Next Day service for the route, so Two Day was booked instead.
               collectionDate:
                 type: string
                 nullable: true
@@ -6318,6 +6378,18 @@ components:
                     type: string
                     nullable: true
                     description: Reason the shipment failed, when status is FAILED.
+                  dpdNetworkCode:
+                    type: string
+                    nullable: true
+                    description: DPD network actually booked (e.g. 2^11). Null when not booked with DPD.
+                  dpdServiceName:
+                    type: string
+                    nullable: true
+                    description: DPD's name for the booked service (e.g. "Two day Parcel").
+                  dpdNextDayUnavailable:
+                    type: boolean
+                    nullable: true
+                    description: True when DPD offered no Next Day service for the route, so Two Day was booked instead.
                   collectionDate:
                     type: string
                     nullable: true
@@ -6468,6 +6540,18 @@ components:
                     type: string
                     nullable: true
                     description: Reason the shipment failed, when status is FAILED.
+                  dpdNetworkCode:
+                    type: string
+                    nullable: true
+                    description: DPD network actually booked (e.g. 2^11). Null when not booked with DPD.
+                  dpdServiceName:
+                    type: string
+                    nullable: true
+                    description: DPD's name for the booked service (e.g. "Two day Parcel").
+                  dpdNextDayUnavailable:
+                    type: boolean
+                    nullable: true
+                    description: True when DPD offered no Next Day service for the route, so Two Day was booked instead.
                   collectionDate:
                     type: string
                     nullable: true
@@ -6618,6 +6702,18 @@ components:
                     type: string
                     nullable: true
                     description: Reason the shipment failed, when status is FAILED.
+                  dpdNetworkCode:
+                    type: string
+                    nullable: true
+                    description: DPD network actually booked (e.g. 2^11). Null when not booked with DPD.
+                  dpdServiceName:
+                    type: string
+                    nullable: true
+                    description: DPD's name for the booked service (e.g. "Two day Parcel").
+                  dpdNextDayUnavailable:
+                    type: boolean
+                    nullable: true
+                    description: True when DPD offered no Next Day service for the route, so Two Day was booked instead.
                   collectionDate:
                     type: string
                     nullable: true
@@ -7023,6 +7119,18 @@ components:
             type: string
             nullable: true
             description: Reason the shipment failed, when status is FAILED.
+          dpdNetworkCode:
+            type: string
+            nullable: true
+            description: DPD network actually booked (e.g. 2^11). Null when not booked with DPD.
+          dpdServiceName:
+            type: string
+            nullable: true
+            description: DPD's name for the booked service (e.g. "Two day Parcel").
+          dpdNextDayUnavailable:
+            type: boolean
+            nullable: true
+            description: True when DPD offered no Next Day service for the route, so Two Day was booked instead.
           collectionDate:
             type: string
             nullable: true
@@ -7183,6 +7291,18 @@ components:
             type: string
             nullable: true
             description: Reason the shipment failed, when status is FAILED.
+          dpdNetworkCode:
+            type: string
+            nullable: true
+            description: DPD network actually booked (e.g. 2^11). Null when not booked with DPD.
+          dpdServiceName:
+            type: string
+            nullable: true
+            description: DPD's name for the booked service (e.g. "Two day Parcel").
+          dpdNextDayUnavailable:
+            type: boolean
+            nullable: true
+            description: True when DPD offered no Next Day service for the route, so Two Day was booked instead.
           collectionDate:
             type: string
             nullable: true
@@ -7352,7 +7472,7 @@ components:
               - methodId
               - quantity
             description: Single logistics method selection used when syncing shipments for a transaction.
-          default: &a39 []
+          default: &a40 []
           description: Selections for collection shipments to create.
         deliverySelections:
           type: array
@@ -7378,7 +7498,7 @@ components:
               - methodId
               - quantity
             description: Single logistics method selection used when syncing shipments for a transaction.
-          default: &a40 []
+          default: &a41 []
           description: Selections for delivery shipments to create.
       required:
         - transactionId
@@ -7411,7 +7531,7 @@ components:
           description: Field to sort by, e.g. createdAt or updatedAt.
         sortOrder:
           type: string
-          enum: &a43
+          enum: &a44
             - asc
             - desc
           default: desc
@@ -7504,6 +7624,18 @@ components:
                 type: string
                 nullable: true
                 description: Reason the shipment failed, when status is FAILED.
+              dpdNetworkCode:
+                type: string
+                nullable: true
+                description: DPD network actually booked (e.g. 2^11). Null when not booked with DPD.
+              dpdServiceName:
+                type: string
+                nullable: true
+                description: DPD's name for the booked service (e.g. "Two day Parcel").
+              dpdNextDayUnavailable:
+                type: boolean
+                nullable: true
+                description: True when DPD offered no Next Day service for the route, so Two Day was booked instead.
               collectionDate:
                 type: string
                 nullable: true
@@ -8025,7 +8157,7 @@ components:
           description: Filter workspace items to a single priority level
         showCompleted:
           type: string
-          enum: &a44
+          enum: &a45
             - "true"
             - "false"
           description: "Whether to include fully completed workspace items (default: false)"
@@ -8774,7 +8906,7 @@ components:
           minimum: 0
         status:
           type: string
-          enum: &a46
+          enum: &a47
             - ACTIVE
             - INACTIVE
         category:
@@ -8836,7 +8968,7 @@ components:
       properties:
         includeDeleted:
           type: string
-          enum: &a45
+          enum: &a46
             - "true"
             - "false"
           description: Include soft-deleted solutions
@@ -10143,7 +10275,7 @@ components:
           format: uuid
         type:
           type: string
-          enum: &a47
+          enum: &a48
             - EMAIL
             - SMS
             - NOTIFICATION
@@ -10157,7 +10289,7 @@ components:
           minLength: 1
         status:
           type: string
-          enum: &a48
+          enum: &a49
             - DRAFT
             - SCHEDULED
             - SENT
@@ -10201,7 +10333,7 @@ components:
           format: uuid
         type:
           type: string
-          enum: &a49
+          enum: &a50
             - EMAIL
             - SMS
             - NOTIFICATION
@@ -10214,7 +10346,7 @@ components:
           minLength: 1
         status:
           type: string
-          enum: &a50
+          enum: &a51
             - DRAFT
             - SCHEDULED
             - SENT
@@ -10637,13 +10769,13 @@ components:
           description: Filter by template category
         isSystem:
           type: string
-          enum: &a51
+          enum: &a52
             - "true"
             - "false"
           description: Filter by system template flag
         isActive:
           type: string
-          enum: &a52
+          enum: &a53
             - "true"
             - "false"
           description: Filter by active status
@@ -11033,7 +11165,7 @@ components:
               description: Optional sender identity ID
             toType:
               type: string
-              enum: &a53
+              enum: &a54
                 - customer
                 - internal
                 - custom
@@ -11464,7 +11596,7 @@ components:
           description: Field to sort results by
         sortOrder:
           type: string
-          enum: &a54
+          enum: &a55
             - asc
             - desc
           description: Sort direction
@@ -11887,7 +12019,7 @@ components:
       properties:
         activeOnly:
           type: string
-          enum: &a55
+          enum: &a56
             - "true"
             - "false"
           description: If false, includes inactive locations; default true
@@ -12194,7 +12326,7 @@ components:
           maxLength: 20
         status:
           type: string
-          enum: &a57
+          enum: &a58
             - ACTIVE
             - INACTIVE
         address:
@@ -12228,7 +12360,7 @@ components:
       properties:
         activeOnly:
           type: string
-          enum: &a56
+          enum: &a57
             - "true"
             - "false"
           description: If true, only ACTIVE retailers. Default false (all non-deleted).
@@ -12423,7 +12555,7 @@ components:
           type: string
         purpose:
           type: string
-          enum: &a58
+          enum: &a59
             - invite
             - reset
           description: "Drives the page copy: first-time setup vs a reset"
@@ -13315,7 +13447,7 @@ components:
       properties:
         companyType:
           type: string
-          enum: &a59
+          enum: &a60
             - SERVICE_FULFILLER
             - SERVICE_CREATOR
           description: Type of company being registered
@@ -13464,7 +13596,7 @@ components:
           description: Unique identifier of the subscription record.
         plan:
           type: string
-          enum: &a60
+          enum: &a61
             - BASIC
             - STANDARD
             - ENTERPRISE
@@ -13500,14 +13632,14 @@ components:
       properties:
         plan:
           type: string
-          enum: &a61
+          enum: &a62
             - BASIC
             - STANDARD
             - ENTERPRISE
           description: Target subscription plan tier to switch to.
         status:
           type: string
-          enum: &a62
+          enum: &a63
             - TRIAL
             - ACTIVE
             - PAST_DUE
@@ -13687,7 +13819,7 @@ components:
       properties:
         includeDeleted:
           type: string
-          enum: &a63
+          enum: &a64
             - "true"
             - "false"
           description: Include soft-deleted forms
@@ -13708,7 +13840,7 @@ components:
           description: Field to sort by (e.g. name, createdAt)
         sortOrder:
           type: string
-          enum: &a64
+          enum: &a65
             - asc
             - desc
           description: Sort direction
@@ -13726,7 +13858,7 @@ components:
           description: Optional description
         status:
           type: string
-          enum: &a65
+          enum: &a66
             - ACTIVE
             - INACTIVE
             - DRAFT
@@ -14104,7 +14236,7 @@ components:
           description: Filter by service ID
         company:
           type: string
-          enum: &a66
+          enum: &a67
             - "true"
           description: If true, return all company nodes
     CreateDocumentationNodeInput:
@@ -14318,7 +14450,7 @@ components:
           format: email
         type:
           type: string
-          enum: &a67
+          enum: &a68
             - TENANT
             - SYSTEM
         isDefault:
@@ -14347,7 +14479,7 @@ components:
           format: email
         type:
           type: string
-          enum: &a68
+          enum: &a69
             - TENANT
             - SYSTEM
         isDefault:
@@ -14569,7 +14701,7 @@ components:
       properties:
         includeDeleted:
           type: string
-          enum: &a69
+          enum: &a70
             - "true"
             - "false"
           description: Include soft-deleted items
@@ -14928,7 +15060,7 @@ components:
       properties:
         includeDeleted:
           type: string
-          enum: &a70
+          enum: &a71
             - "true"
             - "false"
           description: Include soft-deleted custom fields
@@ -15108,7 +15240,7 @@ components:
           description: Filter by category
         isActive:
           type: string
-          enum: &a71
+          enum: &a72
             - "true"
             - "false"
           description: Filter by active status
@@ -16744,7 +16876,7 @@ components:
             type: number
           tone:
             type: string
-            enum: &a74
+            enum: &a75
               - neutral
               - success
               - warning
@@ -17522,7 +17654,7 @@ components:
                 description: Human-readable recommendation detail
               priority:
                 type: string
-                enum: &a75
+                enum: &a76
                   - low
                   - medium
                   - high
@@ -17549,7 +17681,7 @@ components:
                 description: Alert details and remediation guidance
               severity:
                 type: string
-                enum: &a76
+                enum: &a77
                   - low
                   - medium
                   - high
@@ -17704,7 +17836,7 @@ components:
       properties:
         status:
           type: string
-          enum: &a79
+          enum: &a80
             - healthy
             - unhealthy
         timestamp:
@@ -17788,7 +17920,7 @@ components:
           description: Identifier of the deleted connection record (matches the supplied connectionId)
         type:
           type: string
-          enum: &a77
+          enum: &a78
             - integration
             - auth_account
           description: "Storage type of the removed connection: 'integration' for IntegrationConnection rows, 'auth_account' for legacy AuthAccount-based Gmail connections."
@@ -18155,7 +18287,7 @@ components:
           description: Optional DPD account number used for identification and billing
         action:
           type: string
-          enum: &a78
+          enum: &a79
             - verify
           description: When set to 'verify', the endpoint only verifies the credentials and does not persist them. Any other value (or omission) results in saving/updating the credentials.
       required:
@@ -29809,6 +29941,18 @@ paths:
                           type: string
                           nullable: true
                           description: Reason the shipment failed, when status is FAILED.
+                        dpdNetworkCode:
+                          type: string
+                          nullable: true
+                          description: DPD network actually booked (e.g. 2^11). Null when not booked with DPD.
+                        dpdServiceName:
+                          type: string
+                          nullable: true
+                          description: DPD's name for the booked service (e.g. "Two day Parcel").
+                        dpdNextDayUnavailable:
+                          type: boolean
+                          nullable: true
+                          description: True when DPD offered no Next Day service for the route, so Two Day was booked instead.
                         collectionDate:
                           type: string
                           nullable: true
@@ -30075,6 +30219,18 @@ paths:
                     type: string
                     nullable: true
                     description: Reason the shipment failed, when status is FAILED.
+                  dpdNetworkCode:
+                    type: string
+                    nullable: true
+                    description: DPD network actually booked (e.g. 2^11). Null when not booked with DPD.
+                  dpdServiceName:
+                    type: string
+                    nullable: true
+                    description: DPD's name for the booked service (e.g. "Two day Parcel").
+                  dpdNextDayUnavailable:
+                    type: boolean
+                    nullable: true
+                    description: True when DPD offered no Next Day service for the route, so Two Day was booked instead.
                   collectionDate:
                     type: string
                     nullable: true
@@ -30242,6 +30398,18 @@ paths:
                     type: string
                     nullable: true
                     description: Reason the shipment failed, when status is FAILED.
+                  dpdNetworkCode:
+                    type: string
+                    nullable: true
+                    description: DPD network actually booked (e.g. 2^11). Null when not booked with DPD.
+                  dpdServiceName:
+                    type: string
+                    nullable: true
+                    description: DPD's name for the booked service (e.g. "Two day Parcel").
+                  dpdNextDayUnavailable:
+                    type: boolean
+                    nullable: true
+                    description: True when DPD offered no Next Day service for the route, so Two Day was booked instead.
                   collectionDate:
                     type: string
                     nullable: true
@@ -30418,6 +30586,18 @@ paths:
                     type: string
                     nullable: true
                     description: Reason the shipment failed, when status is FAILED.
+                  dpdNetworkCode:
+                    type: string
+                    nullable: true
+                    description: DPD network actually booked (e.g. 2^11). Null when not booked with DPD.
+                  dpdServiceName:
+                    type: string
+                    nullable: true
+                    description: DPD's name for the booked service (e.g. "Two day Parcel").
+                  dpdNextDayUnavailable:
+                    type: boolean
+                    nullable: true
+                    description: True when DPD offered no Next Day service for the route, so Two Day was booked instead.
                   collectionDate:
                     type: string
                     nullable: true
@@ -30661,6 +30841,18 @@ paths:
                     type: string
                     nullable: true
                     description: Reason the shipment failed, when status is FAILED.
+                  dpdNetworkCode:
+                    type: string
+                    nullable: true
+                    description: DPD network actually booked (e.g. 2^11). Null when not booked with DPD.
+                  dpdServiceName:
+                    type: string
+                    nullable: true
+                    description: DPD's name for the booked service (e.g. "Two day Parcel").
+                  dpdNextDayUnavailable:
+                    type: boolean
+                    nullable: true
+                    description: True when DPD offered no Next Day service for the route, so Two Day was booked instead.
                   collectionDate:
                     type: string
                     nullable: true
@@ -30739,6 +30931,132 @@ paths:
           description: Validation error or approval not allowed for current status.
         "404":
           description: Shipment not found.
+  /shipping/shipments/{id}/dpd-service:
+    get:
+      summary: Preview DPD service for a shipment
+      description: "Pre-approval check: which DPD service booking this shipment would get — Next Day, Two Day (when DPD offers no Next Day for the postcode), or none (booking will be blocked). Books nothing."
+      tags:
+        - Shipping
+      parameters:
+        - schema:
+            type: string
+            format: uuid
+          required: true
+          name: id
+          in: path
+      responses:
+        "200":
+          description: DPD service preview.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      applies:
+                        type: boolean
+                      tier:
+                        type: string
+                        nullable: true
+                        enum: &a39
+                          - NEXT_DAY
+                          - TWO_DAY
+                      serviceName:
+                        type: string
+                        nullable: true
+                      postcode:
+                        type: string
+                        nullable: true
+                      message:
+                        type: string
+                        nullable: true
+                    required:
+                      - applies
+                      - tier
+                      - serviceName
+                      - postcode
+                      - message
+                required:
+                  - success
+                  - data
+        "404":
+          description: Shipment not found.
+  /shipping/dpd-service-preview:
+    post:
+      summary: Preview DPD service for a draft shipment
+      description: "For a shipment not yet created (staff create dialog): which DPD service it would be booked on — Next Day, Two Day, or none. Books nothing."
+      tags:
+        - Shipping
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - COLLECTION
+                    - DELIVERY
+                    - BOX_DELIVERY
+                reverseIt:
+                  type: boolean
+                senderAddressId:
+                  type: string
+                  minLength: 1
+                recipientAddressId:
+                  type: string
+                  minLength: 1
+                parcelCount:
+                  type: integer
+                  minimum: 1
+              required:
+                - type
+                - reverseIt
+                - senderAddressId
+                - recipientAddressId
+                - parcelCount
+      responses:
+        "200":
+          description: DPD service preview.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      applies:
+                        type: boolean
+                      tier:
+                        type: string
+                        nullable: true
+                        enum: *a39
+                      serviceName:
+                        type: string
+                        nullable: true
+                      postcode:
+                        type: string
+                        nullable: true
+                      message:
+                        type: string
+                        nullable: true
+                    required:
+                      - applies
+                      - tier
+                      - serviceName
+                      - postcode
+                      - message
+                required:
+                  - success
+                  - data
   /shipping/shipments/report:
     get:
       summary: Shipment report and statistics
@@ -30869,6 +31187,18 @@ paths:
                               type: string
                               nullable: true
                               description: Reason the shipment failed, when status is FAILED.
+                            dpdNetworkCode:
+                              type: string
+                              nullable: true
+                              description: DPD network actually booked (e.g. 2^11). Null when not booked with DPD.
+                            dpdServiceName:
+                              type: string
+                              nullable: true
+                              description: DPD's name for the booked service (e.g. "Two day Parcel").
+                            dpdNextDayUnavailable:
+                              type: boolean
+                              nullable: true
+                              description: True when DPD offered no Next Day service for the route, so Two Day was booked instead.
                             collectionDate:
                               type: string
                               nullable: true
@@ -31019,6 +31349,18 @@ paths:
                               type: string
                               nullable: true
                               description: Reason the shipment failed, when status is FAILED.
+                            dpdNetworkCode:
+                              type: string
+                              nullable: true
+                              description: DPD network actually booked (e.g. 2^11). Null when not booked with DPD.
+                            dpdServiceName:
+                              type: string
+                              nullable: true
+                              description: DPD's name for the booked service (e.g. "Two day Parcel").
+                            dpdNextDayUnavailable:
+                              type: boolean
+                              nullable: true
+                              description: True when DPD offered no Next Day service for the route, so Two Day was booked instead.
                             collectionDate:
                               type: string
                               nullable: true
@@ -31169,6 +31511,18 @@ paths:
                               type: string
                               nullable: true
                               description: Reason the shipment failed, when status is FAILED.
+                            dpdNetworkCode:
+                              type: string
+                              nullable: true
+                              description: DPD network actually booked (e.g. 2^11). Null when not booked with DPD.
+                            dpdServiceName:
+                              type: string
+                              nullable: true
+                              description: DPD's name for the booked service (e.g. "Two day Parcel").
+                            dpdNextDayUnavailable:
+                              type: boolean
+                              nullable: true
+                              description: True when DPD offered no Next Day service for the route, so Two Day was booked instead.
                             collectionDate:
                               type: string
                               nullable: true
@@ -31306,7 +31660,7 @@ paths:
                       - methodId
                       - quantity
                     description: Single logistics method selection used when syncing shipments for a transaction.
-                  default: *a39
+                  default: *a40
                   description: Selections for collection shipments to create.
                 deliverySelections:
                   type: array
@@ -31332,7 +31686,7 @@ paths:
                       - methodId
                       - quantity
                     description: Single logistics method selection used when syncing shipments for a transaction.
-                  default: *a40
+                  default: *a41
                   description: Selections for delivery shipments to create.
               required:
                 - transactionId
@@ -31366,7 +31720,7 @@ paths:
               properties:
                 type:
                   type: string
-                  enum: *a41
+                  enum: *a42
                   description: Shipment type, either 'DELIVERY' (to customer) or 'COLLECTION' (from customer).
                 senderAddressId:
                   type: string
@@ -31394,7 +31748,7 @@ paths:
                   description: Optional service record ID that this shipment is associated with. Empty string is treated as unset.
                 courierProvider:
                   type: string
-                  enum: *a42
+                  enum: *a43
                   description: Courier provider to use for this shipment, if already known.
                 expectedDeliveryDate:
                   anyOf:
@@ -31575,6 +31929,18 @@ paths:
                     type: string
                     nullable: true
                     description: Reason the shipment failed, when status is FAILED.
+                  dpdNetworkCode:
+                    type: string
+                    nullable: true
+                    description: DPD network actually booked (e.g. 2^11). Null when not booked with DPD.
+                  dpdServiceName:
+                    type: string
+                    nullable: true
+                    description: DPD's name for the booked service (e.g. "Two day Parcel").
+                  dpdNextDayUnavailable:
+                    type: boolean
+                    nullable: true
+                    description: True when DPD offered no Next Day service for the route, so Two Day was booked instead.
                   collectionDate:
                     type: string
                     nullable: true
@@ -31930,6 +32296,18 @@ paths:
                       type: string
                       nullable: true
                       description: Reason the shipment failed, when status is FAILED.
+                    dpdNetworkCode:
+                      type: string
+                      nullable: true
+                      description: DPD network actually booked (e.g. 2^11). Null when not booked with DPD.
+                    dpdServiceName:
+                      type: string
+                      nullable: true
+                      description: DPD's name for the booked service (e.g. "Two day Parcel").
+                    dpdNextDayUnavailable:
+                      type: boolean
+                      nullable: true
+                      description: True when DPD offered no Next Day service for the route, so Two Day was booked instead.
                     collectionDate:
                       type: string
                       nullable: true
@@ -32102,6 +32480,18 @@ paths:
                       type: string
                       nullable: true
                       description: Reason the shipment failed, when status is FAILED.
+                    dpdNetworkCode:
+                      type: string
+                      nullable: true
+                      description: DPD network actually booked (e.g. 2^11). Null when not booked with DPD.
+                    dpdServiceName:
+                      type: string
+                      nullable: true
+                      description: DPD's name for the booked service (e.g. "Two day Parcel").
+                    dpdNextDayUnavailable:
+                      type: boolean
+                      nullable: true
+                      description: True when DPD offered no Next Day service for the route, so Two Day was booked instead.
                     collectionDate:
                       type: string
                       nullable: true
@@ -32273,7 +32663,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a43
+            enum: *a44
             default: desc
             description: Sort direction for the records list.
           required: false
@@ -32384,6 +32774,18 @@ paths:
                           type: string
                           nullable: true
                           description: Reason the shipment failed, when status is FAILED.
+                        dpdNetworkCode:
+                          type: string
+                          nullable: true
+                          description: DPD network actually booked (e.g. 2^11). Null when not booked with DPD.
+                        dpdServiceName:
+                          type: string
+                          nullable: true
+                          description: DPD's name for the booked service (e.g. "Two day Parcel").
+                        dpdNextDayUnavailable:
+                          type: boolean
+                          nullable: true
+                          description: True when DPD offered no Next Day service for the route, so Two Day was booked instead.
                         collectionDate:
                           type: string
                           nullable: true
@@ -33103,7 +33505,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a44
+            enum: *a45
             description: "Whether to include fully completed workspace items (default: false)"
           required: false
           description: "Whether to include fully completed workspace items (default: false)"
@@ -34509,7 +34911,7 @@ paths:
       parameters:
         - schema:
             type: string
-            enum: *a45
+            enum: *a46
             description: Include soft-deleted solutions
           required: false
           description: Include soft-deleted solutions
@@ -34792,7 +35194,7 @@ paths:
                   minimum: 0
                 status:
                   type: string
-                  enum: *a46
+                  enum: *a47
                 category:
                   type: string
                   enum: *a14
@@ -38686,7 +39088,7 @@ paths:
                   format: uuid
                 type:
                   type: string
-                  enum: *a47
+                  enum: *a48
                   default: EMAIL
                 subject:
                   type: string
@@ -38697,7 +39099,7 @@ paths:
                   minLength: 1
                 status:
                   type: string
-                  enum: *a48
+                  enum: *a49
                   default: DRAFT
                 scheduledAt:
                   anyOf:
@@ -38862,7 +39264,7 @@ paths:
                   format: uuid
                 type:
                   type: string
-                  enum: *a49
+                  enum: *a50
                 subject:
                   type: string
                   minLength: 1
@@ -38872,7 +39274,7 @@ paths:
                   minLength: 1
                 status:
                   type: string
-                  enum: *a50
+                  enum: *a51
                 scheduledAt:
                   anyOf:
                     - type: string
@@ -40569,7 +40971,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a51
+            enum: *a52
             description: Filter by system template flag
           required: false
           description: Filter by system template flag
@@ -40577,7 +40979,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a52
+            enum: *a53
             description: Filter by active status
           required: false
           description: Filter by active status
@@ -41329,7 +41731,7 @@ paths:
                       description: Optional sender identity ID
                     toType:
                       type: string
-                      enum: *a53
+                      enum: *a54
                       description: Recipient type
                     toFieldPath:
                       type: string
@@ -41746,7 +42148,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a54
+            enum: *a55
             description: Sort direction
           required: false
           description: Sort direction
@@ -42525,7 +42927,7 @@ paths:
       parameters:
         - schema:
             type: string
-            enum: *a55
+            enum: *a56
             description: If false, includes inactive locations; default true
           required: false
           description: If false, includes inactive locations; default true
@@ -43072,7 +43474,7 @@ paths:
       parameters:
         - schema:
             type: string
-            enum: *a56
+            enum: *a57
             description: If true, only ACTIVE retailers. Default false (all non-deleted).
           required: false
           description: If true, only ACTIVE retailers. Default false (all non-deleted).
@@ -43394,7 +43796,7 @@ paths:
                   maxLength: 20
                 status:
                   type: string
-                  enum: *a57
+                  enum: *a58
                 address:
                   type: object
                   properties:
@@ -43618,7 +44020,7 @@ paths:
                     type: string
                   purpose:
                     type: string
-                    enum: *a58
+                    enum: *a59
                     description: "Drives the page copy: first-time setup vs a reset"
                 required:
                   - email
@@ -45078,7 +45480,7 @@ paths:
               properties:
                 companyType:
                   type: string
-                  enum: *a59
+                  enum: *a60
                   description: Type of company being registered
                 companyDetails:
                   type: object
@@ -45304,7 +45706,7 @@ paths:
                     description: Unique identifier of the subscription record.
                   plan:
                     type: string
-                    enum: *a60
+                    enum: *a61
                     description: Active subscription plan tier.
                   status:
                     type: string
@@ -45345,11 +45747,11 @@ paths:
               properties:
                 plan:
                   type: string
-                  enum: *a61
+                  enum: *a62
                   description: Target subscription plan tier to switch to.
                 status:
                   type: string
-                  enum: *a62
+                  enum: *a63
                   description: Optional new subscription status to set.
                 currentPeriodStart:
                   type: string
@@ -45380,7 +45782,7 @@ paths:
                     description: Unique identifier of the subscription record.
                   plan:
                     type: string
-                    enum: *a60
+                    enum: *a61
                     description: Active subscription plan tier.
                   status:
                     type: string
@@ -45550,7 +45952,7 @@ paths:
                         description: Unique identifier of the subscription record.
                       plan:
                         type: string
-                        enum: *a60
+                        enum: *a61
                         description: Active subscription plan tier.
                       status:
                         type: string
@@ -45765,7 +46167,7 @@ paths:
       parameters:
         - schema:
             type: string
-            enum: *a63
+            enum: *a64
             description: Include soft-deleted forms
           required: false
           description: Include soft-deleted forms
@@ -45804,7 +46206,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a64
+            enum: *a65
             description: Sort direction
           required: false
           description: Sort direction
@@ -45905,7 +46307,7 @@ paths:
                   description: Optional description
                 status:
                   type: string
-                  enum: *a65
+                  enum: *a66
                   description: Initial form status
               required:
                 - name
@@ -46836,7 +47238,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a66
+            enum: *a67
             description: If true, return all company nodes
           required: false
           description: If true, return all company nodes
@@ -47290,7 +47692,7 @@ paths:
                   format: email
                 type:
                   type: string
-                  enum: *a67
+                  enum: *a68
                 isDefault:
                   type: boolean
                 gmailIntegrationConnectionId:
@@ -47445,7 +47847,7 @@ paths:
                   format: email
                 type:
                   type: string
-                  enum: *a68
+                  enum: *a69
                 isDefault:
                   type: boolean
                 isVerified:
@@ -47673,7 +48075,7 @@ paths:
       parameters:
         - schema:
             type: string
-            enum: *a69
+            enum: *a70
             description: Include soft-deleted items
           required: false
           description: Include soft-deleted items
@@ -48523,7 +48925,7 @@ paths:
       parameters:
         - schema:
             type: string
-            enum: *a70
+            enum: *a71
             description: Include soft-deleted custom fields
           required: false
           description: Include soft-deleted custom fields
@@ -48905,7 +49307,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a71
+            enum: *a72
             description: Filter by active status
           required: false
           description: Filter by active status
@@ -51860,7 +52262,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: &a72
+            enum: &a73
               - day
               - week
               - month
@@ -51869,7 +52271,7 @@ paths:
           in: query
         - schema:
             type: string
-            enum: &a73
+            enum: &a74
               - previous
               - none
           required: false
@@ -51968,13 +52370,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a72
+            enum: *a73
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a73
+            enum: *a74
           required: false
           name: compare
           in: query
@@ -52032,13 +52434,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a72
+            enum: *a73
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a73
+            enum: *a74
           required: false
           name: compare
           in: query
@@ -52087,13 +52489,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a72
+            enum: *a73
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a73
+            enum: *a74
           required: false
           name: compare
           in: query
@@ -52142,13 +52544,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a72
+            enum: *a73
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a73
+            enum: *a74
           required: false
           name: compare
           in: query
@@ -52197,13 +52599,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a72
+            enum: *a73
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a73
+            enum: *a74
           required: false
           name: compare
           in: query
@@ -52252,13 +52654,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a72
+            enum: *a73
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a73
+            enum: *a74
           required: false
           name: compare
           in: query
@@ -52314,13 +52716,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a72
+            enum: *a73
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a73
+            enum: *a74
           required: false
           name: compare
           in: query
@@ -52442,13 +52844,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a72
+            enum: *a73
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a73
+            enum: *a74
           required: false
           name: compare
           in: query
@@ -52503,13 +52905,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a72
+            enum: *a73
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a73
+            enum: *a74
           required: false
           name: compare
           in: query
@@ -52568,13 +52970,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a72
+            enum: *a73
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a73
+            enum: *a74
           required: false
           name: compare
           in: query
@@ -52630,13 +53032,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a72
+            enum: *a73
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a73
+            enum: *a74
           required: false
           name: compare
           in: query
@@ -52694,13 +53096,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a72
+            enum: *a73
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a73
+            enum: *a74
           required: false
           name: compare
           in: query
@@ -52722,7 +53124,7 @@ paths:
                       type: number
                     tone:
                       type: string
-                      enum: *a74
+                      enum: *a75
                   required:
                     - key
                     - label
@@ -52756,13 +53158,13 @@ paths:
           in: query
         - schema:
             type: string
-            enum: *a72
+            enum: *a73
           required: false
           name: granularity
           in: query
         - schema:
             type: string
-            enum: *a73
+            enum: *a74
           required: false
           name: compare
           in: query
@@ -53658,7 +54060,7 @@ paths:
                           description: Human-readable recommendation detail
                         priority:
                           type: string
-                          enum: *a75
+                          enum: *a76
                           description: Priority level for this recommendation
                       required:
                         - type
@@ -53682,7 +54084,7 @@ paths:
                           description: Alert details and remediation guidance
                         severity:
                           type: string
-                          enum: *a76
+                          enum: *a77
                           description: Severity level for this alert
                       required:
                         - type
@@ -53951,6 +54353,70 @@ paths:
           description: Customer authentication required
         "404":
           description: Shipment not found
+  /customer-portal/shipments/{id}/dpd-service:
+    get:
+      operationId: getPortalShipmentDpdService
+      summary: Preview DPD service for a shipment (customer)
+      description: "Pre-approval check for the customer's own shipment: which DPD service approving it would book — Next Day, Two Day (no Next Day for the postcode), or none. Optional deliverTo mirrors the destination picked in the approval dialog. Books nothing."
+      tags:
+        - Customer Portal
+      parameters:
+        - schema:
+            type: string
+            description: Shipment id
+          required: true
+          description: Shipment id
+          name: id
+          in: path
+        - schema:
+            type: string
+            enum:
+              - CUSTOMER
+              - RETAILER
+          required: false
+          name: deliverTo
+          in: query
+      responses:
+        "200":
+          description: DPD service preview
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      applies:
+                        type: boolean
+                      tier:
+                        type: string
+                        nullable: true
+                        enum: *a39
+                      serviceName:
+                        type: string
+                        nullable: true
+                      postcode:
+                        type: string
+                        nullable: true
+                      message:
+                        type: string
+                        nullable: true
+                    required:
+                      - applies
+                      - tier
+                      - serviceName
+                      - postcode
+                      - message
+                required:
+                  - success
+                  - data
+        "403":
+          description: Customer authentication required
+        "404":
+          description: Shipment not found
   /integrations/connections/list:
     get:
       summary: List integration connections
@@ -54025,7 +54491,7 @@ paths:
                     description: Identifier of the deleted connection record (matches the supplied connectionId)
                   type:
                     type: string
-                    enum: *a77
+                    enum: *a78
                     description: "Storage type of the removed connection: 'integration' for IntegrationConnection rows, 'auth_account' for legacy AuthAccount-based Gmail connections."
                 required:
                   - success
@@ -54677,7 +55143,7 @@ paths:
                   description: Optional DPD account number used for identification and billing
                 action:
                   type: string
-                  enum: *a78
+                  enum: *a79
                   description: When set to 'verify', the endpoint only verifies the credentials and does not persist them. Any other value (or omission) results in saving/updating the credentials.
               required:
                 - apiKey
@@ -55168,7 +55634,7 @@ paths:
                 properties:
                   status:
                     type: string
-                    enum: *a79
+                    enum: *a80
                   timestamp:
                     type: string
                   uptime:
@@ -55214,7 +55680,7 @@ paths:
                 properties:
                   status:
                     type: string
-                    enum: *a79
+                    enum: *a80
                   timestamp:
                     type: string
                   uptime:
