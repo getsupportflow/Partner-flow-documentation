@@ -648,6 +648,108 @@ components:
           description: Top-level error message
       required:
         - success
+    CustomerSummary:
+      type: object
+      properties:
+        jobs:
+          type: object
+          properties:
+            total:
+              type: integer
+              description: Jobs for this customer on the company’s own services
+            open:
+              type: integer
+              description: Jobs not in a final stage (Completed / Closed / no way out)
+            lastJobAt:
+              type: string
+              nullable: true
+              description: When the most recent job was created
+          required:
+            - total
+            - open
+            - lastJobAt
+        billing:
+          type: object
+          nullable: true
+          properties:
+            billed:
+              type: number
+              description: Sum of issued (non-draft, non-cancelled) invoice totals
+            outstanding:
+              type: number
+              description: Sum of what is still owed on issued invoices
+            currencyCode:
+              type: string
+              description: Currency the figures are in (the one most of the invoices use)
+            currencySymbol:
+              type: string
+              description: Symbol for currencyCode
+            invoiceCount:
+              type: integer
+              description: Issued invoices counted in billed
+            mixedCurrencies:
+              type: boolean
+              description: True when some invoices use another currency; those are left out of billed / outstanding
+          required:
+            - billed
+            - outstanding
+            - currencyCode
+            - currencySymbol
+            - invoiceCount
+            - mixedCurrencies
+          description: Null when the caller may not read invoices
+        invoices:
+          type: array
+          nullable: true
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: Invoice id
+              referenceNumber:
+                type: string
+                description: Invoice number, e.g. INV-2026-0006
+              status:
+                type: string
+                description: Document status (DRAFT, SENT, PARTIALLY_PAID, PAID, …)
+              totalAmount:
+                type: number
+                description: Gross invoice total
+              amountDue:
+                type: number
+                description: What is still owed on this invoice (0 for drafts, paid and dead invoices)
+              currencyCode:
+                type: string
+                nullable: true
+                description: ISO currency code, e.g. GBP
+              currencySymbol:
+                type: string
+                nullable: true
+                description: Currency symbol, e.g. £
+              dueDate:
+                type: string
+                nullable: true
+                description: Payment due date
+              createdAt:
+                type: string
+                nullable: true
+                description: When the invoice was created
+            required:
+              - id
+              - referenceNumber
+              - status
+              - totalAmount
+              - amountDue
+              - currencyCode
+              - currencySymbol
+              - dueDate
+              - createdAt
+          description: Invoices the company issued to this customer, newest first; null when the caller may not read invoices
+      required:
+        - jobs
+        - billing
+        - invoices
     CreateNoteInput:
       type: object
       properties:
@@ -5871,6 +5973,30 @@ components:
             - delivered
             - failed
           description: Current shipment counts grouped by status.
+        windowStatusCounts:
+          type: object
+          properties:
+            pending:
+              type: number
+              description: Number of shipments currently pending approval.
+            inTransit:
+              type: number
+              description: Number of shipments currently in transit.
+            delivered:
+              type: number
+              description: Number of shipments delivered.
+            failed:
+              type: number
+              description: Number of shipments that failed.
+          required:
+            - pending
+            - inTransit
+            - delivered
+            - failed
+          description: Shipment counts grouped by current status, for shipments created in the same window as performanceMetrics.
+        windowDays:
+          type: integer
+          description: Length in days of the reporting window used by performanceMetrics and windowStatusCounts.
         recentShipments:
           type: object
           properties:
@@ -27704,6 +27830,9 @@ components:
         sameAsProductId:
           type: string
           nullable: true
+        category:
+          type: string
+          nullable: true
       required:
         - id
         - name
@@ -27712,6 +27841,7 @@ components:
         - imageUrl
         - packSize
         - sameAsProductId
+        - category
     StockPoolRef:
       type: object
       nullable: true
@@ -30111,6 +30241,128 @@ paths:
       responses:
         "200":
           description: Customer deleted
+  /customers/{id}/summary:
+    get:
+      summary: Get customer summary
+      description: "Stat-strip figures for one of your customers: open and total jobs, last job date, and (when you can read invoices) billed / outstanding money plus the invoices you issued them. 404 when the customer is not your company's."
+      tags:
+        - Customers
+      parameters:
+        - schema:
+            type: string
+            format: uuid
+          required: true
+          name: id
+          in: path
+      responses:
+        "200":
+          description: Customer summary
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  jobs:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                        description: Jobs for this customer on the company’s own services
+                      open:
+                        type: integer
+                        description: Jobs not in a final stage (Completed / Closed / no way out)
+                      lastJobAt:
+                        type: string
+                        nullable: true
+                        description: When the most recent job was created
+                    required:
+                      - total
+                      - open
+                      - lastJobAt
+                  billing:
+                    type: object
+                    nullable: true
+                    properties:
+                      billed:
+                        type: number
+                        description: Sum of issued (non-draft, non-cancelled) invoice totals
+                      outstanding:
+                        type: number
+                        description: Sum of what is still owed on issued invoices
+                      currencyCode:
+                        type: string
+                        description: Currency the figures are in (the one most of the invoices use)
+                      currencySymbol:
+                        type: string
+                        description: Symbol for currencyCode
+                      invoiceCount:
+                        type: integer
+                        description: Issued invoices counted in billed
+                      mixedCurrencies:
+                        type: boolean
+                        description: True when some invoices use another currency; those are left out of billed / outstanding
+                    required:
+                      - billed
+                      - outstanding
+                      - currencyCode
+                      - currencySymbol
+                      - invoiceCount
+                      - mixedCurrencies
+                    description: Null when the caller may not read invoices
+                  invoices:
+                    type: array
+                    nullable: true
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          description: Invoice id
+                        referenceNumber:
+                          type: string
+                          description: Invoice number, e.g. INV-2026-0006
+                        status:
+                          type: string
+                          description: Document status (DRAFT, SENT, PARTIALLY_PAID, PAID, …)
+                        totalAmount:
+                          type: number
+                          description: Gross invoice total
+                        amountDue:
+                          type: number
+                          description: What is still owed on this invoice (0 for drafts, paid and dead invoices)
+                        currencyCode:
+                          type: string
+                          nullable: true
+                          description: ISO currency code, e.g. GBP
+                        currencySymbol:
+                          type: string
+                          nullable: true
+                          description: Currency symbol, e.g. £
+                        dueDate:
+                          type: string
+                          nullable: true
+                          description: Payment due date
+                        createdAt:
+                          type: string
+                          nullable: true
+                          description: When the invoice was created
+                      required:
+                        - id
+                        - referenceNumber
+                        - status
+                        - totalAmount
+                        - amountDue
+                        - currencyCode
+                        - currencySymbol
+                        - dueDate
+                        - createdAt
+                    description: Invoices the company issued to this customer, newest first; null when the caller may not read invoices
+                required:
+                  - jobs
+                  - billing
+                  - invoices
+        "404":
+          description: Customer not found
   /customers/import:
     post:
       summary: Import customers from CSV
@@ -37453,6 +37705,30 @@ paths:
                       - delivered
                       - failed
                     description: Current shipment counts grouped by status.
+                  windowStatusCounts:
+                    type: object
+                    properties:
+                      pending:
+                        type: number
+                        description: Number of shipments currently pending approval.
+                      inTransit:
+                        type: number
+                        description: Number of shipments currently in transit.
+                      delivered:
+                        type: number
+                        description: Number of shipments delivered.
+                      failed:
+                        type: number
+                        description: Number of shipments that failed.
+                    required:
+                      - pending
+                      - inTransit
+                      - delivered
+                      - failed
+                    description: Shipment counts grouped by current status, for shipments created in the same window as performanceMetrics.
+                  windowDays:
+                    type: integer
+                    description: Length in days of the reporting window used by performanceMetrics and windowStatusCounts.
                   recentShipments:
                     type: object
                     properties:
